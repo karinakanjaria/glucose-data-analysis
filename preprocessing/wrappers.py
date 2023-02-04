@@ -5,6 +5,9 @@ from fathon import fathonUtils as fu
 import pandas as pd
 import numpy as np
 
+# pip install fdasrsf
+from fdasrsf import fPCA, time_warping, fdawarp, fdahpca
+
 def do_mfdfa(data: list, win_sizes: list, q_list: list, rev_seg: bool, pol_order: int):
     # zero-mean cumulative sum of data
     data_cs = fu.toAggregated(data)
@@ -56,4 +59,42 @@ def poincare_wrapper(data: pd.DataFrame):
 		poincare_df.loc[len(poincare_df)+1] = eclipseFittingMethod(glucose_diff)
 	
 	return poincare_df
+	
+	
+
+def fpcaWrapper(rawData, minTime, numComponents = 2):
+    #extracting columns 
+    dataNeeded = rawData[['PatientId', 'GlucoseDisplayTimeRaw', 'Value']]
+    dataNeeded = dataNeeded.astype({ 'PatientId' : "string",
+                   'GlucoseDisplayTimeRaw': 'datetime64[ns]',
+                   'Value' : 'int'
+                  })
+    
+    #grab data by time increments in mintutes
+    dataByTime = dataNeeded.loc[(dataNeeded.GlucoseDisplayTimeRaw.dt.minute % minTime) == 0]
+    
+    dataByTime['GlucoseTime'] = [time.strftime("%H:%M:%S") for time in dataByTime.GlucoseDisplayTimeRaw]
+    dataByTime['GlucoseDate'] = [time.date() for time in dataByTime.GlucoseDisplayTimeRaw]
+
+    #reorienting data for functional alignment
+    formattedData = dataByTime.pivot(index='GlucoseTime', columns=['PatientId', 'GlucoseDate'], values='Value')
+    
+    #change to numpy to work with fxn
+    dfNumpy = formattedData.to_numpy().astype(float)
+    timeVec = np.linspace(0, 1, len(dfNumpy))
+    
+    #align time 
+    warp_f = time_warping.fdawarp(dfNumpy, timeVec)
+    warp_f.srsf_align()
+    
+    warp_f.plot()
+    
+    # Run the FPCA, using Vertical fpca because we want to see the variation in value (y-axis)
+    fpcaAnalysis = fPCA.fdavpca(warp_f)
+    fpcaAnalysis.calc_fpca(no=numComponents)
+    fpcaAnalysis.plot()
+    
+    coefs = fpcaAnalysis.coef
+      
+    return coefs
 
