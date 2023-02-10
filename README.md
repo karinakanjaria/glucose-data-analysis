@@ -1,4 +1,6 @@
 # glucose-data-analysis
+<p> <img src="Project_Logo/diabeatit-low-resolution-color-logo.png" width="400" height="300"/></p>
+
 ## By: Karina Kanjaria, Katie O'laughlin, Leslie Joe, Carlos Monsivais
 Continuous glucose data analysis for blood glucose levels and glycemic events
 
@@ -11,9 +13,23 @@ Continuous glucose data analysis for blood glucose levels and glycemic events
         class called Sklearn_Pipeline there is a function for a Pyspark Dataframe called pyspark_sklearn_pipeline() and a function
         for a Pandas Dataframe called pandas_transform_features()
 
-
 * Data_Schema
     1. schema.py:
     
         Stores data schemas used for reading in data either as a PySpark Dataframe or a Pandas Dataframe(data type and datetime columns are taken care of).
         Within this file the schemas to use for the output in PySpark when using Pandas User Defined Functions is used.
+
+* EDA
+    1. Glucose.ipynb, KarinaEDA.ipynb, LeslieEDA.ipynb:
+
+        EDA notebooks.
+
+* preprocessing
+    1. wrappers.py:
+
+        Initial data wrappers.
+
+* Project_Logo
+    1. diabeatit-low-resolution-color-logo.png:
+
+        Logo for our group DiabeatIt!
