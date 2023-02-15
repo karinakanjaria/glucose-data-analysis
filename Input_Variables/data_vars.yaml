@@ -9,3 +9,6 @@ Time_Series_Input_Features:
     q_list_2: 400
     rev_seg: True
     pol_order: 1
+
+  FPCS:
+    min_time: 5

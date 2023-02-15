@@ -1,7 +1,9 @@
 import numpy as np
 
 from Input_Variables.read_vars import raw_data_storage, \
-                                      mfdfa_wins, mfdfa_q_list, mfdfa_rev_seg, mfdfa_pol_order
+                                      mfdfa_wins, mfdfa_q_list, mfdfa_rev_seg, mfdfa_pol_order, \
+                                      fpcs_min_time
+                                    
 
 from Data_Schema.schema import Pandas_UDF_Data_Schema
 from Read_In_Data.read_data import Reading_Data
@@ -52,12 +54,12 @@ ts_feature_creation=TS_Feature_Creation()
 #                                    pol_order=mfdfa_pol_order)
 
 # Function Works
-poincare=ts_feature_creation.poincare_wrapper(data=pandas_df)
+poincare=ts_feature_creation.poincare_wrapper(data=pandas_transformations)
 print(poincare)
 
 # # Issue with fcpaWrapper --> Need to make it loop through every PatientID and how to define minTime variable
 # functional_principal_component_analysis=ts_feature_creation.fpcaWrapper(rawData=pandas_df)
 
 # Fuction Works
-entropy=ts_feature_creation.entropy_calculation(data=pandas_df)
+entropy=ts_feature_creation.entropy_calculation(data=pandas_transformations)
 print(entropy)

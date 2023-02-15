@@ -23,3 +23,6 @@ mfdfa_q_list=np.arange(mfdfa_q_list_1, mfdfa_q_list_2)
 
 mfdfa_rev_seg=input_vars['Time_Series_Input_Features']['MFDA']['rev_seg']
 mfdfa_pol_order=input_vars['Time_Series_Input_Features']['MFDA']['pol_order']
+
+
+fpcs_min_time=input_vars['Time_Series_Input_Features']['FPCS']['min_time']
