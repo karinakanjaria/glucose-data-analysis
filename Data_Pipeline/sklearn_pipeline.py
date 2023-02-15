@@ -14,7 +14,6 @@ class Sklearn_Pipeline:
         def transform_features(pdf):
             df=pdf[['PatientId','Value','GlucoseDisplayTimeRaw','TrendArrow','TrendRate']]
             
-   
             # Categorical Features
             categorical_features=['TrendArrow']
             categorical_transformer=Pipeline([('imputer_cat', SimpleImputer(strategy='constant', fill_value=np.nan)),

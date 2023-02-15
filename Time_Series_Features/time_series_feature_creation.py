@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
-import fathon
-from fathon import fathonUtils as fu
+# import fathon
+# from fathon import fathonUtils as fu
 from fdasrsf import fPCA, time_warping
+import EntropyHub as EH
 
 class TS_Feature_Creation:
     def do_mfdfa(self, data: list, win_sizes: list, q_list: list, rev_seg: bool, pol_order: int):
@@ -91,3 +92,14 @@ class TS_Feature_Creation:
         coefs = fpcaAnalysis.coef
         
         return coefs
+
+    def entropy_calculation(self, data):
+        ent_df=pd.DataFrame()
+        patients=data['PatientId'].unique()
+
+        for patient in patients:
+            new_patient=data[data['PatientId']==patient]
+            entropy=EH.SampEn(new_patient['Value'].values, m=4)[0][-1]
+            ent_df['Entropy']=[entropy]
+
+        return ent_df

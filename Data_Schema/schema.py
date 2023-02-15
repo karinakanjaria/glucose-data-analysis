@@ -69,4 +69,3 @@ class Pandas_UDF_Data_Schema:
                                           StructField('TrendArrow', ArrayType(IntegerType()),True)])
 
         return pyspark_transform_schema
-
