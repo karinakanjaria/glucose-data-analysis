@@ -8,7 +8,7 @@ from Input_Variables.read_vars import raw_data_storage, \
 from Data_Schema.schema import Pandas_UDF_Data_Schema
 from Read_In_Data.read_data import Reading_Data
 from Data_Pipeline.sklearn_pipeline import Sklearn_Pipeline
-from Time_Series_Features.time_series_feature_creation import TS_Feature_Creation
+from Feature_Generation.time_series_feature_creation import TS_Feature_Creation
 
 ################################### PySpark UDF Schema Activation ###################################
 pandas_udf_data_schema=Pandas_UDF_Data_Schema()
