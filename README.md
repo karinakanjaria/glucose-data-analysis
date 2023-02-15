@@ -4,6 +4,8 @@
 ## By: Karina Kanjaria, Katie O'laughlin, Leslie Joe, Carlos Monsivais
 Continuous glucose data analysis for blood glucose levels and glycemic events
 
+### How to Run
+
 ### Data Structure
 * Data_Pipeline
     1. sklearn_pipeline.py:
@@ -33,3 +35,11 @@ Continuous glucose data analysis for blood glucose levels and glycemic events
     1. diabeatit-low-resolution-color-logo.png:
 
         Logo for our group DiabeatIt!
+
+* Read_In_Data
+    1. read_data.py:
+        Reads in data in both the Pyhton and PySpark format byusing schema types from Data_Schema folder.
+
+* Time_Series_Features
+    1. time_series_feature_creation.py:
+        These are the wrapper functions that are used for feature engineering which include Multifractal Data Analysis, Poincare Analysis, Functional Principal Component Analysis, and Entropy Analysis
