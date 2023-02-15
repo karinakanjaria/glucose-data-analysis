@@ -41,7 +41,7 @@ print(pandas_transformations.head(1))
 
 
 
-################################### Multifractal Detrended Fluctuation Analysis, Poincare Analysis, Functional Principal Component Analysis, Entropy,  ###################################
+################################### Multifractal Detrended Fluctuation Analysis, Poincare Analysis, Functional Principal Component Analysis, Entropy  ###################################
 ts_feature_creation=TS_Feature_Creation()
 
 # # Issue with fcpaWrapper --> Need to make it loop through every PatientID, also fathon library not working on Mac M1 or M2 chips according to documentation
