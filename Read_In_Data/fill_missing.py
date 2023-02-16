@@ -7,11 +7,7 @@ import pandas as pd
 
 def fill_missing_bootstrap(data: pd.DataFrame):
     '''Keyword arguments:
-    data -- DataFrame of a single patient (alt parameter name: patient_df)'''
-    if len(data.PatientId.unique()) != 1:
-        print("Error: 'data' must only contain 1 patient")
-        return False
-        #will update to just take the first patient if multiple are given, as a failsafe
+    data -- DataFrame of all 10,000 patients'''
 
     conv_time = data.GlucoseDisplayTime.dt.time #save the display-time
 
@@ -117,4 +113,9 @@ def fill_missing_bootstrap(data: pd.DataFrame):
     
 
     '''Put It All Together'''
-    return interpolateMissing(ZeroToNaN(fillUnrecorded(data)))
+    patIDs = data.PatientId.unique().tolist() #make list of patient IDs
+    for i in patIDs: #loop through all patient IDs
+        interp = interpolateMissing(ZeroToNaN(fillUnrecorded(data[data.PatientId == i]))) #interpolate missing data for each patient
+        data = data[data.PatientId != i] #delete the old data
+        data = pd.concat([data,interp]) #save the new interpolated-filled data back into the dataframe
+    return data
