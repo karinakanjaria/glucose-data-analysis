@@ -15,8 +15,8 @@ def fill_missing_bootstrap(data: pd.DataFrame):
     timeOfday = pd.Series(dtype=float)
     datedisplay = pd.Series(dtype=float)
     for i in conv_time.index:
-        timeOfday.at[i] = conv_time[i].hour + conv_time[i].minute/60 + conv_time[i].second/3600
-        datedisplay.at[i] = data.GlucoseDisplayTime[i].date()
+        timeOfday.loc[i] = conv_time[i].hour + conv_time[i].minute/60 + conv_time[i].second/3600
+        datedisplay.loc[i] = data.GlucoseDisplayTime[i].date()
 
     #timeOfday = cgm_functions.date2float(data.GlucoseDisplayTime.dt.time)
     data['GlucoseDisplayTimeNoDay'] = timeOfday
@@ -53,7 +53,7 @@ def fill_missing_bootstrap(data: pd.DataFrame):
         df = df.sort_values("GlucoseDisplayTime", ascending=True) \
             .reset_index(drop=True) #bit of cleanup
         display_times = df.GlucoseDisplayTime
-        
+
         for i in range(1, len(display_times)-1):
             delta_sec = (display_times[i] - display_times[i-1]).seconds
             steps_missing = int(np.round(delta_sec / 300)-1) # how many 5-minute samples are missing #may come back to clean
@@ -62,7 +62,7 @@ def fill_missing_bootstrap(data: pd.DataFrame):
                 for step in range(steps_missing):
                     row_number = i + (step-1)
                     row_data = df.iloc[i-1]
-                    time_feats = ['RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime', 'GlucoseDisplayTime']
+                    time_feats = ['RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime', 'GlucoseDisplayTime'] #if we change the columns going into these functions, this list might have to change
                     row_data[time_feats] = row_data[time_feats] + np.timedelta64(5*(step+1), 'm')
                     row_data['inserted'] = 1
                     subset_fill = insertRow(row_number, df, row_data)
@@ -81,11 +81,10 @@ def fill_missing_bootstrap(data: pd.DataFrame):
         #     OUTPUTS
         #        df_missing: dataframe with zeros converted to NaNs
         
-        df['missing'] = pd.Series(0, df.index)
-        df.Value.replace(0, np.nan, inplace=True)
+        df['missing'] = 0 #pd.Series(0, df.index)
+        df["Value"] = df["Value"].replace(0, np.nan)
 
-        missing_label = df[df.Value.isnull()].index
-        df['missing'].iloc[missing_label] = 1
+        df.loc[df.Value.isnull(), 'missing'] = 1
             
         return df
 
@@ -93,11 +92,7 @@ def fill_missing_bootstrap(data: pd.DataFrame):
     def interpolateMissing(df):
         # Description goes here
         # 
-        df['missing'] = pd.Series(0, df.index)
-        df.Value = df.Value.replace(0, np.nan)
-        missing_label = df[df.Value.isnull()].index
-        df['missing'].iloc[missing_label] = 1
-        
+
         df = df.sort_values("GlucoseDisplayTime", ascending=True) \
             .reset_index(drop=True)
         df.Value = df.Value.interpolate(method='pchip')
@@ -107,9 +102,16 @@ def fill_missing_bootstrap(data: pd.DataFrame):
         
         for i in missing_vals.index:
             jiggle = sigma*np.random.randn()
-            df.at[i, 'Value'] = df.at[i, 'Value'] + jiggle
-            
-        return df.dropna(axis=0, subset="Value")
+            df.loc[i, 'Value'] = df.loc[i, 'Value'] + jiggle
+        
+        '''checking if there are any NaN values still in the dataframe'''
+        misses = df.shape[0]
+        df = df.dropna(axis=0, subset="Value")
+        misses = misses-df.shape[0]
+        if misses !=0:
+            print("There were", misses, "rows with missing data that did not get filled in")
+        
+        return df
     
 
     '''Put It All Together'''
