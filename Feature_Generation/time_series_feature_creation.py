@@ -58,40 +58,47 @@ class TS_Feature_Creation:
 
         return poincare_df
 
-    def fpcaWrapper(self, rawData, minTime, numComponents = 2):
-        #extracting columns 
-        dataNeeded = rawData[['PatientId', 'GlucoseDisplayTimeRaw', 'Value']]
-        dataNeeded = dataNeeded.astype({'PatientId' : "string",
-                                        'GlucoseDisplayTimeRaw': 'datetime64[ns]',
-                                        'Value' : 'int'})
-        
-        #grab data by time increments in mintutes
-        dataByTime = dataNeeded.loc[(dataNeeded.GlucoseDisplayTimeRaw.dt.minute % minTime) == 0]
-        
-        dataByTime['GlucoseTime'] = [time.strftime("%H:%M:%S") for time in dataByTime.GlucoseDisplayTimeRaw]
-        dataByTime['GlucoseDate'] = [time.date() for time in dataByTime.GlucoseDisplayTimeRaw]
+    def fpcaWrapper(rawData, minTime, numComponents = 3):
+	    #extracting columns 
+	    dataNeeded = rawData[['PatientId', 'GlucoseDisplayTime', 'Value']]
+	    dataNeeded = dataNeeded.astype({'PatientId' : "string",
+		                            'GlucoseDisplayTime': 'datetime64[ns]',
+		                            'Value' : 'int'})
 
-        #reorienting data for functional alignment
-        formattedData = dataByTime.pivot(index='GlucoseTime', columns=['PatientId', 'GlucoseDate'], values='Value')
-        
-        #change to numpy to work with fxn
-        dfNumpy = formattedData.to_numpy().astype(float)
-        timeVec = np.linspace(0, 1, len(dfNumpy))
-        
-        #align time 
-        warp_f = time_warping.fdawarp(dfNumpy, timeVec)
-        warp_f.srsf_align()
-        
-        warp_f.plot()
-        
-        # Run the FPCA, using Vertical fpca because we want to see the variation in value (y-axis)
-        fpcaAnalysis = fPCA.fdavpca(warp_f)
-        fpcaAnalysis.calc_fpca(no=numComponents)
-        fpcaAnalysis.plot()
-        
-        coefs = fpcaAnalysis.coef
-        
-        return coefs
+	    dataNeeded['GlucoseTime'] = [time.strftime("%H:%M:%S") for time in dataNeeded.GlucoseDisplayTime]
+	    dataNeeded['GlucoseDate'] = [time.date() for time in dataNeeded.GlucoseDisplayTime]
+
+	    patientCoefs = []
+
+	    patientIds = dataNeeded['PatientId'].unique()
+	    days = dataNeeded['GlucoseDate'].unique()
+
+	    for patientId in patientIds:      
+		formattedData = dataNeeded[(dataNeeded['PatientId'] == patientId)] \
+		    .pivot(index='GlucoseTime', columns='GlucoseDate', values='Value')
+
+		#change to numpy to work with fxn
+		glucoseValues = formattedData.to_numpy().astype(float)
+		timeVec = np.linspace(0, 1, len(glucoseValues))
+
+		#align time 
+		fdaWarp = time_warping.fdawarp(glucoseValues, timeVec)
+		fdaWarp.srsf_align()            
+
+		# Run the FPCA, using Vertical fpca because we want to see the variation in value (y-axis)
+		fpcaAnalysis = fPCA.fdavpca(fdaWarp)                                   
+		fpcaAnalysis.calc_fpca(no=numComponents)                
+
+		coefs = fpcaAnalysis.coef
+
+		for index, coef in coef:
+		    pcaFxn = fpcaAnalysis.f_pca[:,0,index]
+		    patientCoefs.append([patientId, day, pcaIndex, coef, pcaFxn])
+
+    return patientCoefs
+
+    def removeDuplicatesByPatientAndTime(data):
+    	return data[data.duplicated(subset=['PatientId', 'GlucoseDisplayTime']) == False]
 
     def entropy_calculation(self, data):
         ent_df=pd.DataFrame()
