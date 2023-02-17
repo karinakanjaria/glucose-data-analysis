@@ -70,6 +70,12 @@ class Sklearn_Pipeline:
 
         transformed_data_df['combine']=transformed_data_df[[0,1,2,3,4,5,6]].values.tolist()
         transformed_data_df=transformed_data_df.drop(transformed_data_df.iloc[:, 0:7],axis = 1)
+        
+        
+
+    def removeDuplicatesByPatientAndTime(data):
+    	return data[data.duplicated(subset=['PatientId', 'GlucoseDisplayTime']) == False]
+
         transformed_data_df.columns=['Value', 'TrendRate', 'PatientId', 'GlucoseDisplayTimeRaw', 'TrendArrow']
 
         return transformed_data_df

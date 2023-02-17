@@ -97,8 +97,6 @@ class TS_Feature_Creation:
 
     return patientCoefs
 
-    def removeDuplicatesByPatientAndTime(data):
-    	return data[data.duplicated(subset=['PatientId', 'GlucoseDisplayTime']) == False]
 
     def entropy_calculation(self, data):
         ent_df=pd.DataFrame()
