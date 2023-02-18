@@ -24,19 +24,11 @@ Continuous glucose data analysis for blood glucose levels and glycemic events
         Stores data schemas used for reading in data either as a PySpark Dataframe or a Pandas Dataframe(data type and datetime columns are taken care of).
         Within this file the schemas to use for the output in PySpark when using Pandas User Defined Functions is used.
 
-	Raw Data Schema
-	Metadata: cohort.csv, columns: 'Unnamed', 'UserId', 'Gender', 'DOB', 'Age', 'DiabetesType', 'Treatment'
-	Glucose Data: glucose_record_{date}.csv, columns: 'PostDate', 'IngestionDate', 'PostId', 'PostTime', 'PatientId', 
-		'Stream', 'SequenceNumber', 'TransmitterNumber', 'ReceiverNumber', 'RecordedSystemTime', 
-		'RecordedDisplayTime', 'RecordedDisplayTimeRaw', 'TransmitterId', 'TransmitterTime', 
-		'GlucoseSystemTime', 'GlucoseDisplayTime', 'GlucoseDisplayTimeRaw', 'Value', 'Status', 'TrendArrow', 
-		'TrendRate', 'IsBackFilled', 'InternalStatus', 'SessionStartTime'
-	Glucose Data Dictionary: glucose.json, columns: 'PostDate', 'IngestionDate', 'PostId', 'PostTime', 'PatientId', 
-		'Stream', 'SequenceNumber', 'TransmitterNumber', 'ReceiverNumber', 'RecordedSystemTime', 
-		'RecordedDisplayTime', 'RecordedDisplayTimeRaw', 'TransmitterId', 'TransmitterTime', 
-		'GlucoseSystemTime', 'GlucoseDisplayTime', 'GlucoseDisplayTimeRaw', 'Value', 'Status', 'TrendArrow', 
-		'TrendRate', 'IsBackFilled', 'InternalStatus', 'SessionStartTime'
-	Glucose Data Column Definitions: glucose_records.json, columns: key, title, description
+        1.a Raw Data Schema
+            - Metadata: cohort.csv, columns: 'Unnamed', 'UserId', 'Gender', 'DOB', 'Age', 'DiabetesType', 'Treatment'
+            - Glucose Data: glucose_record_{date}.csv, columns: 'PostDate', 'IngestionDate', 'PostId', 'PostTime', 'PatientId', 'Stream', 'SequenceNumber', 'TransmitterNumber', 'ReceiverNumber', 'RecordedSystemTime', 'RecordedDisplayTime', 'RecordedDisplayTimeRaw', 'TransmitterId', 'TransmitterTime', 'GlucoseSystemTime', 'GlucoseDisplayTime', 'GlucoseDisplayTimeRaw', 'Value', 'Status', 'TrendArrow', 'TrendRate', 'IsBackFilled', 'InternalStatus', 'SessionStartTime'
+            - Glucose Data Dictionary: glucose.json, columns: 'PostDate', 'IngestionDate', 'PostId', 'PostTime', 'PatientId', 'Stream', 'SequenceNumber', 'TransmitterNumber', 'ReceiverNumber', 'RecordedSystemTime',  'RecordedDisplayTime', 'RecordedDisplayTimeRaw', 'TransmitterId', 'TransmitterTime', 'GlucoseSystemTime', 'GlucoseDisplayTime', 'GlucoseDisplayTimeRaw', 'Value', 'Status', 'TrendArrow', 'TrendRate', 'IsBackFilled', 'InternalStatus', 'SessionStartTime'
+            - Glucose Data Column Definitions: glucose_records.json, columns: key, title, description
 
 * EDA
     1. Glucose.ipynb, KarinaEDA.ipynb, LeslieEDA.ipynb:
