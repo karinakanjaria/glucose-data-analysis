@@ -13,7 +13,7 @@ Continuous glucose data analysis for blood glucose levels and glycemic events
 * Data_Pipeline
     1. sklearn_pipeline.py:
 
-        Reads in Data rae data from either a PySpark Dataframe or Pandas Dataframe to run it through a sklearn pipeline where numerical 
+        Reads in raw data from either a PySpark Dataframe or Pandas Dataframe to run it through a sklearn pipeline where numerical 
         features are standardized, imputations are made, and one-hot-encoding > is done on categorical features. Within the 
         class called Sklearn_Pipeline there is a function for a Pyspark Dataframe called pyspark_sklearn_pipeline() and a function
         for a Pandas Dataframe called pandas_transform_features()
@@ -23,6 +23,20 @@ Continuous glucose data analysis for blood glucose levels and glycemic events
     
         Stores data schemas used for reading in data either as a PySpark Dataframe or a Pandas Dataframe(data type and datetime columns are taken care of).
         Within this file the schemas to use for the output in PySpark when using Pandas User Defined Functions is used.
+
+	Raw Data Schema
+	Metadata: cohort.csv, columns: 'Unnamed', 'UserId', 'Gender', 'DOB', 'Age', 'DiabetesType', 'Treatment'
+	Glucose Data: glucose_record_{date}.csv, columns: 'PostDate', 'IngestionDate', 'PostId', 'PostTime', 'PatientId', 
+		'Stream', 'SequenceNumber', 'TransmitterNumber', 'ReceiverNumber', 'RecordedSystemTime', 
+		'RecordedDisplayTime', 'RecordedDisplayTimeRaw', 'TransmitterId', 'TransmitterTime', 
+		'GlucoseSystemTime', 'GlucoseDisplayTime', 'GlucoseDisplayTimeRaw', 'Value', 'Status', 'TrendArrow', 
+		'TrendRate', 'IsBackFilled', 'InternalStatus', 'SessionStartTime'
+	Glucose Data Dictionary: glucose.json, columns: 'PostDate', 'IngestionDate', 'PostId', 'PostTime', 'PatientId', 
+		'Stream', 'SequenceNumber', 'TransmitterNumber', 'ReceiverNumber', 'RecordedSystemTime', 
+		'RecordedDisplayTime', 'RecordedDisplayTimeRaw', 'TransmitterId', 'TransmitterTime', 
+		'GlucoseSystemTime', 'GlucoseDisplayTime', 'GlucoseDisplayTimeRaw', 'Value', 'Status', 'TrendArrow', 
+		'TrendRate', 'IsBackFilled', 'InternalStatus', 'SessionStartTime'
+	Glucose Data Column Definitions: glucose_records.json, columns: key, title, description
 
 * EDA
     1. Glucose.ipynb, KarinaEDA.ipynb, LeslieEDA.ipynb:
