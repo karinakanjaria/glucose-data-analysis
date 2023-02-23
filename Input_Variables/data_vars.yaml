@@ -1,6 +1,8 @@
 Data_Storage: 
   raw_data_storage: '../capstone_data/ahr414_glucose_sample - ahr414_glucose_sample.csv'
 
+Time_Bin: 
+
 Time_Series_Input_Features:
   MFDA:
     win_1: 10
