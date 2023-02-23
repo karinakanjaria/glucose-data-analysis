@@ -24,4 +24,4 @@ mfdfa_rev_seg=input_vars['Time_Series_Input_Features']['MFDA']['rev_seg']
 mfdfa_pol_order=input_vars['Time_Series_Input_Features']['MFDA']['pol_order']
 
 
-fpcs_min_time=input_vars['Time_Series_Input_Features']['FPCS']['min_time']
+fpca_min_time=input_vars['Time_Series_Input_Features']['FPCA']['min_time']

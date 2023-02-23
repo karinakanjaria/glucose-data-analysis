@@ -12,5 +12,5 @@ Time_Series_Input_Features:
     rev_seg: True
     pol_order: 1
 
-  FPCS:
+  FPCA:
     min_time: 5
