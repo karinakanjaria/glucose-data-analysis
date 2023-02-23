@@ -62,10 +62,10 @@ class Project_Data_Schema:
 
 class Pandas_UDF_Data_Schema:
     def sklearn_pyspark_schema(self):
-        pyspark_transform_schema=StructType([StructField('Value', FloatType(),True),
-                                          StructField('TrendRate', FloatType(),True),
-                                          StructField('PatientId', StringType(),True),
-                                          StructField('GlucoseDisplayTimeRaw', TimestampType(),True),
-                                          StructField('TrendArrow', ArrayType(IntegerType()),True)])
+        pyspark_transform_schema=StructType([StructField('PatientId', StringType(),True),
+                                             StructField('Value', FloatType(),True),
+                                             StructField('GlucoseDisplayTime', TimestampType(),True),
+                                             StructField('inserted', ArrayType(IntegerType()),True),
+                                             StructField('missing', ArrayType(IntegerType()),True)])
 
         return pyspark_transform_schema
