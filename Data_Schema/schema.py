@@ -66,6 +66,7 @@ class Pandas_UDF_Data_Schema:
                                              StructField('Value', FloatType(),True),
                                              StructField('GlucoseDisplayTime', TimestampType(),True),
                                              StructField('GlucoseDisplayDate', DateType(),True),
+                                             StructField('y_Binary', IntegerType(),True),
                                              StructField('inserted', ArrayType(IntegerType()),True),
                                              StructField('missing', ArrayType(IntegerType()),True)])
 
@@ -75,17 +76,18 @@ class Pandas_UDF_Data_Schema:
 
     def daily_stats_schema(self):
         pyspark_daily_stats_schema=StructType([StructField('PatientId', StringType(),True),
-                                             StructField('Value', FloatType(),True),
-                                             StructField('GlucoseDisplayTime', TimestampType(),True),
-                                             StructField('GlucoseDisplayDate', DateType(),True),
-                                             StructField('inserted', ArrayType(IntegerType()),True),
-                                             StructField('missing', ArrayType(IntegerType()),True),
-                                             StructField('Median', FloatType(),True),
-                                             StructField('Mean', FloatType(),True),
-                                             StructField('Std Dev', FloatType(),True),
-                                             StructField('Max', FloatType(),True),
-                                             StructField('Min', FloatType(),True),
-                                             StructField('AreaBelow', FloatType(),True),
-                                             StructField('AreaAbove', FloatType(),True)])
+                                              StructField('Value', FloatType(),True),
+                                              StructField('GlucoseDisplayTime', TimestampType(),True),
+                                              StructField('GlucoseDisplayDate', DateType(),True),
+                                              StructField('y_Binary', IntegerType(),True),
+                                              StructField('inserted', ArrayType(IntegerType()),True),
+                                              StructField('missing', ArrayType(IntegerType()),True),
+                                              StructField('Median', FloatType(),True),
+                                              StructField('Mean', FloatType(),True),
+                                              StructField('Std Dev', FloatType(),True),
+                                              StructField('Max', FloatType(),True),
+                                              StructField('Min', FloatType(),True),
+                                              StructField('AreaBelow', FloatType(),True),
+                                              StructField('AreaAbove', FloatType(),True)])
 
         return pyspark_daily_stats_schema

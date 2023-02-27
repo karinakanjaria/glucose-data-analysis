@@ -19,7 +19,7 @@ class Sklearn_Pipeline:
     def pyspark_sklearn_pipeline(self, df, output_schema):
         @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
         def transform_features(pdf):
-            df=pdf[['PatientId','Value','GlucoseDisplayTime','RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime','TrendArrow']]
+            df=pdf[['PatientId','Value','GlucoseDisplayTime','RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime', 'y_Binary']]
 
             # Imputation
             custom_imputation=Pipeline(steps=[("custom_imputation",
@@ -51,8 +51,8 @@ class Sklearn_Pipeline:
             transformed_data_df['combine_missing']=transformed_data_df[[2,3]].values.tolist()
             transformed_data_df=transformed_data_df.drop(transformed_data_df.iloc[:, 0:4],axis = 1)
                         
-            transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']
-            transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']]
+            transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']
+            transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']]
             
             return transformed_data_df
         
@@ -62,7 +62,7 @@ class Sklearn_Pipeline:
         return transformed_data
 
     def pandas_transform_features(self, df):
-        df=df[['PatientId','Value','GlucoseDisplayTime','RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime','TrendArrow']]
+        df=df[['PatientId','Value','GlucoseDisplayTime','RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime', 'y_Binary']]
 
         # Imputation
         custom_imputation=Pipeline(steps=[("custom_imputation",
@@ -94,7 +94,7 @@ class Sklearn_Pipeline:
         transformed_data_df['combine_missing']=transformed_data_df[[2,3]].values.tolist()
         transformed_data_df=transformed_data_df.drop(transformed_data_df.iloc[:, 0:4],axis = 1)
                     
-        transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']
-        transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']]
+        transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']
+        transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']]
 
         return transformed_data_df

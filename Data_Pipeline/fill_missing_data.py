@@ -122,6 +122,6 @@ class Value_Imputation:
             data = data[data.PatientId != i] #delete the old data
             data = pd.concat([data,interp]) #save the new interpolated-filled data back into the dataframe
 
-        data=data[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']]
+        data=data[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']]
 
         return data

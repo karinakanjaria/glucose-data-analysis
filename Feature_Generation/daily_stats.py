@@ -34,7 +34,7 @@ class Daily_Stats_Features:
                     median_df.loc[len(median_df.index)] = sample
             
             merged_median_df=data.merge(median_df, left_on=['PatientId', 'GlucoseDisplayDate'], right_on=['PatientId', 'Date'], how='left')
-            merged_median_df=merged_median_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate',
+            merged_median_df=merged_median_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary',
                                                'inserted', 'missing', 'Median', 'Mean', 'Std Dev', 'Max', 'Min',
                                                'AreaBelow', 'AreaAbove']]
             return merged_median_df
@@ -74,7 +74,7 @@ class Daily_Stats_Features:
                 median_df.loc[len(median_df.index)] = sample
         
         merged_median_df=data.merge(median_df, left_on=['PatientId', 'GlucoseDisplayDate'], right_on=['PatientId', 'Date'], how='left')
-        merged_median_df=merged_median_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate',
+        merged_median_df=merged_median_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary',
                                            'inserted', 'missing', 'Median', 'Mean', 'Std Dev', 'Max', 'Min',
                                            'AreaBelow', 'AreaAbove']]
 
