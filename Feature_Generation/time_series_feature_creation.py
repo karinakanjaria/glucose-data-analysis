@@ -1,110 +1,101 @@
 import pandas as pd
 import numpy as np
 import fathon
-from fathon import fathonUtils as fu
-from fdasrsf import fPCA, time_warping
-import EntropyHub as EH
+from fathon import fathonUtils
+import EntropyHub as eH
+
 
 class TS_Feature_Creation:
-    def do_mfdfa(self, data: list, win_sizes: list, q_list: list, rev_seg: bool, pol_order: int):
-        # zero-mean cumulative sum of data
-        data_cs = fu.toAggregated(data)
+    """
+    INPUT: data	= Pandas DataFrame with `Value` column representing patient glucose values and `PatientID` values
+    OUTPUT: featured_data = Pandas DataFrame with `PatientID` and Features generated from each
 
-        # init mfdfa object
-        pymfdfa = fathon.MFDFA(data_cs)
+    Class with methods to extract features from time series data.
+    """
 
-        # compute fluctuation function and generalized Hurst exponents
-        n, F = pymfdfa.computeFlucVec(win_sizes, q_list, rev_seg, pol_order)
-        list_H, list_H_intercept = pymfdfa.fitFlucVec()
-
-        # compute mass exponents
-        tau = pymfdfa.computeMassExponents()
-
-        # compute multifractal spectrum
-        alpha, mfSpect = pymfdfa.computeMultifractalSpectrum()
-
-        return n, F, list_H, list_H_intercept, tau, alpha, mfSpect
-
-
-    def poincare_wrapper(self, data: pd.DataFrame):
+    def mfdfa_extraction(self, data: pd.DataFrame, win_sizes: list, q_list: list, rev_seg: bool, pol_order: int):
         """
-        INPUT: data	= cleaned DataFrame with verified unique patient-per-transmitter
-        OUTPUT: poincare_df = DataFrame of 3xn where n is the number of patients, and the 3
-                        columns are 'SD1', 'SD2', 'SD_ratio' (as definied by the func-
-                        tion eclipseFittingMethod())
+        mfdfa_extraction
+        INPUT: data	= Pandas DataFrame with 'PatientID' and 'Value' columns
+                    representing unique Pateints and their Glucose Values
+        OUTPUT: mfdfa_features = Pandas DataFrame with 'PatientID', 'nWinSize', 'fWinFluct', 'hSlope', 'hIntercept',
+                    'tau', 'alpha', 'mfSpect' arrays
+        Performs Multi-Fractal Detrended Fluctuation Analysis on data to extract features
         """
-        def eclipseFittingMethod(IDI): #function written by Jamie
-            """
-            Input: IDI = [list] of inter-data intervals (diff(time_series))
-            Output: SD1, SD2 = {dict} with keys 'SD1' (numpy.float64), representing short-term
-                        variation, and 'SD2' (numpy.float64), representing long-term
-                        variation
-            """
-            SDSD = np.std(np.diff(IDI))
-            SDRR = np.std(IDI)
-            SD1 = (1 / np.sqrt(2)) * SDSD #measures the width of poincare cloud
-            SD2 = np.sqrt((2 * SDRR ** 2) - (0.5 * SDSD ** 2)) #measures the length of the poincare cloud
-            
-            return {'SD1': round(SD1,3), 'SD2': round(SD2,3), 'SD_ratio': round(SD1/SD2,3)}
+        mfdfa_features = pd.DataFrame(
+            columns=['PatientID', 'nWinSize', 'fWinFluct', 'hSlope', 'hIntercept', 'tau', 'alpha', 'mfSpect'])
 
-        poincare_df = pd.DataFrame(columns=['SD1', 'SD2', 'SD_ratio'])
+        patients = data['PatientId'].unique()
+        for patient in patients:
+            new_patient = data[data['PatientId'] == patient]
+            new_patient_values = new_patient['Value'].values
 
-        patIDs = data.PatientId.unique()
-        for i in range(len(patIDs)):
-            single_pat = data.loc[data.PatientId == patIDs[i]]
+            # Finds zero-mean cumulative sum of data
+            data_cs = fathonUtils.toAggregated(new_patient_values)
 
-            glucose_diff = np.diff(single_pat.Value)
-            poincare_df.loc[len(poincare_df)+1] = eclipseFittingMethod(glucose_diff)
+            # Initilize the mfdfa object
+            pymfdfa = fathon.MFDFA(data_cs)
 
-        return poincare_df
+            # compute fluctuation function and generalized Hurst exponents
+            n_window_sizes, f_window_fluctuations = pymfdfa.computeFlucVec(win_sizes, q_list, rev_seg, pol_order)
+            h_slopes, h_intercept = pymfdfa.fitFlucVec()
 
-    def fpcaWrapper(rawData, minTime, numComponents = 3):
-	    #extracting columns 
-	    dataNeeded = rawData[['PatientId', 'GlucoseDisplayTime', 'Value']]
-	    dataNeeded = dataNeeded.astype({'PatientId' : "string",
-		                            'GlucoseDisplayTime': 'datetime64[ns]',
-		                            'Value' : 'int'})
+            # compute mass exponents
+            tau = pymfdfa.computeMassExponents()
 
-	    dataNeeded['GlucoseTime'] = [time.strftime("%H:%M:%S") for time in dataNeeded.GlucoseDisplayTime]
-	    dataNeeded['GlucoseDate'] = [time.date() for time in dataNeeded.GlucoseDisplayTime]
+            # compute multifractal spectrum
+            alpha_singularity_strengths, mf_spect = pymfdfa.computeMultifractalSpectrum()
 
-	    patientCoefs = []
+            patient_features = pd.DataFrame([[patient, n_window_sizes, f_window_fluctuations, h_slopes, h_intercept,
+                                              tau, alpha_singularity_strengths, mf_spect]],
+                                            columns=['PatientID', 'nWinSize', 'fWinFluct', 'hSlope', 'hIntercept',
+                                                     'tau', 'alpha', 'mfSpect'])
 
-	    patientIds = dataNeeded['PatientId'].unique()
-	    days = dataNeeded['GlucoseDate'].unique()
+            mfdfa_features = pd.concat([mfdfa_features, patient_features], ignore_index=True)
+        return mfdfa_features
 
-	    for patientId in patientIds:      
-		formattedData = dataNeeded[(dataNeeded['PatientId'] == patientId)] \
-		    .pivot(index='GlucoseTime', columns='GlucoseDate', values='Value')
+    def poincare_extraction(self, data: pd.DataFrame):
+        """
+        INPUT: data	= Pandas DataFrame with 'PatientID' and 'Value' columns
+                    representing unique Patients and their Glucose Values
+        OUTPUT: poincare_features = DataFrame of 3xn where n is the number of patients, and the 3
+                    columns are 'shortTermVar', 'longTermVar', 'varRatio')
+        """
+        poincare_features = pd.DataFrame(columns=['PatientID', 'shortTermVar', 'longTermVar', 'varRatio'])
+        pids = data.PatientId.unique()
+        for i in range(len(pids)):
+            patient = data.loc[data.PatientId == pids[i]]
 
-		#change to numpy to work with fxn
-		glucoseValues = formattedData.to_numpy().astype(float)
-		timeVec = np.linspace(0, 1, len(glucoseValues))
+            # Find inter-data differentials
+            glucose_differentials = np.diff(patient.Value)
 
-		#align time 
-		fdaWarp = time_warping.fdawarp(glucoseValues, timeVec)
-		fdaWarp.srsf_align()            
+            st_dev_differentials = np.std(np.diff(glucose_differentials))
+            st_dev_values = np.std(glucose_differentials)
 
-		# Run the FPCA, using Vertical fpca because we want to see the variation in value (y-axis)
-		fpcaAnalysis = fPCA.fdavpca(fdaWarp)                                   
-		fpcaAnalysis.calc_fpca(no=numComponents)                
+            # measures the width of poincare cloud
+            short_term_variation = (1 / np.sqrt(2)) * st_dev_differentials
 
-		coefs = fpcaAnalysis.coef
+            # measures the length of the poincare cloud
+            long_term_variation = np.sqrt((2 * st_dev_values ** 2) - (0.5 * st_dev_differentials ** 2))
 
-		for index, coef in coef:
-		    pcaFxn = fpcaAnalysis.f_pca[:,0,index]
-		    patientCoefs.append([patientId, day, pcaIndex, coef, pcaFxn])
+            poincare_features.loc[len(poincare_features) + 1] = [patient,
+                                                                 round(short_term_variation, 3),
+                                                                 round(long_term_variation, 3),
+                                                                 round(short_term_variation / long_term_variation, 3)]
+        return poincare_features
 
-    return patientCoefs
-
-
-    def entropy_calculation(self, data):
-        ent_df=pd.DataFrame()
-        patients=data['PatientId'].unique()
+    def entropy_extraction(self, data):
+        """
+        INPUT: data	= Pandas DataFrame with 'PatientID' and 'Value' columns
+                    representing unique Patients and their Glucose Values
+        OUTPUT: entropy_features = DataFrame with 'PatientID' and 'Entropy' values
+        """
+        entropy_features = pd.DataFrame(columns=['PatientID', 'Entropy'])
+        patients = data['PatientId'].unique()
 
         for patient in patients:
-            new_patient=data[data['PatientId']==patient]
-            entropy=EH.SampEn(new_patient['Value'].values, m=4)[0][-1]
-            ent_df['Entropy']=[entropy]
-
-        return ent_df
+            new_patient = data[data['PatientId'] == patient]
+            entropy = eH.SampEn(new_patient['Value'].values, m=4)[0][-1]
+            patient_features = pd.DataFrame([[patient, entropy]], columns=['PatientID', 'Entropy'])
+            entropy_features = pd.concat([entropy_features, patient_features], ignore_index=True)
+        return entropy_features

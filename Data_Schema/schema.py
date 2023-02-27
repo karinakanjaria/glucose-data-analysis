@@ -1,4 +1,4 @@
-from pyspark.sql.types import StructType, StructField, StringType, FloatType, TimestampType, IntegerType, ArrayType
+from pyspark.sql.types import StructType, StructField, StringType, FloatType, TimestampType, DateType, IntegerType, ArrayType
 
 class Project_Data_Schema:
     def data_schema_pyspark(self):        
@@ -65,7 +65,27 @@ class Pandas_UDF_Data_Schema:
         pyspark_transform_schema=StructType([StructField('PatientId', StringType(),True),
                                              StructField('Value', FloatType(),True),
                                              StructField('GlucoseDisplayTime', TimestampType(),True),
+                                             StructField('GlucoseDisplayDate', DateType(),True),
                                              StructField('inserted', ArrayType(IntegerType()),True),
                                              StructField('missing', ArrayType(IntegerType()),True)])
 
         return pyspark_transform_schema
+
+
+
+    def daily_stats_schema(self):
+        pyspark_daily_stats_schema=StructType([StructField('PatientId', StringType(),True),
+                                             StructField('Value', FloatType(),True),
+                                             StructField('GlucoseDisplayTime', TimestampType(),True),
+                                             StructField('GlucoseDisplayDate', DateType(),True),
+                                             StructField('inserted', ArrayType(IntegerType()),True),
+                                             StructField('missing', ArrayType(IntegerType()),True),
+                                             StructField('Median', FloatType(),True),
+                                             StructField('Mean', FloatType(),True),
+                                             StructField('Std Dev', FloatType(),True),
+                                             StructField('Max', FloatType(),True),
+                                             StructField('Min', FloatType(),True),
+                                             StructField('AreaBelow', FloatType(),True),
+                                             StructField('AreaAbove', FloatType(),True)])
+
+        return pyspark_daily_stats_schema

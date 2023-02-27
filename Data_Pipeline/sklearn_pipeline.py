@@ -6,10 +6,11 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
 
-from Data_Pipeline.fill_missing_trial import Value_Imputation
+from Data_Pipeline.fill_missing_data import Value_Imputation
 from sklearn.preprocessing import FunctionTransformer
 
 from pyspark.sql.functions import pandas_udf, PandasUDFType, lit
+
 
 class Sklearn_Pipeline:
     def __init__(self):
@@ -50,8 +51,8 @@ class Sklearn_Pipeline:
             transformed_data_df['combine_missing']=transformed_data_df[[2,3]].values.tolist()
             transformed_data_df=transformed_data_df.drop(transformed_data_df.iloc[:, 0:4],axis = 1)
                         
-            transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'inserted', 'missing']
-            transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'inserted', 'missing']]
+            transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']
+            transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']]
             
             return transformed_data_df
         
@@ -93,7 +94,7 @@ class Sklearn_Pipeline:
         transformed_data_df['combine_missing']=transformed_data_df[[2,3]].values.tolist()
         transformed_data_df=transformed_data_df.drop(transformed_data_df.iloc[:, 0:4],axis = 1)
                     
-        transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'inserted', 'missing']
-        transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'inserted', 'missing']]
+        transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']
+        transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']]
 
         return transformed_data_df
