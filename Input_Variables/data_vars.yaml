@@ -1,7 +1,9 @@
 Data_Storage: 
   raw_data_storage: '../capstone_data/ahr414_glucose_sample - ahr414_glucose_sample.csv'
 
-Time_Bin: 
+Daily_Stats_Features:
+  lower: 70
+  upper: 180
 
 Time_Series_Input_Features:
   MFDA:
@@ -14,3 +16,7 @@ Time_Series_Input_Features:
 
   FPCA:
     min_time: 5
+
+ML_Models:
+  train_split: 80
+  test_split: 20

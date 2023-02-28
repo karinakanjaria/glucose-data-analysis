@@ -7,7 +7,7 @@ with open('Input_Variables/data_vars.yaml', 'r') as file:
     input_vars=yaml.safe_load(file)
 
 
-################################### Data Location --> Will be pointing at an S3 bucket later ###################################
+################################### Data Location ###################################
 raw_data_storage=input_vars['Data_Storage']['raw_data_storage']
 
 
@@ -23,5 +23,14 @@ mfdfa_q_list=np.arange(mfdfa_q_list_1, mfdfa_q_list_2)
 mfdfa_rev_seg=input_vars['Time_Series_Input_Features']['MFDA']['rev_seg']
 mfdfa_pol_order=input_vars['Time_Series_Input_Features']['MFDA']['pol_order']
 
-
 fpca_min_time=input_vars['Time_Series_Input_Features']['FPCA']['min_time']
+
+
+################################### Daily Stats Features ###################################
+daily_stats_features_lower=input_vars['Daily_Stats_Features']['lower']
+daily_stats_features_upper=input_vars['Daily_Stats_Features']['upper']
+
+
+################################### ML Models ###################################
+ml_models_train_split=input_vars['ML_Models']['train_split']
+ml_models_test_split=input_vars['ML_Models']['test_split']
