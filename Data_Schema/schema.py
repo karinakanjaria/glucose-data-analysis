@@ -91,3 +91,11 @@ class Pandas_UDF_Data_Schema:
                                               StructField('AreaAbove', FloatType(),True)])
 
         return pyspark_daily_stats_schema
+
+
+    def XGBoost_schema(self):
+        pyspark_xgboost_schema=StructType([StructField('PatientId', StringType(),True),
+                                           StructField('Predictions', IntegerType(),True),
+                                           StructField('Actual', IntegerType(),True)])
+
+        return pyspark_xgboost_schema

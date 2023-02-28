@@ -29,3 +29,8 @@ fpca_min_time=input_vars['Time_Series_Input_Features']['FPCA']['min_time']
 ################################### Daily Stats Features ###################################
 daily_stats_features_lower=input_vars['Daily_Stats_Features']['lower']
 daily_stats_features_upper=input_vars['Daily_Stats_Features']['upper']
+
+
+################################### ML Models ###################################
+ml_models_train_split=input_vars['ML_Models']['train_split']
+ml_models_test_split=input_vars['ML_Models']['test_split']

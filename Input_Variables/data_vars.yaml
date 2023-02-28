@@ -16,3 +16,7 @@ Time_Series_Input_Features:
 
   FPCA:
     min_time: 5
+
+ML_Models:
+  train_split: 80
+  test_split: 20
