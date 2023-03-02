@@ -32,4 +32,11 @@ class Reading_Data:
                                         dtype=self.pandas_data_schema[0],
                                         parse_dates=self.pandas_data_schema[1])
         
+        ## add two columns for graphing ease
+        # pandas_glucose_data['GlucoseDisplayDate'] = pandas_glucose_data['GlucoseDisplayTime'].dt.date
+        # pandas_glucose_data['GlucoseDisplayHour'] = \
+        #                 + pandas_glucose_data['GlucoseDisplayTime'].dt.hour \
+        #                 + pandas_glucose_data['GlucoseDisplayTime'].dt.minute/60 \
+        #                 + pandas_glucose_data['GlucoseDisplayTime'].dt.second/3600
+
         return pandas_glucose_data
