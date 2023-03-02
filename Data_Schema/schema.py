@@ -61,40 +61,80 @@ class Project_Data_Schema:
         return glucose_dtype, parse_dates
 
 class Pandas_UDF_Data_Schema:
-    def sklearn_pyspark_schema(self):
-        pyspark_transform_schema=StructType([StructField('PatientId', StringType(),True),
-                                             StructField('Value', FloatType(),True),
-                                             StructField('GlucoseDisplayTime', TimestampType(),True),
-                                             StructField('GlucoseDisplayDate', DateType(),True),
-                                             StructField('y_Binary', IntegerType(),True),
-                                             StructField('inserted', ArrayType(IntegerType()),True),
-                                             StructField('missing', ArrayType(IntegerType()),True)])
+    def custom_imputation_pyspark_schema(self):
+        pyspark_custom_imputation_schema=StructType([StructField('PatientId', StringType(),True),
+                                                     StructField('Value', FloatType(),True),
+                                                     StructField('GlucoseDisplayTime', TimestampType(),True),
+                                                     StructField('GlucoseDisplayDate', DateType(),True),
+                                                     StructField('inserted', IntegerType(),True),
+                                                     StructField('missing', IntegerType(),True)])
 
-        return pyspark_transform_schema
+        return pyspark_custom_imputation_schema
+
+    def summary_stats_schema(self):
+        pyspark_summary_stats_schema=StructType([StructField('PatientId', StringType(),True),
+                                                 StructField('Value', FloatType(),True),
+                                                 StructField('GlucoseDisplayTime', TimestampType(),True),
+                                                 StructField('GlucoseDisplayDate', DateType(),True),
+                                                 StructField('inserted', IntegerType(),True),
+                                                 StructField('missing', IntegerType(),True),
+                                                 StructField('y_Binary', IntegerType(),True),
+                                                 StructField('Median', FloatType(),True),
+                                                 StructField('Mean', FloatType(),True),
+                                                 StructField('Std Dev', FloatType(),True),
+                                                 StructField('Max', FloatType(),True),
+                                                 StructField('Min', FloatType(),True),
+                                                 StructField('AreaBelow', FloatType(),True),
+                                                 StructField('AreaAbove', FloatType(),True)])
+
+        return pyspark_summary_stats_schema
 
 
 
-    def daily_stats_schema(self):
-        pyspark_daily_stats_schema=StructType([StructField('PatientId', StringType(),True),
-                                              StructField('Value', FloatType(),True),
-                                              StructField('GlucoseDisplayTime', TimestampType(),True),
-                                              StructField('GlucoseDisplayDate', DateType(),True),
-                                              StructField('y_Binary', IntegerType(),True),
-                                              StructField('inserted', ArrayType(IntegerType()),True),
-                                              StructField('missing', ArrayType(IntegerType()),True),
-                                              StructField('Median', FloatType(),True),
-                                              StructField('Mean', FloatType(),True),
-                                              StructField('Std Dev', FloatType(),True),
-                                              StructField('Max', FloatType(),True),
-                                              StructField('Min', FloatType(),True),
-                                              StructField('AreaBelow', FloatType(),True),
-                                              StructField('AreaAbove', FloatType(),True)])
+    def sklearn_pyspark_categorical_schema(self):
+        pyspark_categorical_schema=StructType([StructField('PatientId', StringType(),True),
+                                               StructField('Value', FloatType(),True),
+                                               StructField('GlucoseDisplayTime', TimestampType(),True),
+                                               StructField('GlucoseDisplayDate', DateType(),True),
+                                               StructField('y_Binary', IntegerType(),True),
+                                               StructField('Median', FloatType(),True),
+                                               StructField('Mean', FloatType(),True),
+                                               StructField('Std Dev', FloatType(),True),
+                                               StructField('Max', FloatType(),True),
+                                               StructField('Min', FloatType(),True),
+                                               StructField('AreaBelow', FloatType(),True),
+                                               StructField('AreaAbove', FloatType(),True),
+                                               StructField('inserted', ArrayType(IntegerType()),True),
+                                               StructField('missing', ArrayType(IntegerType()),True)])
 
-        return pyspark_daily_stats_schema
+        return pyspark_categorical_schema
+
+
+
+    def sklearn_pyspark_numerical_schema(self):
+        pyspark_numerical_schema=StructType([StructField('PatientId', StringType(),True),
+                                               StructField('Value', FloatType(),True),
+                                               StructField('GlucoseDisplayTime', TimestampType(),True),
+                                               StructField('GlucoseDisplayDate', DateType(),True),
+                                               StructField('Median', FloatType(),True),
+                                               StructField('Mean', FloatType(),True),
+                                               StructField('Std Dev', FloatType(),True),
+                                               StructField('Max', FloatType(),True),
+                                               StructField('Min', FloatType(),True),
+                                               StructField('AreaBelow', FloatType(),True),
+                                               StructField('AreaAbove', FloatType(),True),
+                                               StructField('inserted', ArrayType(IntegerType()),True),
+                                               StructField('missing', ArrayType(IntegerType()),True),
+                                               StructField('y_Binary', IntegerType(),True)])
+
+        return pyspark_numerical_schema
+
+
 
 
     def XGBoost_schema(self):
         pyspark_xgboost_schema=StructType([StructField('PatientId', StringType(),True),
+                                           StructField('GlucoseDisplayTime', TimestampType(), True),
                                            StructField('Predictions', IntegerType(),True),
                                            StructField('Actual', IntegerType(),True)])
 

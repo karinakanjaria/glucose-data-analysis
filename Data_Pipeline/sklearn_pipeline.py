@@ -16,43 +16,53 @@ class Sklearn_Pipeline:
     def __init__(self):
         self.value_imputation=Value_Imputation()
 
-    def pyspark_sklearn_pipeline(self, df, output_schema):
+    ################ PySpark ################
+    def pyspark_custom_imputation_pipeline(self, df, output_schema):
         @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
         def transform_features(pdf):
-            df=pdf[['PatientId','Value','GlucoseDisplayTime','RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime', 'y_Binary']]
+            df=pdf[['PatientId','Value','GlucoseDisplayTime','RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime']]
 
             # Imputation
             custom_imputation=Pipeline(steps=[("custom_imputation",
-                                    FunctionTransformer(self.value_imputation.fill_missing_bootstrap))])
+                                       FunctionTransformer(self.value_imputation.fill_missing_bootstrap))])
 
+            transformed_data1=custom_imputation.fit_transform(df)
+            transformed_data_df=pd.DataFrame(transformed_data1)
+
+            return transformed_data_df
+        
+        df=df.withColumn('Group', lit(1))
+        transformed_data=df.groupby('Group').apply(transform_features)
+        
+        return transformed_data
+
+
+    def pyspark_sklearn_pipeline_categorical(self, df, output_schema):
+        @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
+        def transform_features(pdf):
+            df=pdf[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 
+                    'missing', 'y_Binary', 'Median', 'Mean', 'Std Dev', 'Max', 'Min', 'AreaBelow', 'AreaAbove']]
 
             # Categorical Features
             categorical_features=['inserted', 'missing']
             categorical_transformer=Pipeline([('imputer_cat', SimpleImputer(strategy='constant', fill_value=np.nan)),
-                                            ('onehot', OneHotEncoder(handle_unknown='ignore'))])
+                                              ('onehot', OneHotEncoder(handle_unknown='ignore'))])
 
-            # Numerical Features
-            numeric_features=['Value']
-            numeric_transformer=Pipeline([('scaler', StandardScaler())])
-
-
-            preprocessor_2=ColumnTransformer([('categorical', categorical_transformer, categorical_features),
-                                            ('numerical', numeric_transformer, numeric_features)],
+            preprocessor_2=ColumnTransformer([('categorical', categorical_transformer, categorical_features)],
                                             remainder = 'passthrough')
 
-            pipeline2=Pipeline([('preprocessing_2', preprocessor_2)])
+            cat_pipe_pipeline=Pipeline([('preprocessing_2', preprocessor_2)])
 
-            transformed_data1=custom_imputation.fit_transform(df)
-            transformed_data2=pipeline2.fit_transform(transformed_data1)
+            transformed_data1=cat_pipe_pipeline.fit_transform(df)
 
-            transformed_data_df=pd.DataFrame(transformed_data2)
+            transformed_data_df=pd.DataFrame(transformed_data1)
 
             transformed_data_df['combine_inserted']=transformed_data_df[[0,1]].values.tolist()
             transformed_data_df['combine_missing']=transformed_data_df[[2,3]].values.tolist()
             transformed_data_df=transformed_data_df.drop(transformed_data_df.iloc[:, 0:4],axis = 1)
-                        
-            transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']
-            transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']]
+
+            transformed_data_df.columns=['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'Median', 'Mean', 'Std Dev', 
+                                        'Max', 'Min', 'AreaBelow', 'AreaAbove', 'inserted', 'missing']
             
             return transformed_data_df
         
@@ -61,40 +71,111 @@ class Sklearn_Pipeline:
         
         return transformed_data
 
-    def pandas_transform_features(self, df):
-        df=df[['PatientId','Value','GlucoseDisplayTime','RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime', 'y_Binary']]
+
+
+    def pyspark_sklearn_pipeline_numerical(self, df, output_schema):
+        @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
+        def transform_features(pdf):
+            df=pdf[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'Median', 'Mean', 'Std Dev', 
+                    'Max', 'Min', 'AreaBelow', 'AreaAbove', 'inserted', 'missing']]
+
+            # Numerical Features
+            numeric_features=['Value', 'Median', 'Mean', 'Std Dev',	'Max', 'Min', 'AreaBelow', 'AreaAbove']
+            numeric_transformer=Pipeline([('scaler', StandardScaler())])
+
+            preprocessor_2=ColumnTransformer([('numerical', numeric_transformer, numeric_features)],
+                                            remainder = 'passthrough')
+
+            num_pipe_pipeline=Pipeline([('preprocessing_2', preprocessor_2)])
+
+            transformed_data1=num_pipe_pipeline.fit_transform(df)
+
+            transformed_data_df=pd.DataFrame(transformed_data1)
+                        
+            transformed_data_df.columns=['Value', 'Median', 'Mean', 'Std Dev',	'Max', 'Min', 'AreaBelow', 'AreaAbove', 
+                                        'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']
+            transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'Median', 'Mean', 'Std Dev', 
+                                                    'Max', 'Min', 'AreaBelow', 'AreaAbove', 'inserted', 'missing', 'y_Binary']]
+            
+            return transformed_data_df
+        
+        df=df.withColumn('Group', lit(1))
+        transformed_data=df.groupby('Group').apply(transform_features)
+        
+        return transformed_data
+
+
+
+
+
+
+
+    ################ Pandas ################
+    def pandas_custom_imputation_pipeline(self, df):
+        df=df[['PatientId','Value','GlucoseDisplayTime','RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime']]
 
         # Imputation
         custom_imputation=Pipeline(steps=[("custom_imputation",
                                    FunctionTransformer(self.value_imputation.fill_missing_bootstrap))])
 
 
+        transformed_data1=custom_imputation.fit_transform(df)
+
+        transformed_data_df=pd.DataFrame(transformed_data1)
+                    
+        return transformed_data_df
+
+
+    def pandas_transform_categorical_features(self, df):
+        df=df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 
+                'missing', 'y_Binary', 'Median', 'Mean', 'Std Dev', 'Max', 'Min', 'AreaBelow', 'AreaAbove']]
+
         # Categorical Features
         categorical_features=['inserted', 'missing']
         categorical_transformer=Pipeline([('imputer_cat', SimpleImputer(strategy='constant', fill_value=np.nan)),
-                                          ('onehot', OneHotEncoder(handle_unknown='ignore'))])
+                                            ('onehot', OneHotEncoder(handle_unknown='ignore'))])
 
-        # Numerical Features
-        numeric_features=['Value']
-        numeric_transformer=Pipeline([('scaler', StandardScaler())])
+        preprocessor_2=ColumnTransformer([('categorical', categorical_transformer, categorical_features)],
+                                        remainder = 'passthrough')
 
+        cat_pipe_pipeline=Pipeline([('preprocessing_2', preprocessor_2)])
 
-        preprocessor_2=ColumnTransformer([('categorical', categorical_transformer, categorical_features),
-                                          ('numerical', numeric_transformer, numeric_features)],
-                                         remainder = 'passthrough')
+        transformed_data1=cat_pipe_pipeline.fit_transform(df)
 
-        pipeline2=Pipeline([('preprocessing_2', preprocessor_2)])
-
-        transformed_data1=custom_imputation.fit_transform(df)
-        transformed_data2=pipeline2.fit_transform(transformed_data1)
-
-        transformed_data_df=pd.DataFrame(transformed_data2)
+        transformed_data_df=pd.DataFrame(transformed_data1)
 
         transformed_data_df['combine_inserted']=transformed_data_df[[0,1]].values.tolist()
         transformed_data_df['combine_missing']=transformed_data_df[[2,3]].values.tolist()
         transformed_data_df=transformed_data_df.drop(transformed_data_df.iloc[:, 0:4],axis = 1)
+  
+        transformed_data_df.columns=['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'Median', 'Mean', 'Std Dev', 
+                                     'Max', 'Min', 'AreaBelow', 'AreaAbove', 'inserted', 'missing']
+        transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'Median', 'Mean', 'Std Dev', 
+                                                 'Max', 'Min', 'AreaBelow', 'AreaAbove', 'inserted', 'missing', 'y_Binary',]]
+
+        return transformed_data_df
+
+
+    def pandas_transform_numerical_features(self, df):
+        df=df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'Median', 'Mean', 'Std Dev', 
+                'Max', 'Min', 'AreaBelow', 'AreaAbove', 'inserted', 'missing']]
+
+        # Numerical Features
+        numeric_features=['Value', 'Median', 'Mean', 'Std Dev',	'Max', 'Min', 'AreaBelow', 'AreaAbove']
+        numeric_transformer=Pipeline([('scaler', StandardScaler())])
+
+        preprocessor_2=ColumnTransformer([('numerical', numeric_transformer, numeric_features)],
+                                        remainder = 'passthrough')
+
+        num_pipe_pipeline=Pipeline([('preprocessing_2', preprocessor_2)])
+
+        transformed_data1=num_pipe_pipeline.fit_transform(df)
+
+        transformed_data_df=pd.DataFrame(transformed_data1)
                     
-        transformed_data_df.columns=['Value', 'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']
-        transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']]
+        transformed_data_df.columns=['Value', 'Median', 'Mean', 'Std Dev',	'Max', 'Min', 'AreaBelow', 'AreaAbove', 
+                                     'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']
+        transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'Median', 'Mean', 'Std Dev', 
+                                                 'Max', 'Min', 'AreaBelow', 'AreaAbove', 'inserted', 'missing', 'y_Binary']]
 
         return transformed_data_df

@@ -23,17 +23,23 @@ class XGBoost_Classification:
             model.fit(X_train, y_train)
             preds=model.predict(X_test)
             # Save as a pickle file
-            model.save_model(f'test_model.json')
+            model.save_model(f'Models/Saved_Models/PySpark/test_model.json')
 
             save_results_df=pd.DataFrame()
             save_results_df['Predictions']=preds
             save_results_df['Actual']=y_test.tolist()
             save_results_df['PatientId']=group_key
+            save_results_df['GlucoseDisplayTime']=pdf['GlucoseDisplayTime']
 
-            save_results_df=save_results_df[['PatientId', 'Predictions', 'Actual']]
+            save_results_df=save_results_df[['PatientId', 'GlucoseDisplayTime', 'Predictions', 'Actual']]
 
             return save_results_df
 
         preds_df=df.groupby(group_column).apply(xgboost_model)
+        preds_df.write.format("csv").mode('overwrite').save("Models/Saved_Results/PySpark")
 
         return preds_df
+
+
+    def pandas_xgboost(self, df, output_schema, train_split, test_split):
+        return None
