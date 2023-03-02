@@ -4,8 +4,8 @@ import pandas as pd
 
 from pyspark.sql.functions import pandas_udf, PandasUDFType, lit
 
-class Daily_Stats_Features:
-    def pyspark_sklearn_pipeline(self, df, output_schema, lower, upper):
+class Summary_Stats_Features:
+    def pyspark_summary_statistics(self, df, output_schema, lower, upper):
         @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
         def transform_features(data):
             median_df = pd.DataFrame(columns=['PatientId', 'Median', 'Mean', 'Std Dev', 'Max', 'Min', 'AreaBelow', 'AreaAbove', 'Date'])
@@ -34,8 +34,8 @@ class Daily_Stats_Features:
                     median_df.loc[len(median_df.index)] = sample
             
             merged_median_df=data.merge(median_df, left_on=['PatientId', 'GlucoseDisplayDate'], right_on=['PatientId', 'Date'], how='left')
-            merged_median_df=merged_median_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary',
-                                               'inserted', 'missing', 'Median', 'Mean', 'Std Dev', 'Max', 'Min',
+            merged_median_df=merged_median_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate',
+                                               'inserted', 'missing', 'y_Binary', 'Median', 'Mean', 'Std Dev', 'Max', 'Min',
                                                'AreaBelow', 'AreaAbove']]
             return merged_median_df
         
