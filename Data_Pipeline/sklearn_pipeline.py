@@ -94,8 +94,8 @@ class Sklearn_Pipeline:
                         
             transformed_data_df.columns=['Value', 'Median', 'Mean', 'Std Dev',	'Max', 'Min', 'AreaBelow', 'AreaAbove', 
                                         'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']
-            transformed_data_df=transformed_data_df[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'Median', 'Mean', 'Std Dev', 
-                                                    'Max', 'Min', 'AreaBelow', 'AreaAbove', 'inserted', 'missing', 'y_Binary']]
+            transformed_data_df=transformed_data_df[['Value', 'Median', 'Mean', 'Std Dev',	'Max', 'Min', 'AreaBelow', 'AreaAbove', 
+                                        'PatientId', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'y_Binary', 'inserted', 'missing']]
             
             return transformed_data_df
         

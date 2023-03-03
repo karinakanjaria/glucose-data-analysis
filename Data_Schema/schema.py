@@ -104,8 +104,8 @@ class Pandas_UDF_Data_Schema:
                                                StructField('Min', FloatType(),True),
                                                StructField('AreaBelow', FloatType(),True),
                                                StructField('AreaAbove', FloatType(),True),
-                                               StructField('inserted', ArrayType(IntegerType()),True),
-                                               StructField('missing', ArrayType(IntegerType()),True)])
+                                               StructField('inserted', ArrayType(FloatType()),True),
+                                               StructField('missing', ArrayType(FloatType()),True)])
 
         return pyspark_categorical_schema
 
@@ -132,10 +132,21 @@ class Pandas_UDF_Data_Schema:
 
 
 
-    def XGBoost_schema(self):
-        pyspark_xgboost_schema=StructType([StructField('PatientId', StringType(),True),
-                                           StructField('GlucoseDisplayTime', TimestampType(), True),
-                                           StructField('Predictions', IntegerType(),True),
-                                           StructField('Actual', IntegerType(),True)])
+    def xgboost_classification_schema(self):
+        pyspark_xgboost_classification_schema=StructType([StructField('PatientId', StringType(),True),
+                                              StructField('GlucoseDisplayTime', TimestampType(), True),
+                                              StructField('Predictions', IntegerType(),True),
+                                              StructField('Actual', IntegerType(),True)])
 
-        return pyspark_xgboost_schema
+        return pyspark_xgboost_classification_schema
+
+
+    def classification_metric_schema(self):
+        pyspark_classification_metric_schema=StructType([StructField('PatientId', StringType(),True),
+                                                         StructField('Classification_Accuracy_Score', FloatType(),True),
+                                                         StructField('Precision_Score', FloatType(),True),
+                                                         StructField('Recall_Score', FloatType(),True),
+                                                         StructField('F1_Score', FloatType(),True),
+                                                         StructField('Confusion_Matrix', ArrayType(ArrayType(IntegerType())),True)])
+
+        return pyspark_classification_metric_schema 
