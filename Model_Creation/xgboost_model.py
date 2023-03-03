@@ -23,7 +23,7 @@ class XGBoost_Classification:
             model.fit(X_train, y_train)
             preds=model.predict(X_test)
             # Save as a pickle file
-            model.save_model(f'Model_Creation/Saved_Models/PySpark/test_model.json')
+            model.save_model(f'Model_Creation/Saved_Models/PySpark/{group_key}_test_model.json')
 
             save_results_df=pd.DataFrame()
             save_results_df['Predictions']=preds
