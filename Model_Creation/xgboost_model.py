@@ -21,17 +21,21 @@ class XGBoost_Classification:
 
             model=XGBClassifier(n_estimators=2, max_depth=2, learning_rate=1, objective='binary:logistic')
             model.fit(X_train, y_train)
-            preds=model.predict(X_test)
+            classifier_predictions=model.predict(X_test)
+            probabilities=model.predict_proba(X_test)
             # Save as a pickle file
             model.save_model(f'Model_Creation/Saved_Models/PySpark/{group_key}_test_model.json')
 
+
             save_results_df=pd.DataFrame()
-            save_results_df['Predictions']=preds
+            save_results_df['Predictions']=classifier_predictions
             save_results_df['Actual']=y_test.tolist()
             save_results_df['PatientId']=group_key
             save_results_df['GlucoseDisplayTime']=pdf['GlucoseDisplayTime']
+            save_results_df['Prob_0']=probabilities[:,0]
+            save_results_df['Prob_1']=probabilities[:,1]
 
-            save_results_df=save_results_df[['PatientId', 'GlucoseDisplayTime', 'Predictions', 'Actual']]
+            save_results_df=save_results_df[['PatientId', 'GlucoseDisplayTime', 'Predictions', 'Actual', 'Prob_0', 'Prob_1']]
 
             return save_results_df
 
