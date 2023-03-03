@@ -1,5 +1,7 @@
 Data_Storage: 
-  raw_data_storage: '..\glucose-data-analysis\data\ahr414_glucose_sample.csv'
+  raw_data_storage: '/Users/carlosmonsivais/Desktop/capstone_data/ahr414_glucose_sample - ahr414_glucose_sample.csv'
+  # Leslie Read In Data Location: '..\glucose-data-analysis\data\ahr414_glucose_sample.csv'
+
 
 Daily_Stats_Features:
   lower: 70
@@ -18,3 +20,7 @@ Time_Series_Input_Features:
 ML_Models:
   train_split: 80
   test_split: 20
+
+
+Time_Series_Lagged_Features:
+  Time_Series_Lag_Values_Created: 3
