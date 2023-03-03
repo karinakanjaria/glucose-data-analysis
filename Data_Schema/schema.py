@@ -135,8 +135,10 @@ class Pandas_UDF_Data_Schema:
     def xgboost_classification_schema(self):
         pyspark_xgboost_classification_schema=StructType([StructField('PatientId', StringType(),True),
                                               StructField('GlucoseDisplayTime', TimestampType(), True),
-                                              StructField('Predictions', IntegerType(),True),
-                                              StructField('Actual', IntegerType(),True)])
+                                              StructField('Predictions', IntegerType(),True),          
+                                              StructField('Actual', IntegerType(),True),
+                                              StructField('Prob_0', FloatType(),True),
+                                              StructField('Prob_1', FloatType(),True)])
 
         return pyspark_xgboost_classification_schema
 
