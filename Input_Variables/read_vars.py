@@ -31,6 +31,7 @@ daily_stats_features_upper=input_vars['Daily_Stats_Features']['upper']
 ################################### ML Models ###################################
 ml_models_train_split=input_vars['ML_Models']['train_split']
 ml_models_test_split=input_vars['ML_Models']['test_split']
+model_storage_location=input_vars['ML_Models']['model_storage_location']
 
 
 ################################### Time Series Lagged Features ###################################

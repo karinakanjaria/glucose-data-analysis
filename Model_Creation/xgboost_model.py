@@ -40,10 +40,6 @@ class XGBoost_Classification:
             return save_results_df
 
         preds_df=df.groupby(group_column).apply(xgboost_model)
-        preds_df.write.format("csv").mode('overwrite').save("Model_Creation/Saved_Results/PySpark")
+        preds_df.write.format("csv").mode('overwrite').save('Model_Creation/Saved_Results/PySpark')
 
         return preds_df
-
-
-    def pandas_xgboost(self, df, output_schema, train_split, test_split):
-        return None
