@@ -6,7 +6,7 @@ Continuous glucose data analysis for blood glucose levels and glycemic events
 
 ### How to Run
 1. Run the create_env.sh file by using the foloowing command: ./create_env.sh
-2. If not intiialized, activate teh environment by using the source glucose_venv/bin/activate
+2. If not intiialized, activate the environment by using the source glucose_venv/bin/activate
 3. Run either the main.ipynb or main.py file to get output
 
 ### Data Structure
