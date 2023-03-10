@@ -115,12 +115,21 @@ class Value_Imputation:
         data['GlucoseDisplayDate'] = datedisplay
 
 
+        # '''Put It All Together'''
+        # patIDs = data.PatientId.unique().tolist() #make list of patient IDs
+        # for i in patIDs: #loop through all patient IDs
+        #     interp = self.interpolateMissing(self.ZeroToNaN(self.fillUnrecorded(data[data.PatientId == i]))) #interpolate missing data for each patient
+        #     data = data[data.PatientId != i] #delete the old data
+        #     data = pd.concat([data,interp]) #save the new interpolated-filled data back into the dataframe
+
+
         '''Put It All Together'''
-        patIDs = data.PatientId.unique().tolist() #make list of patient IDs
-        for i in patIDs: #loop through all patient IDs
-            interp = self.interpolateMissing(self.ZeroToNaN(self.fillUnrecorded(data[data.PatientId == i]))) #interpolate missing data for each patient
-            data = data[data.PatientId != i] #delete the old data
-            data = pd.concat([data,interp]) #save the new interpolated-filled data back into the dataframe
+        # interp = self.interpolateMissing(self.ZeroToNaN(self.fillUnrecorded(data[data.PatientId == i]))) #interpolate missing data for each patient
+        # data = data[data.PatientId != i] #delete the old data
+        # data = pd.concat([data,interp]) #save the new interpolated-filled data back into the dataframe
+        
+        interp = self.interpolateMissing(self.ZeroToNaN(self.fillUnrecorded(data))) #interpolate missing data for each patient
+        data = pd.concat([data,interp], ignore_index=True) #save the new interpolated-filled data back into the dataframe
 
         data=data[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']]
 

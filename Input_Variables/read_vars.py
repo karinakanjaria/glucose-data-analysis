@@ -11,6 +11,10 @@ with open('Input_Variables/data_vars.yaml', 'r') as file:
 raw_data_storage=input_vars['Data_Storage']['raw_data_storage']
 
 
+################################### Analysis ###################################
+analysis_group=input_vars['Analysis']['Analysis_Group']
+
+
 ################################### Time Series Input Features ###################################
 mfdfa_win_1=input_vars['Time_Series_Input_Features']['MFDA']['win_1']
 mfdfa_win_2=input_vars['Time_Series_Input_Features']['MFDA']['win_2']

@@ -2,6 +2,8 @@ Data_Storage:
   raw_data_storage: '/Users/carlosmonsivais/Desktop/capstone_data/ahr414_glucose_sample - ahr414_glucose_sample.csv'
   # Leslie Read In Data Location: '..\glucose-data-analysis\data\ahr414_glucose_sample.csv'
 
+Analysis:
+  Analysis_Group: 'PatientId'
 
 Daily_Stats_Features:
   lower: 70
