@@ -1,6 +1,7 @@
 Data_Storage: 
-  raw_data_storage: '/Users/carlosmonsivais/Desktop/capstone_data/ahr414_glucose_sample - ahr414_glucose_sample.csv'
-  # Leslie Read In Data Location: '..\glucose-data-analysis\data\ahr414_glucose_sample.csv'
+  raw_data_storage: '/cleanedData/2022-02_sample.csv'
+  # ^ the above is for when this repo is in a user's "local" jupyter hub (not cephfs)
+  # Carlos's Read In Data Location: '/Users/carlosmonsivais/Desktop/capstone_data/ahr414_glucose_sample - ahr414_glucose_sample.csv'
 
 Analysis:
   Analysis_Group: 'PatientId'
