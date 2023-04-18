@@ -44,7 +44,9 @@ class Value_Imputation:
                 for step in range(steps_missing):
                     row_number = i + (step-1)
                     row_data = df.iloc[i-1]
-                    time_feats = ['RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime', 'GlucoseDisplayTime']
+                    # time_feats = ['RecordedSystemTime', 'RecordedDisplayTime', 'GlucoseSystemTime', 'GlucoseDisplayTime']
+                    time_feats = ['GlucoseDisplayTime']
+                    
                     row_data[time_feats] = row_data[time_feats] + np.timedelta64(5*(step+1), 'm')
                     row_data['inserted'] = 1
                     subset_fill = self.insertRow(row_number, df, row_data)

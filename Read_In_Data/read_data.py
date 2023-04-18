@@ -2,6 +2,7 @@
 import pandas as pd
 
 # PySpark Libraries
+import pyspark
 from pyspark.sql import SparkSession
 
 # Import Modules
@@ -16,14 +17,24 @@ class Reading_Data:
         self.pandas_data_schema=self.project_data_schema.data_schema_pandas() 
              
     def read_in_pyspark(self):        
-        spark=SparkSession.builder.master("local"). \
-                           appName('Resd_Glucose_Data'). \
-                           getOrCreate()
+        # spark=SparkSession.builder.master("local"). \
+        #                    appName('Resd_Glucose_Data'). \
+        #                    getOrCreate()
         
-        pyspark_glucose_data=spark.read.csv(self.data_location, 
-                                            header=True,
-                                            sep=',',
-                                            schema=self.pyspark_data_schema)
+        conf = pyspark.SparkConf().setAll([\
+            ('spark.master', 'local[*]'),\
+            ('spark.app.name', 'Glucose_Analysis_Spark')])
+        spark = SparkSession.builder.config(conf=conf)\
+            .getOrCreate()   
+        
+        
+        # pyspark_glucose_data=spark.read.csv(self.data_location, 
+        #                                     header=True,
+        #                                     sep=',',
+        #                                     schema=self.pyspark_data_schema)
+        
+        pyspark_glucose_data=spark.read.parquet(self.data_location)
+        
         
         return pyspark_glucose_data
 

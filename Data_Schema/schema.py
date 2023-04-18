@@ -68,7 +68,7 @@ class Pandas_UDF_Data_Schema:
                                                      StructField('GlucoseDisplayDate', DateType(),True),
                                                      StructField('inserted', IntegerType(),True),
                                                      StructField('missing', IntegerType(),True)])
-
+        
         return pyspark_custom_imputation_schema
 
     def summary_stats_schema(self):

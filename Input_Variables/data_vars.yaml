@@ -1,6 +1,6 @@
 Data_Storage: 
   # raw_data_storage: '/cleanedData/2022-02_sample.csv'
-  raw_data_storage: '/Users/carlosmonsivais/Desktop/capstone_data/ahr414_glucose_sample - ahr414_glucose_sample.csv'
+  raw_data_storage: '/cephfs/stepped_glucose_data/step0_load/parquet_0_to_10/part-00000-532ee45d-8e0d-44c4-8f3b-884b22175e0f-c000.snappy.parquet'
   # ^ the above is for when this repo is in a user's "local" jupyter hub (not cephfs)
   # Carlos's Read In Data Location: '/Users/carlosmonsivais/Desktop/capstone_data/ahr414_glucose_sample - ahr414_glucose_sample.csv'
 
