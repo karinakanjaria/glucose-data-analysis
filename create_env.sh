@@ -1,13 +1,5 @@
 #!/bin/bash
 
-echo "Installing Pip"
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3 get-pip.py
-rm get-pip.py filename
-
-PIP_VERSION=$(pip3 --version)
-echo "The pip version installed is: ${PIP_VERSION}" 
-
 echo "Installing Virtual Environment Command"
 pip install virtualenv
 
@@ -18,5 +10,9 @@ source glucose_venv/bin/activate
 echo "Installing requirements.txt into Virtual Environment"
 pip install -r requirements.txt
 
+sudo apt update
+sudo apt install openjdk-17-jre-headless -y
+ipython kernel install --name "glucose-venv" --user
+
 # Run this command in case you want to go back to base environment after activation
-# deactivate 
+# deactivate
