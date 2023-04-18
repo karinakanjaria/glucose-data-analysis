@@ -60,10 +60,11 @@ class Sklearn_Pipeline:
             transformed_data_df['combine_missing']=transformed_data_df[[2,3]].values.tolist()
             transformed_data_df=transformed_data_df.drop(transformed_data_df.iloc[:, 0:4],axis = 1)
 
-            transformed_data_df.columns=['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 
-                                         'y_Binary', 'Median', 'Mean', 'Std Dev', 
-                                        'Max', 'Min', 'AreaBelow', 'AreaAbove', 'inserted', 'missing']
+            transformed_data_df.columns=['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate',
+                                         'y_Binary', 'Median', 'Mean', 'Std Dev', 'Max', 'Min', 'AreaBelow',
+                                         'AreaAbove', 'inserted', 'missing']
             
+
             return transformed_data_df
         
         transformed_data=df.groupby(analysis_group).apply(transform_features)
