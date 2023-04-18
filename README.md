@@ -1,7 +1,7 @@
 # glucose-data-analysis
 <p> <img src="Project_Logo/diabeatit-low-resolution-color-logo.png" width="400" height="300"/></p>
 
-## By: Karina Kanjaria, Katie O'laughlin, Leslie Joe, Carlos Monsivais
+## By: Karina Kanjaria, Katie O'laughlin, Leslie Joe, Carlos Monsivaiss
 Continuous glucose data analysis for blood glucose levels and glycemic events
 
 ### How to Run
