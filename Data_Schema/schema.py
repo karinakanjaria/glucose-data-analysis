@@ -7,7 +7,7 @@ class Project_Data_Schema:
                                         StructField('PostID', StringType(),True),
                                         StructField('PostTime', TimestampType(), True),
                                         StructField('PatientId', StringType(), True),
-                                        StructField('Stram', StringType(), True),
+                                        StructField('Stream', StringType(), True),
                                         StructField('SequenceNumber', StringType(), True),
                                         StructField('TransmitterNumber', StringType(), True),
                                         StructField('ReceiverNumber', StringType(), True),                                       
