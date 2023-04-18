@@ -15,4 +15,4 @@ sudo apt install openjdk-17-jre-headless -y
 ipython kernel install --name "glucose-venv" --user
 
 # Run this command in case you want to go back to base environment after activation
-# deactivate
+# deactivate 15555
