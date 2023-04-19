@@ -18,16 +18,18 @@ class Summary_Stats_Features:
         return df
 
 
-    def pyspark_summary_statistics(self, df, \
+    def pyspark_summary_statistics(df, \
                                    daily_stats_features_lower,\
                                    daily_stats_features_upper, \
                                    chunk_val = 12):  
-        
+
         df_added = create_partition_date(df, chunk_val)
+
         group_cols = ["PatientId", "Chunk"]
 
         summary_df = df_added.groupby(group_cols)\
-            .agg(avg("Value").alias("Mean"),\
+            .agg(max('y_binary').alias('y_summary_binary'),\
+                 avg("Value").alias("Mean"),\
                  stddev("Value").alias("Std Dev"),\
                  percentile_approx("Value", .5).alias("Median"), \
                  min("Value").alias("Min"),\
@@ -38,4 +40,6 @@ class Summary_Stats_Features:
                  (count(when(col("Value") > daily_stats_features_upper, 1))/chunk_val).alias("PercentageAbove")
                 )
 
-        return summary_df
+        df_added = df_added.join(summary_df, ['PatientId', 'Chunk'])
+
+        return df_added
