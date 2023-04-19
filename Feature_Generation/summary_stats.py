@@ -7,6 +7,8 @@ stddev, percentile_approx,\
 pandas_udf, PandasUDFType, lit, udf, collect_list, sqrt, monotonically_increasing_id, map_from_entries,\
 rank, dense_rank, count, when
 
+from pyspark.sql.types import IntegerType
+
 from pyspark.sql.window import Window
 
 class Summary_Stats_Features:
@@ -18,12 +20,13 @@ class Summary_Stats_Features:
         return df
 
 
-    def pyspark_summary_statistics(df, \
+    def pyspark_summary_statistics(self,
+                                   df, \
                                    daily_stats_features_lower,\
                                    daily_stats_features_upper, \
                                    chunk_val = 12):  
 
-        df_added = create_partition_date(df, chunk_val)
+        df_added = self.create_partition_date(df, chunk_val)
 
         group_cols = ["PatientId", "Chunk"]
 
