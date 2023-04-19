@@ -15,13 +15,10 @@ class Value_Imputation:
 
         # ogNon0Values = subset['Value'].replace(0, np.nan).count()
         # print("starting with", ogNon0Values, "nonzero glucose measurements ('Value')")
-        # print(subset.info())
-        
-        return subset
+        # print(subset.info())    
 
-
-    '''Find Unrecorded 5-minute Sample'''
-    def fillUnrecorded(self, subset: pd.DataFrame):
+        '''Find Unrecorded 5-minute Sample'''
+        patID = subset['PatientId'].iloc[0]
         
         '''set datetime as index in order for resampling method below to work'''
         subset = subset.set_index('GlucoseDisplayTime')
@@ -30,25 +27,10 @@ class Value_Imputation:
         subset = subset.resample('5min').first()
 
         '''fix columns that *need* to be filled in'''
-        subset['PatientId'] = subset['PatientId'].replace(np.nan, patIDs[i])
-        
-        '''resampling has the capacity to lose us some glucose measurements, so check for that'''
-        newNon0Values = subset['Value'].replace(0, np.nan).count()
-        if ogNon0Values-newNon0Values > 0:
-            print(ogNon0Values-newNon0Values, "glucose measurements lost in resampling")
-        elif ogNon0Values-newNon0Values < 0:
-            print("Somehow resampling *added* glucose measurements and that means something went wrong")
-        
-        '''label which values need filling'''
-        # subset['missing'] = False
-        # subset.loc[subset['Value'].isna(), 'missing'] = True
-        # subset.info()
-
-        return subset
+        subset['PatientId'] = subset['PatientId'].replace(np.nan, patID)
 
 
-    '''Interpolate Missing Data'''
-    def interpolateMissing(self, subset: pd.DataFrame):
+        '''Interpolate Missing Data'''
         # Description goes here
         # 
         """
@@ -62,46 +44,10 @@ class Value_Imputation:
             subset.loc[i, 'Value'] = subset.loc[i, 'Value'] + jiggle
         """
         temp = subset['Value'].mean()
-        subset[subset.loc[subset['Value'].isna(), 'Value'] = temp
-        return subset
-
-    """
-    def fill_missing_bootstrap(self, data):
-        '''Keyword arguments:
-        data -- DataFrame of all 10,000 patients'''
-        data=data[data.duplicated(subset=['PatientId', 'GlucoseDisplayTime']) == False]
-
-        conv_time = data.GlucoseDisplayTime.dt.time #save the display-time
-
-        '''turning the time of day attribute into a float value where whole numbers are hours and fractions are minutes and seconds'''
-        timeOfday = pd.Series(dtype=float)
-        datedisplay = pd.Series(dtype=float)
-        for i in conv_time.index:
-            timeOfday.at[i] = conv_time[i].hour + conv_time[i].minute/60 + conv_time[i].second/3600
-            datedisplay.at[i] = data.GlucoseDisplayTime[i].date()
-
-        #timeOfday = cgm_functions.date2float(data.GlucoseDisplayTime.dt.time)
-        data['GlucoseDisplayTimeNoDay'] = timeOfday
-        data['GlucoseDisplayDate'] = datedisplay
-
-
-        # '''Put It All Together'''
-        # patIDs = data.PatientId.unique().tolist() #make list of patient IDs
-        # for i in patIDs: #loop through all patient IDs
-        #     interp = self.interpolateMissing(self.ZeroToNaN(self.fillUnrecorded(data[data.PatientId == i]))) #interpolate missing data for each patient
-        #     data = data[data.PatientId != i] #delete the old data
-        #     data = pd.concat([data,interp]) #save the new interpolated-filled data back into the dataframe
-
-
-        '''Put It All Together'''
-        # interp = self.interpolateMissing(self.ZeroToNaN(self.fillUnrecorded(data[data.PatientId == i]))) #interpolate missing data for each patient
-        # data = data[data.PatientId != i] #delete the old data
-        # data = pd.concat([data,interp]) #save the new interpolated-filled data back into the dataframe
+        subset[subset.loc[subset['Value'].isna(), 'Value']] = temp
         
-        interp = self.interpolateMissing(self.ZeroToNaN(self.fillUnrecorded(data))) #interpolate missing data for each patient
-        data = pd.concat([data,interp], ignore_index=True) #save the new interpolated-filled data back into the dataframe
-
-        data=data[['PatientId', 'Value', 'GlucoseDisplayTime', 'GlucoseDisplayDate', 'inserted', 'missing']]
-
-        return data
-        """
+        subset=subset.reset_index(drop=False)
+        
+        subset=subset[['GlucoseDisplayTime', 'PatientId', 'Value']]
+        
+        return subset
