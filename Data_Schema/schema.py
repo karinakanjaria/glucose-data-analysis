@@ -61,15 +61,25 @@ class Project_Data_Schema:
         return glucose_dtype, parse_dates
 
 class Pandas_UDF_Data_Schema:
+#     def custom_imputation_pyspark_schema(self):
+#         pyspark_custom_imputation_schema=StructType([StructField('PatientId', StringType(),True),
+#                                                      StructField('Value', FloatType(),True),
+#                                                      StructField('GlucoseDisplayTime', TimestampType(),True),
+#                                                      StructField('GlucoseDisplayDate', DateType(),True),
+#                                                      StructField('inserted', IntegerType(),True),
+#                                                      StructField('missing', IntegerType(),True)])
+        
+#         return pyspark_custom_imputation_schema
+
+
     def custom_imputation_pyspark_schema(self):
-        pyspark_custom_imputation_schema=StructType([StructField('PatientId', StringType(),True),
-                                                     StructField('Value', FloatType(),True),
-                                                     StructField('GlucoseDisplayTime', TimestampType(),True),
-                                                     StructField('GlucoseDisplayDate', DateType(),True),
-                                                     StructField('inserted', IntegerType(),True),
-                                                     StructField('missing', IntegerType(),True)])
+        pyspark_custom_imputation_schema=StructType([StructField('GlucoseDisplayTime', TimestampType(),True),
+                                                     StructField('PatientId', StringType(),True),
+                                                     StructField('Value', FloatType(),True)])
         
         return pyspark_custom_imputation_schema
+
+
 
     def summary_stats_schema(self):
         pyspark_summary_stats_schema=StructType([StructField('PatientId', StringType(),True),
