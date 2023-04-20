@@ -30,5 +30,5 @@ ML_Models:
 
 
 Time_Series_Lagged_Features:
-  Time_Series_Lag_Values_Created: 2
+  Time_Series_Lag_Values_Created: 12
 
