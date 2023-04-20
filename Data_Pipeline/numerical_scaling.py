@@ -2,26 +2,19 @@ from pyspark.ml.feature import MinMaxScaler, StandardScaler
 from pyspark.ml.feature import VectorAssembler
 import pandas as pd
 import numpy as np
-import random
 
-
-[
- 'Mean',
- 'Std Dev',
- 'Median',
- 'Min',
- 'Max',
- 'CountBelow',
- 'CountAbove',
- 'PercentageBelow',
- 'PercentageAbove',
- 'lag_1',
- 'lag_2',
- 'lag_3']
-
+from pyspark.ml.feature import StringIndexer, OneHotEncoder
+from pyspark.ml import Pipeline
 
 class Numerical_Scaling:
     def create_standard_scaling(self, df):
+        stage_string_index = [StringIndexer(inputCol=col, outputCol=col+' string_indexed') for col in cat_cols]
+        stage_onehot_enc =   [OneHotEncoder(inputCol=col+' string_indexed', outputCol=col+' onehot_enc') for col in cat_cols]
+        
+        cat_cols = []
+        
+        
+        
         cols_to_scale = ['c', 'd', 'e']
         cols_to_keep_unscaled = ['a', 'b']
 
