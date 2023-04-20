@@ -13,11 +13,8 @@ class Create_PySpark_XGBoost:
                                       use_gpu=True,)
 
         # train and return the model
-        model = regressor.fit(ml_df)
+        model=regressor.fit(ml_df)
         
-        model.save(model_storage_location)
-
-        # predict on test data
-        predict_df = model.transform(ml_df)
+        model.write().overwrite().save(model_storage_location)
         
-        return predict_df
+        return model
