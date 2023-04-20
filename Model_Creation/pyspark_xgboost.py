@@ -1,7 +1,7 @@
 from xgboost.spark import SparkXGBRegressor
 
 class Create_PySpark_XGBoost:
-    def xgboost_classifier(self, ml_df):
+    def xgboost_classifier(self, ml_df, model_storage_location):
         # assume the label column is named "class"
         label_name = "y_binary"
         features_col="features"
@@ -15,7 +15,7 @@ class Create_PySpark_XGBoost:
         # train and return the model
         model = regressor.fit(ml_df)
         
-        model.save('test1')
+        model.save(model_storage_location)
 
         # predict on test data
         predict_df = model.transform(ml_df)
