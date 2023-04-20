@@ -1,19 +1,24 @@
 from xgboost.spark import SparkXGBRegressor
+from pyspark.ml import Pipeline
 
 class Create_PySpark_XGBoost:
-    def xgboost_classifier(self, ml_df, model_storage_location):
+    # def xgboost_classifier(self, ml_df, va1, ss, va2, model_storage_location):
+    def xgboost_classifier(self, ml_df, stages, model_storage_location):
         # assume the label column is named "class"
         label_name = "y_binary"
         features_col="features"
 
         # create a xgboost pyspark regressor estimator and set use_gpu=True
-        regressor = SparkXGBRegressor(features_col=features_col,
+        xgboost_regressor = SparkXGBRegressor(features_col=features_col,
                                       label_col=label_name,
                                       num_workers=2,
                                       use_gpu=True,)
 
-        # train and return the model
-        model=regressor.fit(ml_df)
+        
+        stages.append(xgboost_regressor)
+        pipeline=Pipeline(stages=stages)
+        
+        model=pipeline.fit(ml_df)
         
         model.write().overwrite().save(model_storage_location)
         

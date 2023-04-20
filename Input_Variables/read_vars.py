@@ -8,7 +8,10 @@ with open('Input_Variables/data_vars.yaml', 'r') as file:
 
 
 ################################### Data Location ###################################
-raw_data_storage=input_vars['Data_Storage']['raw_data_storage']
+train_data_storage=input_vars['Data_Storage']['train_data_storage']
+validation_data_storage=input_vars['Data_Storage']['validation_data_storage']
+test_data_storage=input_vars['Data_Storage']['test_data_storage']
+
 
 
 ################################### Analysis ###################################

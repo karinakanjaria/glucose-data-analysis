@@ -4,50 +4,64 @@ import pandas as pd
 # PySpark Libraries
 import pyspark
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import date_trunc, col, udf
 
 # Import Modules
 from Data_Schema.schema import Project_Data_Schema
 
 class Reading_Data:
-    def __init__(self, data_location):    
-        self.data_location=data_location
+    def __init__(self):    
         self.project_data_schema=Project_Data_Schema()
 
-        self.pyspark_data_schema=self.project_data_schema.data_schema_pyspark() 
-        self.pandas_data_schema=self.project_data_schema.data_schema_pandas() 
-             
-    def read_in_pyspark(self):        
-        # spark=SparkSession.builder.master("local"). \
-        #                    appName('Resd_Glucose_Data'). \
-        #                    getOrCreate()
+        self.pyspark_data_schema=self.project_data_schema.data_schema_pyspark()
         
-        conf = pyspark.SparkConf().setAll([\
-            ('spark.master', 'local[*]'),\
-            ('spark.app.name', 'Glucose_Analysis_Spark')])
-        spark = SparkSession.builder.config(conf=conf)\
-            .getOrCreate()   
+        # self.conf = pyspark.SparkConf().setAll([('spark.master', 'local[*]'),\
+        #                                         ('spark.app.name', 'Glucose_Analysis_Spark')])
+        # self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()  
+        self.spark= SparkSession.builder.appName("Glucose").getOrCreate()
+            
+            
+    def read_in_pyspark_training(self, training_data_location):                
+        # pyspark_glucose_data=self.spark.read.parquet(self.data_location)
         
+        pyspark_glucose_data=self.spark.read.schema(self.pyspark_data_schema).parquet(training_data_location)
+        pyspark_glucose_data=pyspark_glucose_data.withColumn("GlucoseDisplayTime", 
+                                                             date_trunc("minute", 
+                                                                        col("GlucoseDisplayTime")))
+        pyspark_glucose_data=pyspark_glucose_data.distinct()
         
-        # pyspark_glucose_data=spark.read.csv(self.data_location, 
-        #                                     header=True,
-        #                                     sep=',',
-        #                                     schema=self.pyspark_data_schema)
-        
-        pyspark_glucose_data=spark.read.parquet(self.data_location)
-        
+        pyspark_glucose_data=pyspark_glucose_data.orderBy("PatientId", "GlucoseDisplayTime",
+                                                          ascending=True)
         
         return pyspark_glucose_data
-
-    def read_in_pandas(self):                
-        pandas_glucose_data=pd.read_csv(self.data_location,
-                                        dtype=self.pandas_data_schema[0],
-                                        parse_dates=self.pandas_data_schema[1])
+    
+    
+    def read_in_pyspark_cross_validation(self, cross_validation_data_location):                
+        # pyspark_glucose_data=self.spark.read.parquet(self.data_location)
         
-        ## add two columns for graphing ease
-        # pandas_glucose_data['GlucoseDisplayDate'] = pandas_glucose_data['GlucoseDisplayTime'].dt.date
-        # pandas_glucose_data['GlucoseDisplayHour'] = \
-        #                 + pandas_glucose_data['GlucoseDisplayTime'].dt.hour \
-        #                 + pandas_glucose_data['GlucoseDisplayTime'].dt.minute/60 \
-        #                 + pandas_glucose_data['GlucoseDisplayTime'].dt.second/3600
-
-        return pandas_glucose_data
+        pyspark_glucose_data=self.spark.read.schema(self.pyspark_data_schema).parquet(cross_validation_data_location)
+        pyspark_glucose_data=pyspark_glucose_data.withColumn("GlucoseDisplayTime", 
+                                                             date_trunc("minute", 
+                                                                        col("GlucoseDisplayTime")))
+        pyspark_glucose_data=pyspark_glucose_data.distinct()
+        
+        pyspark_glucose_data=pyspark_glucose_data.orderBy("PatientId", "GlucoseDisplayTime",
+                                                          ascending=True)
+        
+        return pyspark_glucose_data
+    
+    
+    
+    def read_in_pyspark_testing(self, testing_data_location):                
+        # pyspark_glucose_data=self.spark.read.parquet(self.data_location)
+        
+        pyspark_glucose_data=self.spark.read.schema(self.pyspark_data_schema).parquet(testing_data_location)
+        pyspark_glucose_data=pyspark_glucose_data.withColumn("GlucoseDisplayTime", 
+                                                             date_trunc("minute", 
+                                                                        col("GlucoseDisplayTime")))
+        pyspark_glucose_data=pyspark_glucose_data.distinct()
+        
+        pyspark_glucose_data=pyspark_glucose_data.orderBy("PatientId", "GlucoseDisplayTime",
+                                                          ascending=True)
+        
+        return pyspark_glucose_data

@@ -2,30 +2,11 @@ from pyspark.sql.types import StructType, StructField, StringType, FloatType, Ti
 
 class Project_Data_Schema:
     def data_schema_pyspark(self):        
-        glucose_data_schema=StructType([StructField('PostDate', TimestampType(),True),
-                                        StructField('IngestionDate', TimestampType(),True),
-                                        StructField('PostID', StringType(),True),
-                                        StructField('PostTime', TimestampType(), True),
-                                        StructField('PatientId', StringType(), True),
-                                        StructField('Stream', StringType(), True),
-                                        StructField('SequenceNumber', StringType(), True),
-                                        StructField('TransmitterNumber', StringType(), True),
-                                        StructField('ReceiverNumber', StringType(), True),                                       
-                                        StructField('RecordedSystemTime', TimestampType(), True),
-                                        StructField('RecordedDisplayTime', TimestampType(), True),
-                                        StructField('RecordedDisplayTimeRaw', TimestampType(), True),
-                                        StructField('TransmitterId', StringType(), True),
-                                        StructField('TransmitterTime', StringType(), True),
-                                        StructField('GlucoseSystemTime', TimestampType(), True),
-                                        StructField('GlucoseDisplayTime', TimestampType(), True),
-                                        StructField('GlucoseDisplayTimeRaw', TimestampType(), True),
+        glucose_data_schema=StructType([StructField('PatientId', StringType(), True),
                                         StructField('Value', FloatType(), True),
-                                        StructField('Status', StringType(), True),
-                                        StructField('TrendArrow', StringType(), True),
-                                        StructField('TrendRate', FloatType(), True),
-                                        StructField('IsBackFilled', StringType(), True),
-                                        StructField('InternalStatus', StringType(), True),
-                                        StructField('SessionStartTime', StringType(), True)])
+                                        StructField('GlucoseDisplayTime', TimestampType(), True),
+                                        StructField('GlucoseDisplayTimeRaw', StringType(), True),
+                                        StructField('GlucoseDisplayDate', DateType(), True)])
         return glucose_data_schema
 
     def data_schema_pandas(self):

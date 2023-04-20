@@ -23,8 +23,5 @@ class Feature_Transformations:
         va2 = VectorAssembler(inputCols=featureArr, outputCol="features")
 
         stages = va1 + ss + [va2]
-
-        p = Pipeline(stages=stages)
-        fitted_num_df=p.fit(df).transform(df)
-
-        return fitted_num_df
+    
+        return stages
