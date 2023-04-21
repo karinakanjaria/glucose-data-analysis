@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.StandardScalerModel","timestamp":1682087834354,"sparkVersion":"3.3.1","uid":"StandardScaler_fa8e222c98e1","paramMap":{"withStd":true,"outputCol":"scaled_std_dev_lag_2","inputCol":"vec_std_dev_lag_2","withMean":true},"defaultParamMap":{"withStd":true,"outputCol":"StandardScaler_fa8e222c98e1__output","withMean":false}}
