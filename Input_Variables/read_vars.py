@@ -13,6 +13,9 @@ validation_data_storage=input_vars['Data_Storage']['validation_data_storage']
 test_data_storage=input_vars['Data_Storage']['test_data_storage']
 
 
+################################### Evaluation Metrics ###################################
+evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['evaluation_metrics_output_storage']
+
 
 ################################### Analysis ###################################
 analysis_group=input_vars['Analysis']['Analysis_Group']
