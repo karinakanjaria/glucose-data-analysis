@@ -25,6 +25,7 @@ Feature_Importance:
 
 ML_Models:
   model_storage_location: '/home/jovyan/glucose-data-analysis/Saved_Models'
+  random_seed: 12345
 
 
 Evaluation_Metrics:
