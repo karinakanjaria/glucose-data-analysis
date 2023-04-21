@@ -22,6 +22,7 @@ Time_Series_Input_Features:
 
 Feature_Importance:
     feature_importance_storage_location: '/home/jovyan/glucose-data-analysis/Output_Files/feature_importance_metrics.csv'
+    overall_feature_importance_plot_location: '/home/jovyan/glucose-data-analysis/Output_Files/overall_feature_imp.png'
 
 ML_Models:
   model_storage_location: '/home/jovyan/glucose-data-analysis/Saved_Models'

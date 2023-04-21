@@ -20,7 +20,7 @@ evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['evaluation_m
 
 ################################### Feature Importance ###################################
 feature_importance_storage_location=input_vars['Feature_Importance']['feature_importance_storage_location']
-
+overall_feature_importance_plot_location=input_vars['Feature_Importance']['overall_feature_importance_plot_location']
 
 ################################### Analysis ###################################
 analysis_group=input_vars['Analysis']['Analysis_Group']
