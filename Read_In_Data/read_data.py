@@ -14,16 +14,10 @@ class Reading_Data:
         self.project_data_schema=Project_Data_Schema()
 
         self.pyspark_data_schema=self.project_data_schema.data_schema_pyspark()
-        
-        # self.conf = pyspark.SparkConf().setAll([('spark.master', 'local[*]'),\
-        #                                         ('spark.app.name', 'Glucose_Analysis_Spark')])
-        # self.spark = SparkSession.builder.config(conf=self.conf).getOrCreate()  
         self.spark= SparkSession.builder.appName("Glucose").getOrCreate()
             
             
-    def read_in_pyspark_training(self, training_data_location):                
-        # pyspark_glucose_data=self.spark.read.parquet(self.data_location)
-        
+    def read_in_pyspark_training(self, training_data_location):                 
         pyspark_glucose_data=self.spark.read.schema(self.pyspark_data_schema).parquet(training_data_location)
         pyspark_glucose_data=pyspark_glucose_data.withColumn("GlucoseDisplayTime", 
                                                              date_trunc("minute", 
@@ -37,8 +31,6 @@ class Reading_Data:
     
     
     def read_in_pyspark_cross_validation(self, cross_validation_data_location):                
-        # pyspark_glucose_data=self.spark.read.parquet(self.data_location)
-        
         pyspark_glucose_data=self.spark.read.schema(self.pyspark_data_schema).parquet(cross_validation_data_location)
         pyspark_glucose_data=pyspark_glucose_data.withColumn("GlucoseDisplayTime", 
                                                              date_trunc("minute", 
@@ -52,9 +44,7 @@ class Reading_Data:
     
     
     
-    def read_in_pyspark_testing(self, testing_data_location):                
-        # pyspark_glucose_data=self.spark.read.parquet(self.data_location)
-        
+    def read_in_pyspark_testing(self, testing_data_location):
         pyspark_glucose_data=self.spark.read.schema(self.pyspark_data_schema).parquet(testing_data_location)
         pyspark_glucose_data=pyspark_glucose_data.withColumn("GlucoseDisplayTime", 
                                                              date_trunc("minute", 
