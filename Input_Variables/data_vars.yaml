@@ -21,7 +21,7 @@ Time_Series_Input_Features:
 
 
 Feature_Importance:
-    feature_importance_storage_location: '/home/jovyan/glucose-data-analysis/Feature_Importance/feature_importance_metrics.csv'
+    feature_importance_storage_location: '/home/jovyan/glucose-data-analysis/Output_Files/feature_importance_metrics.csv'
 
 ML_Models:
   model_storage_location: '/home/jovyan/glucose-data-analysis/Saved_Models'
@@ -29,8 +29,8 @@ ML_Models:
 
 
 Evaluation_Metrics:
-    evaluation_metrics_output_storage: '/home/jovyan/glucose-data-analysis/Model_Evaluation/evaluation_metrics.csv'
+    evaluation_metrics_output_storage: '/home/jovyan/glucose-data-analysis/Output_Files/evaluation_metrics.csv'
 
 Time_Series_Lagged_Features:
-  Time_Series_Lag_Values_Created: 2
+  Time_Series_Lag_Values_Created: 6
 
