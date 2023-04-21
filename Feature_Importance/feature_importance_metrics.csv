@@ -1,0 +1,17 @@
+Feature,Accuracy Gain
+scaled_value_lag_1,80.64265441894531
+scaled_perc_abv_lag_1,7.129646301269531
+scaled_perc_belw_lag_1,5.017526626586914
+scaled_value_lag_2,2.360203266143799
+scaled_max_lag_1,1.7777824401855469
+scaled_min_lag_1,1.6153532266616821
+scaled_med_lag_1,1.2114754915237427
+scaled_perc_abv_lag_2,1.1563756465911865
+scaled_perc_belw_lag_2,1.0895767211914062
+scaled_max_lag_2,1.072822093963623
+scaled_std_dev_lag_2,0.9895105361938477
+scaled_min_lag_2,0.9772197008132935
+scaled_std_dev_lag_1,0.9761824607849121
+scaled_med_lag_2,0.9508435726165771
+scaled_mean_lag_1,0.8587055206298828
+scaled_mean_lag_2,0.688582718372345
