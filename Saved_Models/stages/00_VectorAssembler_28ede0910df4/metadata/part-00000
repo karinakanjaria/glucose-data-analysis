@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.VectorAssembler","timestamp":1682057985872,"sparkVersion":"3.3.1","uid":"VectorAssembler_28ede0910df4","paramMap":{"outputCol":"vec_perc_abv_lag_1","inputCols":["perc_abv_lag_1"]},"defaultParamMap":{"outputCol":"VectorAssembler_28ede0910df4__output","handleInvalid":"error"}}

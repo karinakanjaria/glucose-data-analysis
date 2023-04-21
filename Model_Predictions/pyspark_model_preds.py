@@ -5,10 +5,9 @@ class Model_Predictions:
         predict_df=model.transform(test_df).select('PatientId', 
                                                    'GlucoseDisplayTime',
                                                    'Value',
-                                                   "y_binary", 
-                                                   'prediction')
-        
-        predict_df=predict_df.withColumn('prediction_label', 
-                                         f.when(f.col('prediction') > 0.50, 1).otherwise(0))
+                                                   'y_binary',
+                                                   'prediction',
+                                                   'rawPrediction',
+                                                   'probability')
         
         return predict_df    
