@@ -76,7 +76,7 @@ class Create_Parquet_Files:
         # load in data, select columns to save, create date column, save to parquet format
         prevIdx = 0
         for idx in pathRange:
-            paths = allPaths[prevIdx:idx]
+            paths = allPaths[prevIdx:idx]            
 
             df = spark.read\
             .format('csv')\
