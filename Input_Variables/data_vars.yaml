@@ -1,8 +1,7 @@
 Data_Storage: 
-  # raw_data_storage: '/cleanedData/2022-02_sample.csv'
-  raw_data_storage: '/cephfs/stepped_glucose_data/step0_load/parquet_0_to_10/part-00000-532ee45d-8e0d-44c4-8f3b-884b22175e0f-c000.snappy.parquet'
-  # ^ the above is for when this repo is in a user's "local" jupyter hub (not cephfs)
-  # Carlos's Read In Data Location: '/Users/carlosmonsivais/Desktop/capstone_data/ahr414_glucose_sample - ahr414_glucose_sample.csv'
+  train_data_storage: '/cephfs/stepped_glucose_data/dataset1/single_files/train_10patients/part-00000-dc3206a8-53d0-468a-b026-9e006ff8e1d0-c000.snappy.parquet'
+  validation_data_storage: ''
+  test_data_storage: '/cephfs/stepped_glucose_data/dataset1/single_files/val_10patients/part-00000-98fec2b8-8bb9-4492-b451-6cfbf5cac8b8-c000.snappy.parquet'
 
 Analysis:
   Analysis_Group: 'PatientId'
@@ -21,12 +20,18 @@ Time_Series_Input_Features:
     pol_order: 1
 
 
-ML_Models:
-  train_split: 0.80
-  test_split: 0.20
-  model_storage_location: 'Model_Creation/Saved_Models/PySpark'
+Feature_Importance:
+    feature_importance_storage_location: '/home/jovyan/glucose-data-analysis/Output_Files/feature_importance_metrics.csv'
+    overall_feature_importance_plot_location: '/home/jovyan/glucose-data-analysis/Output_Files/overall_feature_imp.png'
 
+ML_Models:
+  model_storage_location: '/home/jovyan/glucose-data-analysis/Saved_Models'
+  random_seed: 12345
+
+
+Evaluation_Metrics:
+    evaluation_metrics_output_storage: '/home/jovyan/glucose-data-analysis/Output_Files/evaluation_metrics.csv'
 
 Time_Series_Lagged_Features:
-  Time_Series_Lag_Values_Created: 3
+  Time_Series_Lag_Values_Created: 6
 

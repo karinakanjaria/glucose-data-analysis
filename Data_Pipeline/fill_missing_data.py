@@ -8,7 +8,7 @@ class Value_Imputation:
     '''preprocessing stuff'''
     def cleanup(self, subset: pd.DataFrame):
         '''replace 0s with NaN to save a two steps down the line'''
-        subset['Value'] = subset['Value'].replace(0, np.nan)
+        subset.loc[:,'Value'] = subset['Value'].replace(0, np.nan)
 
         '''drop duplicate datetimes for each patient'''
         subset = subset.drop_duplicates(subset='GlucoseDisplayTime', keep="first")
@@ -44,7 +44,12 @@ class Value_Imputation:
             subset.loc[i, 'Value'] = subset.loc[i, 'Value'] + jiggle
         """
         temp = subset['Value'].mean()
-        subset[subset.loc[subset['Value'].isna(), 'Value']] = temp
+        # subset[[subset['Value'].isna(), 'Value']] = temp
+        subset['Value'] = subset['Value'].fillna(temp)
+        
+        # print(subset.columns)
+        
+        # .loc[row_indexer,col_indexer] = value
         
         subset=subset.reset_index(drop=False)
         

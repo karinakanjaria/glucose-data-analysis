@@ -8,8 +8,19 @@ with open('Input_Variables/data_vars.yaml', 'r') as file:
 
 
 ################################### Data Location ###################################
-raw_data_storage=input_vars['Data_Storage']['raw_data_storage']
+train_data_storage=input_vars['Data_Storage']['train_data_storage']
+validation_data_storage=input_vars['Data_Storage']['validation_data_storage']
+test_data_storage=input_vars['Data_Storage']['test_data_storage']
 
+
+################################### Evaluation Metrics ###################################
+evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['evaluation_metrics_output_storage']
+
+
+
+################################### Feature Importance ###################################
+feature_importance_storage_location=input_vars['Feature_Importance']['feature_importance_storage_location']
+overall_feature_importance_plot_location=input_vars['Feature_Importance']['overall_feature_importance_plot_location']
 
 ################################### Analysis ###################################
 analysis_group=input_vars['Analysis']['Analysis_Group']
@@ -33,9 +44,8 @@ daily_stats_features_upper=input_vars['Daily_Stats_Features']['upper']
 
 
 ################################### ML Models ###################################
-ml_models_train_split=input_vars['ML_Models']['train_split']
-ml_models_test_split=input_vars['ML_Models']['test_split']
 model_storage_location=input_vars['ML_Models']['model_storage_location']
+random_seed=input_vars['ML_Models']['random_seed']
 
 
 ################################### Time Series Lagged Features ###################################

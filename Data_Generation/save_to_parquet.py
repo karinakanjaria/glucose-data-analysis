@@ -28,7 +28,6 @@ from pyspark.sql.functions import col, to_date
 class Spark_Session:
     def __init__(self):
         self.conf = pyspark.SparkConf().setAll([\
-            ('spark.master', 'local[*]'),\
             ('spark.app.name', 'Glucose_Analysis_Spark')])
         self.spark = SparkSession.builder.config(conf=self.conf)\
             .getOrCreate()        
