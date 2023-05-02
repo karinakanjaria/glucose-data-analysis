@@ -10,9 +10,6 @@ import pathlib
 from pyspark.sql.functions import col, to_date
 from pyspark.sql.window import Window
 
-from DifferenceFeature import add_difference_features
-
-
 class SaveByPatients:
     def _init_(self):
         self.rawSchema = StructType([StructField('_c0', IntegerType(),True),
@@ -88,7 +85,7 @@ class SaveByPatients:
                 patData = df.filter(df.PatientId == patIds.PatientId)
                 
                 #fill in with difference feature
-                patData = add_difference_features(df)
+                #patData = add_difference_features(df)
                 
                 #add numId to df
                 patData = patData.withColumn('Num_Id', lit(numId))

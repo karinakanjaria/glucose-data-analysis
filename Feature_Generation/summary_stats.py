@@ -12,7 +12,7 @@ from pyspark.sql.types import IntegerType
 from pyspark.sql.window import Window
 
 class Summary_Stats_Features:
-    def create_partition_date(self, df, chunk_val):
+    def create_chunk_col(self, df, chunk_val):
         window = Window.partitionBy(df['PatientId']).orderBy(df['GlucoseDisplayTime'])
         df = df.select('*', rank().over(window).alias('index'))
         df = df.withColumn("Chunk", (df.index/chunk_val).cast(IntegerType()))
@@ -25,8 +25,6 @@ class Summary_Stats_Features:
                                    daily_stats_features_lower,\
                                    daily_stats_features_upper, \
                                    chunk_val = 12):  
-
-        df_added = self.create_partition_date(df, chunk_val)
 
         group_cols = ["PatientId", "Chunk"]
 
