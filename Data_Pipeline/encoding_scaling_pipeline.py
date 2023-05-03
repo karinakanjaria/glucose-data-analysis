@@ -3,9 +3,7 @@ from pyspark.sql.types import DoubleType, FloatType
 from pyspark.ml import Pipeline
 
 class Feature_Transformations:
-    def categorical_encoding(self, df):
-        # Need  Categroical Features
-    
+    def categorical_encoding(self, df):    
         return None
     
     def numerical_scaling(self, df):
