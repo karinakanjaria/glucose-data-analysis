@@ -5,7 +5,7 @@ import pandas as pd
 from pyspark.sql.functions import col, to_date, sum, avg, max, min, \
 stddev, percentile_approx,\
 pandas_udf, PandasUDFType, lit, udf, collect_list, sqrt, monotonically_increasing_id, map_from_entries,\
-rank, dense_rank, count, when
+rank, dense_rank, count, when, lag
 
 from pyspark.sql.types import IntegerType
 
@@ -27,9 +27,8 @@ class Summary_Stats_Features:
         group_cols = ["PatientId", "Chunk"]
 
         summary_df = df.groupby(group_cols)\
-            .agg(max('y_binary').alias('y_summary_binary'),\
-                 avg("Value").alias("Mean"),\
-                 stddev("Value").alias("Std Dev"),\
+            .agg(avg("Value").alias("Mean"),\
+                 stddev("Value").alias("StdDev"),\
                  percentile_approx("Value", .5).alias("Median"), \
                  min("Value").alias("Min"),\
                  max("Value").alias("Max"),\
@@ -39,7 +38,14 @@ class Summary_Stats_Features:
                  stddev('SecDiff').alias('StdSecDiff'),\
                  sum(col("is_above")).alias("CountAbove"),\
                  sum(col("is_below")).alias("CountBelow"),\
-                 sum(col('y_Binary')).alias('target')
+                 sum(col('y_Binary')).alias('TotalOutOfRange')
                 )
 
         return summary_df
+    
+    
+    def add_lag_out_of_range(self, df, chunk_lag=1):
+        my_window = Window.partitionBy(df['PatientId']).orderBy("Chunk")
+        df = df.withColumn("target", lag(df.TotalOutOfRange, offset=chunk_lag).over(my_window))
+        
+        return df
