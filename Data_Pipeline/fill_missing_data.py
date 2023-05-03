@@ -6,7 +6,34 @@ import pandas as pd
 # warnings.filterwarnings('ignore')
 class Value_Imputation:
     '''preprocessing stuff'''
-    def cleanup(self, subset: pd.DataFrame):
+    def cleanup(self, df):
+        ''' INPUT
+            df:    a spark DataFrame with multiple patients
+            OUTPUT
+            df:    a spark DataFrame with multiple patients
+        '''
+        
+        '''getting rid of any dates from before the actual start-date of Feb 1, 2022'''
+        df = df.filter("GlucoseDisplayDate > date'2022-01-31'")
+        
+        '''replace 0s with NaN to save a two steps down the line'''
+        df = df.withColumn("Value", \
+                           when(col("Value")=="0", None) \
+                           .otherwise(col("Value")))
+        
+        '''drop duplicate datetimes for each patient'''
+        window = Window.partitionBy('GlucoseDisplayTime','PatientId').orderBy('tiebreak')
+        df = (df
+         .withColumn('tiebreak', monotonically_increasing_id())
+         .withColumn('rank', rank().over(window))
+         .filter(col('rank') == 1).drop('rank','tiebreak')
+        )
+        
+        
+        return df
+        
+    
+    def cleanup_old(self, subset: pd.DataFrame):
         '''replace 0s with NaN to save a two steps down the line'''
         subset.loc[:,'Value'] = subset['Value'].replace(0, np.nan)
 
