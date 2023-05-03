@@ -22,25 +22,24 @@ class Summary_Stats_Features:
 
     def pyspark_summary_statistics(self,
                                    df, \
-                                   daily_stats_features_lower,\
-                                   daily_stats_features_upper, \
-                                   chunk_val = 12):  
+                                   chunk_val = 288):  
 
         group_cols = ["PatientId", "Chunk"]
 
-        summary_df = df_added.groupby(group_cols)\
+        summary_df = df.groupby(group_cols)\
             .agg(max('y_binary').alias('y_summary_binary'),\
                  avg("Value").alias("Mean"),\
                  stddev("Value").alias("Std Dev"),\
                  percentile_approx("Value", .5).alias("Median"), \
                  min("Value").alias("Min"),\
                  max("Value").alias("Max"),\
-                 count(when(col("Value") < daily_stats_features_lower, 1)).alias("CountBelow"),\
-                 count(when(col("Value") > daily_stats_features_upper, 1)).alias("CountAbove"),\
-                 (count(when(col("Value") < daily_stats_features_lower, 1))/chunk_val).alias("PercentageBelow"),\
-                 (count(when(col("Value") > daily_stats_features_upper, 1))/chunk_val).alias("PercentageAbove")
+                 avg('FirstDiff').alias('AvgFirstDiff'),\
+                 avg('SecDiff').alias('AvgSecDiff'),\
+                 stddev('FirstDiff').alias('StdFirstDiff'),\
+                 stddev('SecDiff').alias('StdSecDiff'),\
+                 sum(col("is_above")).alias("CountAbove"),\
+                 sum(col("is_below")).alias("CountBelow"),\
+                 sum(col('y_Binary')).alias('target')
                 )
 
-        df_added = df_added.join(summary_df, ['PatientId', 'Chunk'])
-
-        return df_added
+        return summary_df
