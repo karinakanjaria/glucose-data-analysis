@@ -5,7 +5,7 @@ StringType, IntegerType, TimestampType, DateType, FloatType
 from pyspark.sql.window import Window
 
 
-class DifferenceFeature:
+class Difference_Features:
     def add_difference_features(self, df):
         my_window = Window.partitionBy('PatientId').orderBy("GlucoseDisplayTime")
         df = df.withColumn("prev_value", lag(df.Value).over(my_window))
