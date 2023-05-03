@@ -21,7 +21,7 @@ class Value_Imputation:
                            when(col("Value")=="0", None) \
                            .otherwise(col("Value")))
         
-        '''drop duplicate datetimes for each patient'''
+        '''drop duplicate datetimes for each patient (this takes ~30 sec per 10 days x 8000 patients)'''
         window = Window.partitionBy('GlucoseDisplayTime','PatientId').orderBy('tiebreak')
         df = (df
          .withColumn('tiebreak', monotonically_increasing_id())
