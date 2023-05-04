@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.VectorAssembler","timestamp":1683229895099,"sparkVersion":"3.3.1","uid":"VectorAssembler_6382dd4c4c90","paramMap":{"inputCols":["StdFirstDiff"],"outputCol":"vec_StdFirstDiff"},"defaultParamMap":{"outputCol":"VectorAssembler_6382dd4c4c90__output","handleInvalid":"error"}}

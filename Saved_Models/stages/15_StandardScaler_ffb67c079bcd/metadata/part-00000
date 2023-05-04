@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.StandardScalerModel","timestamp":1683229897111,"sparkVersion":"3.3.1","uid":"StandardScaler_ffb67c079bcd","paramMap":{"inputCol":"vec_TotalOutOfRange","withMean":true,"outputCol":"scaled_TotalOutOfRange","withStd":true},"defaultParamMap":{"withMean":false,"outputCol":"StandardScaler_ffb67c079bcd__output","withStd":true}}

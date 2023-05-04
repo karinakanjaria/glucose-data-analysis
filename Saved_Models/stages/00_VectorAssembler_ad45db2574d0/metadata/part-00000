@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.VectorAssembler","timestamp":1683229894489,"sparkVersion":"3.3.1","uid":"VectorAssembler_ad45db2574d0","paramMap":{"outputCol":"vec_AvgSecDiff","inputCols":["AvgSecDiff"]},"defaultParamMap":{"outputCol":"VectorAssembler_ad45db2574d0__output","handleInvalid":"error"}}

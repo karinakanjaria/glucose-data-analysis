@@ -14,7 +14,8 @@ class Feature_Transformations:
         # all_numerical=list(set(double_cols+float_cols))
         # all_numerical_lags=[x for x in all_numerical if "lag" in x]
         all_numerical=list(set(double_cols+float_cols+long_cols))
-
+        all_numerical.remove('target')
+        
         # featureArr = [('scaled_' + f) for f in all_numerical_lags]
         featureArr = [('scaled_' + f) for f in all_numerical]+['Sex_Encoded', 'Treatment_Encoded', 'AgeGroup_Encoded']
 
