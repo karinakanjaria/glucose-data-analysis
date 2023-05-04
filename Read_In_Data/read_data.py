@@ -55,3 +55,10 @@ class Reading_Data:
                                                           ascending=True)
         
         return pyspark_glucose_data
+    
+    
+    def read_in_one_hot_encoded_data(self, one_hot_encoding_location):
+        one_hot_encoding_df=self.spark.read.parquet(one_hot_encoding_location)
+        
+        return one_hot_encoding_df
+        
