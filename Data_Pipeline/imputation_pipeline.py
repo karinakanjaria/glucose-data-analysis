@@ -24,7 +24,7 @@ class Date_And_Value_Imputation:
 
             # Imputation
             custom_imputation=Pipeline(steps=[("custom_imputation",
-                                       FunctionTransformer(self.value_imputation.cleanup_old))])
+                                       FunctionTransformer(self.value_imputation.cleanup))])
 
             transformed_data1=custom_imputation.fit_transform(df)
             transformed_data_df=pd.DataFrame(transformed_data1)
@@ -152,4 +152,5 @@ class Date_And_Value_Imputation:
             
             # OR do a group by and an agg fxn
             # to do a custom agg fxn 
-            
+        
+        return df_new
