@@ -5,7 +5,7 @@ import pandas as pd
 from pyspark.sql.functions import col, to_date, sum, avg, max, min, \
 stddev, percentile_approx,\
 pandas_udf, PandasUDFType, lit, udf, collect_list, sqrt, monotonically_increasing_id, map_from_entries,\
-rank, dense_rank, count, when
+rank, dense_rank, count, when, lag
 
 from pyspark.sql.types import IntegerType
 
@@ -22,13 +22,14 @@ class Summary_Stats_Features:
 
     def pyspark_summary_statistics(self,
                                    df, \
-                                   chunk_val = 288):  
+                                   chunk_val = 288, 
+                                   chunk_lag=1):  
 
         group_cols = ["PatientId", "Chunk"]
 
         summary_df = df.groupby(group_cols)\
             .agg(avg("Value").alias("Mean"),\
-                 stddev("Value").alias("Std Dev"),\
+                 stddev("Value").alias("StdDev"),\
                  percentile_approx("Value", .5).alias("Median"), \
                  min("Value").alias("Min"),\
                  max("Value").alias("Max"),\
@@ -42,7 +43,7 @@ class Summary_Stats_Features:
                 )
         
         my_window = Window.partitionBy("PatientId").orderBy("Chunk")
-        summary_df = df.withColumn("NextDayValue", lag(df.TotalOutOfRange).over(my_window))
+        summary_df = df.withColumn("NextDayValue", lag(df.TotalOutOfRange, offset=chunk_lag).over(my_window))
         summary_df = df.withColumn("target", df.NextDayValue - df.TotalOutOfRange)
         
         summary_df = summary_df.drop('NextDayValue')        
