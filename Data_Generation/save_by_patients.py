@@ -11,7 +11,7 @@ from pyspark.sql.functions import col, to_date
 from pyspark.sql.window import Window
 
 class SaveByPatients:
-    def _init_(self):
+    def __init__(self):
         self.rawSchema = StructType([StructField('_c0', IntegerType(),True),
                                 StructField('PostDate', TimestampType(),True),
                                 StructField('IngestionDate', TimestampType(),True),

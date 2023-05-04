@@ -27,8 +27,7 @@ class Summary_Stats_Features:
         group_cols = ["PatientId", "Chunk"]
 
         summary_df = df.groupby(group_cols)\
-            .agg(max('y_binary').alias('y_summary_binary'),\
-                 avg("Value").alias("Mean"),\
+            .agg(avg("Value").alias("Mean"),\
                  stddev("Value").alias("Std Dev"),\
                  percentile_approx("Value", .5).alias("Median"), \
                  min("Value").alias("Min"),\
@@ -39,7 +38,13 @@ class Summary_Stats_Features:
                  stddev('SecDiff').alias('StdSecDiff'),\
                  sum(col("is_above")).alias("CountAbove"),\
                  sum(col("is_below")).alias("CountBelow"),\
-                 sum(col('y_Binary')).alias('target')
+                 sum(col('y_Binary')).alias('TotalOutOfRange')
                 )
+        
+        my_window = Window.partitionBy("PatientId").orderBy("Chunk")
+        summary_df = df.withColumn("NextDayValue", lag(df.TotalOutOfRange).over(my_window))
+        summary_df = df.withColumn("target", df.NextDayValue - df.TotalOutOfRange)
+        
+        summary_df = summary_df.drop('NextDayValue')        
 
         return summary_df
