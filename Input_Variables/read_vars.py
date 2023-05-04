@@ -12,6 +12,8 @@ train_data_storage=input_vars['Data_Storage']['train_data_storage']
 validation_data_storage=input_vars['Data_Storage']['validation_data_storage']
 test_data_storage=input_vars['Data_Storage']['test_data_storage']
 
+one_hot_encoding_data=input_vars['Data_Storage']['one_hot_encoding_location']
+
 
 ################################### Evaluation Metrics ###################################
 evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['evaluation_metrics_output_storage']

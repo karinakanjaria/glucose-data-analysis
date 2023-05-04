@@ -15,7 +15,7 @@ class Date_And_Value_Imputation:
 
             # Imputation
             custom_imputation=Pipeline(steps=[("custom_imputation",
-                                       FunctionTransformer(self.value_imputation.cleanup))])
+                                       FunctionTransformer(self.value_imputation.cleanup_old))])
 
             transformed_data1=custom_imputation.fit_transform(df)
             transformed_data_df=pd.DataFrame(transformed_data1)
