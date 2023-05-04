@@ -43,9 +43,14 @@ class Summary_Stats_Features:
                 )
         
         my_window = Window.partitionBy("PatientId").orderBy("Chunk")
+        # summary_df = df.withColumn("NextDayValue", lag(df.TotalOutOfRange, offset=chunk_lag).over(my_window))
+        # summary_df = df.withColumn("target", df.NextDayValue - df.TotalOutOfRange)
+        
         summary_df = summary_df.withColumn("NextDayValue", lag(summary_df.TotalOutOfRange, offset=chunk_lag).over(my_window))
         summary_df = summary_df.withColumn("target", summary_df.NextDayValue - summary_df.TotalOutOfRange)
         
-        summary_df = summary_df.drop('NextDayValue')        
-
+        summary_df = summary_df.drop('NextDayValue')
+        
+        summary_df=summary_df.filter(summary_df.target.isNotNull())
+        
         return summary_df
