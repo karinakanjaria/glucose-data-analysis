@@ -1,1 +1,0 @@
-{"class":"org.apache.spark.ml.feature.VectorAssembler","timestamp":1683228319883,"sparkVersion":"3.3.1","uid":"VectorAssembler_a71b0557faf9","paramMap":{"inputCols":["TotalOutOfRange"],"outputCol":"vec_TotalOutOfRange"},"defaultParamMap":{"handleInvalid":"error","outputCol":"VectorAssembler_a71b0557faf9__output"}}
