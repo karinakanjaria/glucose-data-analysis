@@ -17,7 +17,8 @@ class Feature_Transformations:
         all_numerical.remove('target')
         
         # featureArr = [('scaled_' + f) for f in all_numerical_lags]
-        featureArr = [('scaled_' + f) for f in all_numerical]+['Sex_Encoded', 'Treatment_Encoded', 'AgeGroup_Encoded']
+        # featureArr = [('scaled_' + f) for f in all_numerical]+['Sex_Encoded', 'Treatment_Encoded', 'AgeGroup_Encoded']
+        featureArr = [('scaled_' + f) for f in all_numerical]
 
         va1 = [VectorAssembler(inputCols=[f], outputCol=('vec_' + f)) for f in all_numerical]
         ss = [StandardScaler(inputCol='vec_' + f, outputCol='scaled_' + f, withMean=True, withStd=True) for f in all_numerical]
