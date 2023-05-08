@@ -1,7 +1,7 @@
 Data_Storage: 
-  train_data_storage: '/cephfs/stepped_glucose_data/dataset1/single_files/train_10patients/part-00000-dc3206a8-53d0-468a-b026-9e006ff8e1d0-c000.snappy.parquet'
-  validation_data_storage: ''
-  test_data_storage: '/cephfs/stepped_glucose_data/dataset1/single_files/val_10patients/part-00000-98fec2b8-8bb9-4492-b451-6cfbf5cac8b8-c000.snappy.parquet'
+  train_data_storage: "/cephfs/train_test_val/train_set"
+  validation_data_storage: '/cephfs/train_test_val/val_set'
+  test_data_storage: '/cephfs/train_test_val/test_set'
   
   one_hot_encoding_location: '/cephfs/data/cohort_encoded.parquet'
 

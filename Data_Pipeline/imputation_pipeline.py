@@ -40,29 +40,6 @@ class Date_And_Value_Imputation:
     
 #     '''preprocessing stuff'''
 #     def cleanup(self, df):
-#         """ INPUT
-#             df:    spark DataFrame with all patients
-#             OUTPUT
-#             df:    spark DataFrame with all patients
-#         """
-        
-#         '''getting rid of any dates from before the actual start-date of Feb 1, 2022'''
-#         df = df.filter("GlucoseDisplayDate > date'2022-01-31'")
-        
-#         '''replace 0s with NaN and dropna (we don't want to mistakenly start or end with a NaN in the resampling steps)'''
-#         df = df.withColumn("Value", \
-#                            when(col("Value")=="0", None) \
-#                            .otherwise(col("Value")))
-#         df = df.na.drop(subset=['PatientId','Value','GlucoseDisplayTime'])
-        
-#         '''drop duplicate datetimes for each patient (this takes ~30 sec per 10 days x 8000 patients)'''
-#         window = Window.partitionBy('GlucoseDisplayTime','PatientId').orderBy('tiebreak')
-#         df = (df
-#          .withColumn('tiebreak', monotonically_increasing_id())
-#          .withColumn('rank', rank().over(window))
-#          .filter(col('rank') == 1).drop('rank','tiebreak')
-#         )
-        
 #         '''get rid of seconds'''
 #         df = df.withColumn('GlucoseDisplayTime', date_trunc('minute', df.GlucoseDisplayTime))
         
@@ -131,7 +108,7 @@ class Date_And_Value_Imputation:
     
     
 #     def impute_data(self, df):
-#         df = self.cleanup(df)
+#         # df = self.cleanup(df)
         
 #         patientIds = [i.NumId for i in df.select('NumId').distinct().collect()]
         

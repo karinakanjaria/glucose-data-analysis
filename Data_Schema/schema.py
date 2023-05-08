@@ -1,7 +1,8 @@
-from pyspark.sql.types import StructType, StructField, StringType, FloatType, TimestampType, DateType
+from pyspark.sql.types import StructType, StructField, StringType, FloatType, TimestampType, DateType, IntegerType
 class Project_Data_Schema:
     def data_schema_pyspark(self):        
-        glucose_data_schema=StructType([StructField('PatientId', StringType(), True),
+        glucose_data_schema=StructType([StructField('NumId', IntegerType(), True),
+                                        StructField('PatientId', StringType(), True),
                                         StructField('Value', FloatType(), True),
                                         StructField('GlucoseDisplayTime', TimestampType(), True),
                                         StructField('GlucoseDisplayTimeRaw', StringType(), True),
