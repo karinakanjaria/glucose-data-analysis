@@ -2,10 +2,7 @@ from pyspark.ml.feature import StandardScaler, VectorAssembler
 from pyspark.sql.types import DoubleType, FloatType, LongType
 from pyspark.ml import Pipeline
 
-class Feature_Transformations:
-    def categorical_encoding(self, df):    
-        return None
-    
+class Feature_Transformations:    
     def numerical_scaling(self, df):
         double_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, DoubleType)]
         float_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, FloatType)]
