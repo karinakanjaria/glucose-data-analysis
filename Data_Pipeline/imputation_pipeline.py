@@ -11,9 +11,9 @@ from pyspark.sql.functions import when, col, rank, monotonically_increasing_id, 
 from pyspark.sql.types import StructType, StructField, TimestampType
 
 class Date_And_Value_Imputation:
-    def __init__(self):
+    def __init__(self, spark):
         self.value_imputation=Value_Imputation()
-        self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
+        self.spark = spark
 
         # # copypasted from Read_In_Data/read_data.py
         # self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
