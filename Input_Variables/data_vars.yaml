@@ -1,9 +1,11 @@
 Data_Storage: 
   train_data_storage: "/cephfs/train_test_val/train_set"
-  validation_data_storage: '/cephfs/train_test_val/val_set'
-  test_data_storage: '/cephfs/train_test_val/test_set'
+  validation_data_storage: "/cephfs/train_test_val/val_set"
+  test_data_storage: "/cephfs/train_test_val/test_set"
+  unused_patients: "/cephfs/data_by_patient/part-00199-e7334e9b-39bf-4bef-8141-8c8c1167dd37-c000.snappy.parquet"
   
-  one_hot_encoding_location: '/cephfs/data/cohort_encoded.parquet'
+  
+  one_hot_encoding_location: "/cephfs/data/cohort_encoded.parquet"
 
 Analysis:
   Analysis_Group: 'PatientId'
@@ -23,16 +25,16 @@ Time_Series_Input_Features:
 
 
 Feature_Importance:
-    feature_importance_storage_location: '/home/jovyan/glucose-data-analysis/Output_Files/feature_importance_metrics.csv'
-    overall_feature_importance_plot_location: '/home/jovyan/glucose-data-analysis/Output_Files/overall_feature_imp.png'
+    feature_importance_storage_location: "/home/jovyan/glucose-data-analysis/Output_Files/feature_importance_metrics.csv"
+    overall_feature_importance_plot_location: "/home/jovyan/glucose-data-analysis/Output_Files/overall_feature_imp.png"
 
 ML_Models:
-  model_storage_location: '/home/jovyan/glucose-data-analysis/Saved_Models'
+  model_storage_location: "/home/jovyan/glucose-data-analysis/Saved_Models"
   random_seed: 12345
 
 
 Evaluation_Metrics:
-    evaluation_metrics_output_storage: '/home/jovyan/glucose-data-analysis/Output_Files/evaluation_metrics.csv'
+    evaluation_metrics_output_storage: "/home/jovyan/glucose-data-analysis/Output_Files/evaluation_metrics.csv"
 
 Time_Series_Lagged_Features:
   Time_Series_Lag_Values_Created: 6
