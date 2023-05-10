@@ -2,29 +2,31 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 from pyspark.sql.functions import pandas_udf, PandasUDFType
-from Data_Pipeline.fill_missing_data import Value_Imputation
 
 from datetime import date, datetime, timedelta
 import pyspark
 from pyspark.sql import SparkSession, Window
-from pyspark.sql.functions import when, col, rank, monotonically_increasing_id, date_trunc, udf, to_date
-from pyspark.sql.types import StructType, StructField, TimestampType
+from pyspark.sql import functions as F
+from pyspark.sql.types import StructType, StructField, TimestampType, IntegerType, FloatType, StringType
 
 class Date_And_Value_Imputation:
-    def __init__(self, spark):
-        self.value_imputation=Value_Imputation()
-        self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
-        self.inter_schema = StructType([StructField('NumId', IntegerType(), True),
-                                        StructField('GlucoseDisplayTime', TimestampType(), True),
-                                        StructField('Value', IntegerType(), True)])
+    # def __init__(self):
+    #     # self.value_imputation=Value_Imputation()
+    #     self.spark = SparkSession.builder.appName("Glucose").getOrCreate()        
+    
+    
+    output_schema =  StructType([StructField('GlucoseDisplayTime', TimestampType(),True),
+                                                     StructField('NumId', IntegerType(),True),
+                                                     StructField('Value', FloatType(),True)])
 
         # # copypasted from Read_In_Data/read_data.py
         # self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
 
-        
-    @pandas_udf(merged_schema, PandasUDFType.GROUPED_MAP)
+       
+    @pandas_udf(output_schema)
     def interpolation(self, df):    
-        min_max = test_df.groupby('NumId')\
+        print(len(df))
+        min_max = df.groupby('NumId')\
                     .agg({'GlucoseDisplayTime' : ['min', 'max']})
 
         merge_df = pd.DataFrame(columns=['GlucoseDisplayTime', 'NumId'])
@@ -35,7 +37,7 @@ class Date_And_Value_Imputation:
             date_df['NumId']= idx
 
             # merge dates with big pypsark df
-            merged = test_df[test_df['NumId'] == idx]\
+            merged = df[df['NumId'] == idx]\
                     .merge(date_df, how='right', on=['GlucoseDisplayTime', 'NumId'])\
                     .sort_values(by=['GlucoseDisplayTime', 'Value'], na_position='last')
 
@@ -80,11 +82,19 @@ class Date_And_Value_Imputation:
             if len(indexes_to_remove) > 0:
                 merged = merged.drop(indexes_to_remove)
 
+            merged = merged.drop(columns=['PatientId', 'GlucoseDisplayTimeRaw', \
+                                          'GlucoseDisplayDate', 'TimeLag', 'Diff'])
+
             # its ready freddy for some interpoletty
             # merged DF is the dataframe ready to go into interpolation function
 
+            # fill with mean
+            merged = merged.fillna(merged.Value.mean())
 
-    
+            merge_df = pd.concat([merge_df, merged])
+
+        return merge_df
+
     def pyspark_custom_imputation_pipeline(self, df, output_schema, analysis_group):
         @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
         def transform_features(pdf):
