@@ -1,7 +1,7 @@
 Data_Storage: 
-  train_data_storage: "/cephfs/train_test_val/train_set"
-  validation_data_storage: "/cephfs/train_test_val/val_set"
-  test_data_storage: "/cephfs/train_test_val/test_set"
+  train_data_storage: "/cephfs/train_test_val/train"
+  validation_data_storage: "/cephfs/train_test_val/val"
+  test_data_storage: "/cephfs/train_test_val/test"
   unused_patients: "/cephfs/data_by_patient/part-00199-e7334e9b-39bf-4bef-8141-8c8c1167dd37-c000.snappy.parquet"
   
   
