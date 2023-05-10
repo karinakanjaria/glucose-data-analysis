@@ -13,12 +13,77 @@ from pyspark.sql.types import StructType, StructField, TimestampType
 class Date_And_Value_Imputation:
     def __init__(self, spark):
         self.value_imputation=Value_Imputation()
-        self.spark = spark
+        self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
+        self.inter_schema = StructType([StructField('NumId', IntegerType(), True),
+                                        StructField('GlucoseDisplayTime', TimestampType(), True),
+                                        StructField('Value', IntegerType(), True)])
 
         # # copypasted from Read_In_Data/read_data.py
         # self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
 
         
+    @pandas_udf(merged_schema, PandasUDFType.GROUPED_MAP)
+    def interpolation(self, df):    
+        min_max = test_df.groupby('NumId')\
+                    .agg({'GlucoseDisplayTime' : ['min', 'max']})
+
+        merge_df = pd.DataFrame(columns=['GlucoseDisplayTime', 'NumId'])
+        for idx, row in min_max.iterrows():
+            #grab all poteitnal dates in range
+
+            date_df = pd.DataFrame(pd.date_range(row[0], row[1], freq='5min'), columns=['GlucoseDisplayTime'])                              
+            date_df['NumId']= idx
+
+            # merge dates with big pypsark df
+            merged = test_df[test_df['NumId'] == idx]\
+                    .merge(date_df, how='right', on=['GlucoseDisplayTime', 'NumId'])\
+                    .sort_values(by=['GlucoseDisplayTime', 'Value'], na_position='last')
+
+            merged['TimeLag'] = np.concatenate((merged['GlucoseDisplayTime'].iloc[1:].values,\
+                                                np.array(merged['GlucoseDisplayTime'].iloc[-1])), axis=None)\
+                                .astype('datetime64[ns]')
+
+            merged['Diff'] = (merged['TimeLag'] - merged['GlucoseDisplayTime']).dt.seconds
+
+            len_merged = len(merged)
+
+            # get all index of rows with diff less than 5 mins, add 1 to remove next row, 
+            # dont include last row to delete
+            indexes_to_remove = [x for x in merged[merged['Diff'] < 300].index + 1 if x < len_merged]
+
+            if len(indexes_to_remove) > 0:
+                merged = merged.drop(indexes_to_remove)
+
+            # its ready freddy for some interpoletty
+            # grab all potential dates in range
+
+            date_df = pd.DataFrame(pd.date_range(row[0], row[1], freq='5min'), columns=['GlucoseDisplayTime'])                              
+            date_df['NumId']= idx
+
+            # merge dates with big pypsark df
+            merged = test_df[test_df['NumId'] == idx]\
+                    .merge(date_df, how='right', on=['GlucoseDisplayTime', 'NumId'])\
+                    .sort_values(by=['GlucoseDisplayTime', 'Value'], na_position='last')
+
+            merged['TimeLag'] = np.concatenate((merged['GlucoseDisplayTime'].iloc[1:].values,\
+                                                np.array(merged['GlucoseDisplayTime'].iloc[-1])), axis=None)\
+                                .astype('datetime64[ns]')
+
+            merged['Diff'] = (merged['TimeLag'] - merged['GlucoseDisplayTime']).dt.seconds
+
+            len_merged = len(merged)
+
+            # get all index of rows with diff less than 5 mins, add 1 to remove next row, 
+            # dont include last row to delete
+            indexes_to_remove = [x for x in merged[merged['Diff'] < 300].index + 1 if x < len_merged]
+
+            if len(indexes_to_remove) > 0:
+                merged = merged.drop(indexes_to_remove)
+
+            # its ready freddy for some interpoletty
+            # merged DF is the dataframe ready to go into interpolation function
+
+
     
     def pyspark_custom_imputation_pipeline(self, df, output_schema, analysis_group):
         @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
@@ -132,5 +197,7 @@ class Date_And_Value_Imputation:
             
             # OR do a group by and an agg fxn
             # to do a custom agg fxn 
+        
+        self.spark.stop()
         
         return df_new
