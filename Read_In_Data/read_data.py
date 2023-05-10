@@ -19,14 +19,14 @@ class Reading_Data:
     
     
     def read_in_pyspark_data(self, data_location):
-        allPaths = [str(x) for x in list(pathlib.Path(data_location).glob('*.parquet')) if 'part-00' in str(x)]
-        allPaths.sort()
+        # allPaths = [str(x) for x in list(pathlib.Path(data_location).glob('*.parquet')) if 'part-00' in str(x)]
+        # allPaths.sort()
         # print(allPaths)
         
         pyspark_glucose_data = self.spark.read \
                                .schema(self.pyspark_data_schema) \
                                .format('parquet') \
-                               .load(allPaths)
+                               .load(data_location)
         pyspark_glucose_data = pyspark_glucose_data.withColumn("GlucoseDisplayTime",
                                                                date_trunc("minute",
                                                                col("GlucoseDisplayTime")))
