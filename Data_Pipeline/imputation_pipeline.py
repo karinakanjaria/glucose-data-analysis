@@ -23,9 +23,8 @@ class Date_And_Value_Imputation:
         # self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
 
        
-    @pandas_udf(output_schema)
+    @pandas_udf(output_schema, functionType=F.PandasUDFType.GROUPED_MAP)
     def interpolation(self, df):    
-        print(len(df))
         min_max = df.groupby('NumId')\
                     .agg({'GlucoseDisplayTime' : ['min', 'max']})
 
