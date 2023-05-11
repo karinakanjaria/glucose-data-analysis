@@ -27,9 +27,9 @@ class Reading_Data:
                                .schema(self.pyspark_data_schema) \
                                .format('parquet') \
                                .load(data_location)
-        pyspark_glucose_data = pyspark_glucose_data.withColumn("GlucoseDisplayTime",
-                                                               date_trunc("minute",
-                                                               col("GlucoseDisplayTime")))
+        # pyspark_glucose_data = pyspark_glucose_data.withColumn("GlucoseDisplayTime",
+        #                                                        date_trunc("minute",
+        #                                                        col("GlucoseDisplayTime")))
         
         pyspark_glucose_data=pyspark_glucose_data.orderBy("PatientId",
                                                           "GlucoseDisplayTime",
