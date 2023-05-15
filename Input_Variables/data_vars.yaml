@@ -4,6 +4,9 @@ Data_Storage:
   test_data_storage: "/cephfs/train_test_val/test"
   unused_patients: "/cephfs/data_by_patient/part-00199-e7334e9b-39bf-4bef-8141-8c8c1167dd37-c000.snappy.parquet"
   
+  inter_train_location: "/cephfs/interpolation/train"
+  inter_test_location: "/cephfs/interpolation/test"
+  inter_val_location: "/cephfs/interpolation/val"
   
   one_hot_encoding_location: "/cephfs/data/cohort_encoded.parquet"
 

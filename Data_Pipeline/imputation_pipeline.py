@@ -7,63 +7,121 @@ from datetime import date, datetime, timedelta
 import pyspark
 from pyspark.sql import SparkSession, Window
 from pyspark.sql import functions as F
-from pyspark.sql.types import StructType, StructField, TimestampType, IntegerType, FloatType, StringType
+from pyspark.sql.types import StructType, StructField, TimestampType, IntegerType, FloatType, StringType, DateType
 
 class Date_And_Value_Imputation:
-    # def __init__(self):
-    #     # self.value_imputation=Value_Imputation()
-    #     self.spark = SparkSession.builder.appName("Glucose").getOrCreate()        
     
-    
-    output_schema =  StructType([StructField('GlucoseDisplayTime', TimestampType(),True),
+    def __init__(self):
+        self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
+        self.schema = StructType([StructField('GlucoseDisplayTime', TimestampType(),True),
+                                 StructField('NumId', IntegerType(),True),
+                                 StructField('Value', FloatType(),True),
+                                 StructField('GlucoseDisplayDate', DateType(),True)])
+
+        self.output_schema =  StructType([StructField('GlucoseDisplayTime', TimestampType(),True),
                                                      StructField('NumId', IntegerType(),True),
                                                      StructField('Value', FloatType(),True)])
 
-        # # copypasted from Read_In_Data/read_data.py
-        # self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
+    def read_interpolation(self, data_location):
 
-       
-    @pandas_udf(output_schema, functionType=F.PandasUDFType.GROUPED_MAP)
-    def interpolation(self, df):    
-        min_max = df.groupby('NumId')\
-                    .agg({'GlucoseDisplayTime' : ['min', 'max']})
+        pyspark_glucose_data = self.spark.read \
+                               .schema(self.schema) \
+                               .format('parquet') \
+                               .load(data_location)
 
-        merge_df = pd.DataFrame(columns=['GlucoseDisplayTime', 'NumId'])
-        for idx, row in min_max.iterrows():
-            #grab all poteitnal dates in range
+        pyspark_glucose_data=pyspark_glucose_data.orderBy("NumId",
+                                                          "GlucoseDisplayTime",
+                                                          ascending=True)
 
-            date_df = pd.DataFrame(pd.date_range(row[0], row[1], freq='5min'), columns=['GlucoseDisplayTime'])                              
-            date_df['NumId']= idx
+        return pyspark_glucose_data
 
-            # merge dates with big pypsark df
-            merged = df[df['NumId'] == idx]\
-                    .merge(date_df, how='right', on=['GlucoseDisplayTime', 'NumId'])\
-                    .sort_values(by=['GlucoseDisplayTime', 'Value'], na_position='last')
+    def interpolation_creation(self, data_set_name):
+        data_location = "/cephfs/train_test_val/" + str(data_set_name)
 
-            merged['TimeLag'] = np.concatenate((merged['GlucoseDisplayTime'].iloc[0],\
+        allPaths = [str(x) for x in list(pathlib.Path(data_location).glob('*.parquet')) if 'part-00' in str(x)]
+
+        path_counter = 0
+        
+        for path in allPaths:
+            gluc = pd.read_parquet(path, columns=['NumId','GlucoseDisplayTime', 'Value', 'GlucoseDisplayDate'])
+            gluc['GlucoseDisplayTime'] = gluc['GlucoseDisplayTime'].dt.floor('Min')
+            gluc = gluc.sort_values(by=['NumId', 'GlucoseDisplayTime'])
+
+            min_max = gluc.groupby('NumId').agg({'GlucoseDisplayTime' : ['min','max']})
+
+            merge_df = pd.DataFrame(columns=['GlucoseDisplayTime', 'NumId'])
+            starttime = time.time()
+            last_idx = len(min_max)-1
+
+            index_counter = 0
+            for idx, row in min_max.iterrows():
+                #grab all potential dates in range
+
+                min_val = row['GlucoseDisplayTime']['min']
+                max_val = row['GlucoseDisplayTime']['max']
+
+                date_df = pd.DataFrame(pd.date_range(min_val, max_val, freq='5min'),\
+                                   columns=['GlucoseDisplayTime'])  
+
+                # merge dates with big pypsark df
+                id_df = gluc[gluc['NumId'] == idx]
+
+                mean = id_df.Value.mean()
+
+                id_df.set_index('GlucoseDisplayTime', inplace=True)    
+
+                date_df.set_index('GlucoseDisplayTime', inplace=True)
+
+                merged = id_df.join(date_df, how='outer',\
+                                on='GlucoseDisplayTime', sort=True)
+
+                merged['IsFilledIn'] = 0
+                merged.loc[merged.Value.isna(), 'IsFilledIn'] = 1        
+                merged.loc[merged.Value.isna(), 'Value'] = mean
+                merged.loc[merged.GlucoseDisplayDate.isna(), 'GlucoseDisplayDate'] = merged.loc[merged.GlucoseDisplayDate.isna()]['GlucoseDisplayTime'].dt.date
+
+                merged['NumId'] = idx
+
+                merged.reset_index(inplace=True)
+
+                merged = merged.drop(columns=['index'])
+
+                merged['TimeLag'] = np.concatenate((merged['GlucoseDisplayTime'].iloc[0],\
                                                 np.array(merged['GlucoseDisplayTime'].iloc[:-1].values)), axis=None)\
                                 .astype('datetime64[ns]')
 
-            merged['Diff'] = (merged['TimeLag'] - merged['GlucoseDisplayTime']).dt.seconds
+                merged['Diff'] = (merged['TimeLag'] - merged['GlucoseDisplayTime']).dt.seconds
 
-            len_merged = len(merged)
+                len_merged = len(merged)
 
-            # get all index of rows with diff less than 5 mins, add 1 to remove next row, 
-            # dont include last row to delete
-            indexes_to_remove = [x for x in merged[merged['Diff'] < 300].index + 1 if x < len_merged]
+                # get all index of rows with diff less than 5 mins, add 1 to remove next row, 
+                # dont include last row to delete
+                indexes_to_remove = [x for x in merged[merged['Diff'] < 300].index + 1 if x < len_merged & x != 0]
 
-            if len(indexes_to_remove) > 0:
-                merged = merged.drop(indexes_to_remove)
+                if len(indexes_to_remove) > 0:
+                    merged = merged.drop(indexes_to_remove)
 
-            # its ready freddy for some interpoletty
-            # merged DF is the dataframe ready to go into interpolation function
+                # its ready freddy for some interpoletty
+                # merged DF is the dataframe ready to go into interpolation function
 
-            # fill with mean
-            merged = merged.fillna(merged.Value.mean())
+                # fill with mean
 
-            merge_df = pd.concat([merge_df, merged])
+                merged = merged.drop(columns=['TimeLag', 'Diff'])
 
-        return merge_df
+                if ((index_counter % 25 != 0) and index_counter != last_idx) or (index_counter == 0):
+                    merge_df = pd.concat([merge_df, merged])
+                elif (index_counter % 25 == 0) or (index_counter == last_idx):
+                    merge_df = merge_df.astype({'GlucoseDisplayTime': 'datetime64[ns]'})
+
+                    merge_df.to_parquet('/cephfs/interpolation/val/parquet_' + str(path_counter) + '_' + str(index_counter) + '.parquet')
+                    merge_df = pd.DataFrame(columns=['GlucoseDisplayTime', 'NumId'])
+
+                index_counter += 1
+
+            path_counter += 1
+
+        return None
+        
 
     def pyspark_custom_imputation_pipeline(self, df, output_schema, analysis_group):
         @pandas_udf(output_schema, PandasUDFType.GROUPED_MAP)
@@ -83,15 +141,6 @@ class Date_And_Value_Imputation:
 
         return transformed_data        
 
-    
-#     '''preprocessing stuff'''
-#     def cleanup(self, df):
-#         '''get rid of seconds'''
-#         df = df.withColumn('GlucoseDisplayTime', date_trunc('minute', df.GlucoseDisplayTime))
-        
-#         return df
-        
-        
         
     def replace_missing(self, subset, patient_str):
         """ INPUT
