@@ -7,14 +7,14 @@ from datetime import date, datetime, timedelta
 import pyspark
 from pyspark.sql import SparkSession, Window
 from pyspark.sql import functions as F
-from pyspark.sql.types import StructType, StructField, TimestampType, IntegerType, FloatType, StringType, DateType
+from pyspark.sql.types import StructType, StructField, TimestampType, IntegerType, FloatType, StringType, DateType,LongType
 
 class Date_And_Value_Imputation:
     
     def __init__(self):
         self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
         self.schema = StructType([StructField('GlucoseDisplayTime', TimestampType(),True),
-                                 StructField('NumId', IntegerType(),True),
+                                 StructField('NumId', LongType(),True),
                                  StructField('Value', FloatType(),True),
                                  StructField('GlucoseDisplayDate', DateType(),True)])
 
@@ -25,7 +25,6 @@ class Date_And_Value_Imputation:
     def read_interpolation(self, data_location):
 
         pyspark_glucose_data = self.spark.read \
-                               .schema(self.schema) \
                                .format('parquet') \
                                .load(data_location)
 

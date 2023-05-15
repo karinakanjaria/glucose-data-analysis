@@ -12,6 +12,10 @@ train_data_storage=input_vars['Data_Storage']['train_data_storage']
 validation_data_storage=input_vars['Data_Storage']['validation_data_storage']
 test_data_storage=input_vars['Data_Storage']['test_data_storage']
 
+inter_train_location=input_vars['Data_Storage']['inter_train_location']
+inter_test_location=input_vars['Data_Storage']['inter_test_location']
+inter_val_location=input_vars['Data_Storage']['inter_val_location']
+
 one_hot_encoding_data=input_vars['Data_Storage']['one_hot_encoding_location']
 
 
