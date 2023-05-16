@@ -38,6 +38,35 @@ class Reading_Data:
         # self.spark.stop()
         return pyspark_glucose_data
 
+
+    def read_in_pyspark_data_for_summary_stats(self, data_location):
+        # allPaths = [str(x) for x in list(pathlib.Path(data_location).glob('*.parquet')) if 'part-00' in str(x)]
+        # allPaths.sort()
+        # print(allPaths)
+        
+#         pyspark_glucose_data = self.spark.read \
+#                                .schema(self.pyspark_data_schema) \
+#                                .format('parquet') \
+#                                .load(data_location)
+
+        
+        pyspark_glucose_data = self.spark.read \
+                               .format('parquet') \
+                               .load(data_location)
+
+
+
+        # pyspark_glucose_data = pyspark_glucose_data.withColumn("GlucoseDisplayTime",
+        #                                                        date_trunc("minute",
+        #                                                        col("GlucoseDisplayTime")))
+        
+        pyspark_glucose_data=pyspark_glucose_data.orderBy("PatientId",
+                                                          "GlucoseDisplayTime",
+                                                          ascending=True)
+        
+        # self.spark.stop()
+        return pyspark_glucose_data
+    
     
     def read_in_one_hot_encoded_data(self, one_hot_encoding_location):
         one_hot_encoding_df = self.spark.read.parquet(one_hot_encoding_location)
