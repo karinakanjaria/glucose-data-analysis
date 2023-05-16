@@ -38,12 +38,12 @@ class TS_Features:
         st_dev_values = np.std(glucose_differentials)
 
         # measures the width of poincare cloud
-        short_term_variation = round((1 / np.sqrt(2)) * st_dev_differentials, 3)
+        short_term_variation = (1 / np.sqrt(2)) * st_dev_differentials
 
         # measures the length of the poincare cloud
-        long_term_variation = round(np.sqrt((2 * st_dev_values ** 2) - (0.5 * st_dev_differentials ** 2)), 3)
+        long_term_variation = np.sqrt((2 * st_dev_values ** 2) - (0.5 * st_dev_differentials ** 2))
 
-        ratio = round(short_term_variation / long_term_variation, 3)
+        ratio = short_term_variation / long_term_variation
         
         poincare_df = pd.DataFrame([[patientid] + [chunk] + [short_term_variation] + [long_term_variation] + [ratio]])
         poincare_df.columns=['NumId', 'Chunk', 'ShortTermVariance', 'LongTermVariance', 'VarianceRatio']
