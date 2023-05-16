@@ -13,7 +13,7 @@ from pyspark.sql.window import Window
 
 class Summary_Stats_Features:
     def create_chunk_col(self, df, chunk_val):
-        window = Window.partitionBy(df['PatientId']).orderBy(df['GlucoseDisplayTime'])
+        window = Window.partitionBy(df['NumId']).orderBy(df['GlucoseDisplayTime'])
         df = df.select('*', rank().over(window).alias('index'))
         df = df.withColumn("Chunk", (df.index/chunk_val).cast(IntegerType()))
 
@@ -25,7 +25,7 @@ class Summary_Stats_Features:
                                    chunk_val = 288, 
                                    chunk_lag=1):  
 
-        group_cols = ["PatientId", "Chunk"]
+        group_cols = ["NumId", "Chunk"]
 
         summary_df = df.groupby(group_cols)\
             .agg(avg("Value").alias("Mean"),\
@@ -42,7 +42,7 @@ class Summary_Stats_Features:
                  sum(col('y_Binary')).alias('TotalOutOfRange')
                 )
         
-        my_window = Window.partitionBy("PatientId").orderBy("Chunk")
+        my_window = Window.partitionBy("NumId").orderBy("Chunk")
         # summary_df = df.withColumn("NextDayValue", lag(df.TotalOutOfRange, offset=chunk_lag).over(my_window))
         # summary_df = df.withColumn("target", df.NextDayValue - df.TotalOutOfRange)
         

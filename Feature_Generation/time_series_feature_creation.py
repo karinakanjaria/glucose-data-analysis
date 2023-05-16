@@ -6,23 +6,23 @@ from pyspark.sql.types import *
 
 class TS_Features:
 
-    entropy_schema = StructType([StructField('PatientId', StringType(), True),
+    entropy_schema = StructType([StructField('NumId', IntegerType(), True),
                              StructField('Chunk', IntegerType(), True),
                              StructField('Entropy', FloatType(), True)])
 
     @pandas_udf(entropy_schema, functionType=PandasUDFType.GROUPED_MAP)
     def entropy(self, df):
-        patientid = df['PatientId'].iloc[0]
+        patientid = df['NumId'].iloc[0]
         chunk = df['Chunk'].iloc[0]
 
         entropy = eH.SampEn(df.Value.values, m=4)[0][-1]
 
         entropy_df = pd.DataFrame([[patientid] + [chunk] + [entropy]])
-        entropy_df.columns=['PatientId', 'Chunk', 'Entropy']
+        entropy_df.columns=['NumId', 'Chunk', 'Entropy']
         return entropy_df
     
     
-    poincare_schema = StructType([StructField('PatientId', StringType(), True),
+    poincare_schema = StructType([StructField('NumId', IntegerType(), True),
                               StructField('Chunk', IntegerType(), True),
                               StructField('ShortTermVariance', FloatType(), True),
                               StructField('LongTermVariance', FloatType(), True),
@@ -30,7 +30,7 @@ class TS_Features:
     
     @pandas_udf(poincare_schema, functionType=PandasUDFType.GROUPED_MAP)
     def poincare(self, df):
-        patientid = df['PatientId'].iloc[0]
+        patientid = df['NumId'].iloc[0]
         chunk = df['Chunk'].iloc[0]
         
         glucose_differentials = np.diff(df.Value)
@@ -46,11 +46,11 @@ class TS_Features:
         ratio = round(short_term_variation / long_term_variation, 3)
         
         poincare_df = pd.DataFrame([[patientid] + [chunk] + [short_term_variation] + [long_term_variation] + [ratio]])
-        poincare_df.columns=['PatientId', 'Chunk', 'ShortTermVariance', 'LongTermVariance', 'VarianceRatio']
+        poincare_df.columns=['NumId', 'Chunk', 'ShortTermVariance', 'LongTermVariance', 'VarianceRatio']
         return poincare_df
     
     
-    sleep_schema = StructType([StructField('PatientId', StringType(), True),
+    sleep_schema = StructType([StructField('NumId', IntegerType(), True),
                               StructField('Date', DateType(), True),
                               StructField('SleepSDShort', FloatType(), True),
                               StructField('SleepSDLong', FloatType(), True),
@@ -58,7 +58,7 @@ class TS_Features:
     
     @pandas_udf(sleep_schema, functionType=PandasUDFType.GROUPED_MAP)
     def sleep(self, df):
-        patientid = df['PatientId'].iloc[0]
+        patientid = df['NumId'].iloc[0]
         date = df['Date'].iloc[0]
 
         sleeping = df[((df.Time >= '00:00:00') & (df.Time <= '06:00:00'))]
@@ -77,7 +77,7 @@ class TS_Features:
         ratio = short_term_variation / long_term_variation
         
         sleep_df = pd.DataFrame([[patientid] + [date] + [short_term_variation] + [long_term_variation] + [ratio]])
-        sleep_df.columns=['PatientId', 'Date', 'SleepSDShort', 'SleepSDLong', 'SleepSDRatio']
+        sleep_df.columns=['NumId', 'Date', 'SleepSDShort', 'SleepSDLong', 'SleepSDRatio']
         return sleep_df
     
     
@@ -85,9 +85,8 @@ class TS_Features:
         df = df.withColumn('Date', to_date(col('GlucoseDisplayTime')))
         df = df.withColumn('Time', date_format('GlucoseDisplayTime', 'HH:mm:ss'))
         
-        training_df_sleep = df.groupby(['PatientId', 'Date']).apply(self.sleep)
-        return training_df_sleep
-    
+        sleep_df = df.groupby(['NumId', 'Date']).apply(self.sleep)
+        return sleep_df
     
     
     
