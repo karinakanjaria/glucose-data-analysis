@@ -44,15 +44,15 @@ class Reading_Data:
         # allPaths.sort()
         # print(allPaths)
         
-#         pyspark_glucose_data = self.spark.read \
-#                                .schema(self.pyspark_data_schema) \
-#                                .format('parquet') \
-#                                .load(data_location)
-
-        
         pyspark_glucose_data = self.spark.read \
+                               .schema(self.pyspark_data_schema) \
                                .format('parquet') \
                                .load(data_location)
+
+        
+        # pyspark_glucose_data = self.spark.read \
+        #                        .format('parquet') \
+        #                        .load(data_location)
 
 
 
