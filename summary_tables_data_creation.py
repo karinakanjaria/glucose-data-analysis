@@ -39,3 +39,8 @@ for training_file in training_files:
     
     training_features_summary_stats=summary_stats_features.pyspark_summary_statistics(df=training_df_chunks)
     training_features_summary_stats.show(5)
+    
+    # output directory
+    # /cephfs/summary_stats/train
+    # /cephfs/summary_stats/test
+    # /cephfs/summary_stats/val
