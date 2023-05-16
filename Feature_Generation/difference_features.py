@@ -7,7 +7,7 @@ from pyspark.sql.window import Window
 
 class Difference_Features:
     def add_difference_features(self, df):
-        my_window = Window.partitionBy('PatientId').orderBy("GlucoseDisplayTime")
+        my_window = Window.partitionBy('NumId').orderBy("GlucoseDisplayTime")
         df = df.withColumn("prev_value", lag(df.Value).over(my_window))
         df = df.withColumn("FirstDiff", when(isnull(df.Value - df.prev_value), 0)
                                   .otherwise(df.Value - df.prev_value))

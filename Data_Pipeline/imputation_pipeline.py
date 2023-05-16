@@ -31,6 +31,7 @@ class Date_And_Value_Imputation:
         pyspark_glucose_data=pyspark_glucose_data.orderBy("NumId",
                                                           "GlucoseDisplayTime",
                                                           ascending=True)
+        pyspark_glucose_data=pyspark_glucose_data.drop('GlucoseDisplayDate', '__index_level_0__')
 
         return pyspark_glucose_data
 
