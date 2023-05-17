@@ -8,6 +8,7 @@ class Project_Data_Schema:
                                         StructField('GlucoseDisplayTimeRaw', StringType(), True),
                                         StructField('GlucoseDisplayDate', DateType(), True)])
         return glucose_data_schema
+    
 
 class Pandas_UDF_Data_Schema:
     def custom_imputation_pyspark_schema(self):
