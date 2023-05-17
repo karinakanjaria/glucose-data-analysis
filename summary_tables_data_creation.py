@@ -14,35 +14,35 @@ create_binary_labels=Create_Binary_Labels()
 summary_stats_features=Summary_Stats_Features()
 difference_features=Difference_Features()
 
-# train, val, test
-pipeline_stage='test'
+pipeline_stages=['train', 'val', 'test']
 
-training_files_directory=os.listdir(f'/cephfs/interpolation/{pipeline_stage}/')
-training_files=[i for i in training_files_directory if not ('.crc' in i or 'SUCCESS' in i)]
+for pipeline_stage in pipeline_stages:
+    training_files_directory=os.listdir(f'/cephfs/interpolation/{pipeline_stage}/')
+    training_files=[i for i in training_files_directory if not ('.crc' in i or 'SUCCESS' in i)]
 
-num_training_files=len(training_files)
-training_counter=1
+    num_training_files=len(training_files)
+    training_counter=1
 
-for training_file in training_files:
-    # Read Imputation Data
-    custom_imputation_data=date_and_value_imputation.read_interpolation(f'/cephfs/interpolation/{pipeline_stage}/{training_file}')
-        
-    # Binary Labels
-    added_binary_labels=create_binary_labels.pyspark_binary_labels(df=custom_imputation_data)
+    for training_file in training_files:
+        # Read Imputation Data
+        custom_imputation_data=date_and_value_imputation.read_interpolation(f'/cephfs/interpolation/{pipeline_stage}/{training_file}')
 
-    # Differences Features
-    differences_df=difference_features.add_difference_features(added_binary_labels)
-    
-    # Create Chunk Feature
-    chunks_df=summary_stats_features.create_chunk_col(differences_df, chunk_val = 288)
-    
-    # Summary Statistics Dataframe
-    features_summary_stats=summary_stats_features.pyspark_summary_statistics(df=chunks_df)
-    
-    # Parquet File Output
-    features_summary_stats.write.format('parquet').mode("overwrite").\
-    save(f'/cephfs/summary_stats/{pipeline_stage}/summary_stats_{training_file}')
-    
-    # Counter Update
-    print(f'Completed {training_counter}/{num_training_files}')
-    training_counter=training_counter+1
+        # Binary Labels
+        added_binary_labels=create_binary_labels.pyspark_binary_labels(df=custom_imputation_data)
+
+        # Differences Features
+        differences_df=difference_features.add_difference_features(added_binary_labels)
+
+        # Create Chunk Feature
+        chunks_df=summary_stats_features.create_chunk_col(differences_df, chunk_val = 288)
+
+        # Summary Statistics Dataframe
+        features_summary_stats=summary_stats_features.pyspark_summary_statistics(df=chunks_df)
+
+        # Parquet File Output
+        features_summary_stats.write.format('parquet').mode("overwrite").\
+        save(f'/cephfs/summary_stats/{pipeline_stage}/summary_stats_{training_file}')
+
+        # Counter Update
+        print(f'Completed {pipeline_stage}: {training_counter}/{num_training_files}')
+        training_counter=training_counter+1
