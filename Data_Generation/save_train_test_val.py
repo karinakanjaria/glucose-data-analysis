@@ -1,4 +1,3 @@
-import time
 import pathlib
 import pyspark
 from pyspark.sql import SparkSession, Window
@@ -88,16 +87,16 @@ class Create_Parquet_Files:
                            col("GlucoseDisplayTime")))
 
         # drop duplicate datetimes for each patient
-        window = Window.partitionBy('GlucoseDisplayTime','PatientId').orderBy('tiebreak')
-        df = df.withColumn('tiebreak', monotonically_increasing_id()) \
-               .withColumn('rank', rank().over(window)) \
-               .filter(col('rank') == 1).drop('rank','tiebreak')
+        # window = Window.partitionBy('GlucoseDisplayTime','PatientId').orderBy('tiebreak')
+        # df = df.withColumn('tiebreak', monotonically_increasing_id()) \
+        #        .withColumn('rank', rank().over(window)) \
+        #        .filter(col('rank') == 1).drop('rank','tiebreak')
 
         ##### potential parquet save-out+load-in interjection here
-        df.write.mode('overwrite') \
-          .parquet('/cephfs/train_test_val/_checkpoint')
+        df.write.mode('overwrite').parquet('/cephfs/train_test_val/_checkpoint.parquet')
+        # df.write.parquet('/cephfs/train_test_val/_checkpoint.parquet')
         
-        spark.stop()
+        # spark.stop()
         
         
     def train_val_test_step2(self):
@@ -118,6 +117,8 @@ class Create_Parquet_Files:
                            .withColumnRenamed('', 'NumId') \
                            .select(col('UserId'), col('NumId')) \
                            .distinct()
+        
+        df = df.dropDuplicates(['PatientId', 'GlucoseDisplayTime'])
         
         # Add in (join) the NumIds for future easier merges
         df = df.join(patientIds, df.PatientId == patientIds.UserId)\
@@ -150,10 +151,9 @@ class Create_Parquet_Files:
         df = df.withColumn('rank', rank().over(window))
 
         ##### potential parquet save-out+load-in interjection here
-        df.write.mode('overwrite') \
-          .parquet('/cephfs/train_test_val/_checkpoint')
+        df.write.mode('overwrite').parquet('/cephfs/train_test_val/_checkpoint.parquet')
         
-        spark.stop()
+        # spark.stop()
         
         
     def train_val_test_step3(self):
