@@ -23,6 +23,25 @@ class Create_Binary_Labels:
 
 #         return df
 
+    # outSchema = StructType([StructField('GlucoseDisplayTime', TimestampType(), True),
+    #                         StructField('NumId', IntegerType(), True),
+    #                         StructField('Value', FloatType(), True),
+    #                         StructField('IsFilledIn', FloatType(), True),
+    #                         StructField('y_Binary', IntegerType(), True),
+    #                         StructField('is_above', IntegerType(), True),
+    #                         StructField('is_below', IntegerType(), True)
+    #                     ])
+    
+    # outSchema = StructType([StructField('NumId', IntegerType(), True),
+    #                         StructField('PatientId', StringType(), True),
+    #                         StructField('Value', FloatType(), True),
+    #                         StructField('GlucoseDisplayTime', TimestampType(), True),
+    #                         StructField('IsFilledIn', FloatType(), True),
+    #                         StructField('y_Binary', IntegerType(), True),
+    #                         StructField('is_above', IntegerType(), True),
+    #                         StructField('is_below', IntegerType(), True)
+    #                     ])
+    
     outSchema = StructType([StructField('GlucoseDisplayTime', TimestampType(), True),
                             StructField('NumId', IntegerType(), True),
                             StructField('Value', FloatType(), True),
@@ -30,7 +49,7 @@ class Create_Binary_Labels:
                             StructField('y_Binary', IntegerType(), True),
                             StructField('is_above', IntegerType(), True),
                             StructField('is_below', IntegerType(), True)
-                        ])
+                    ])
     
     @pandas_udf(outSchema, functionType=F.PandasUDFType.GROUPED_MAP)
     def pandas_binary_labels(self, df):
