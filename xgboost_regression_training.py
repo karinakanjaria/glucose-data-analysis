@@ -32,10 +32,11 @@ for file in training_files:
 
     if iteration==1:
         # XGBoost Model
-        xgboost_model=create_pyspark_xgboost.xgboost_regression(ml_df=training_features_summary_stats,
-                                                                stages=training_numerical_stages,
-                                                                model_storage_location=model_storage_location,
-                                                                random_seed=random_seed)
+        xgboost_model=create_pyspark_xgboost\
+        .initial_training_xgboost_regression(ml_df=training_features_summary_stats,
+                                             stages=training_numerical_stages,
+                                             model_storage_location=model_storage_location,
+                                             random_seed=random_seed)
     else:
         
         
