@@ -7,7 +7,7 @@ class Create_PySpark_XGBoost:
         features_col="features"
         label_name="target"
 
-        xgb_classifier=SparkXGBRegressor(features_col=features_col, 
+        xgb_regression=SparkXGBRegressor(features_col=features_col, 
                                           label_col=label_name,
                                           num_workers=4,
                                           random_state=random_seed,
@@ -15,7 +15,7 @@ class Create_PySpark_XGBoost:
 
         
         
-        stages.append(xgb_classifier)
+        stages.append(xgb_regression)
         pipeline=Pipeline(stages=stages)
         
         model=pipeline.fit(ml_df)
