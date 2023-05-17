@@ -15,9 +15,9 @@ summary_stats_features=Summary_Stats_Features()
 difference_features=Difference_Features()
 
 # train, val, test
-pipeline_stage='train'
+pipeline_stage='test'
 
-training_files_directory=os.listdir('/cephfs/interpolation/train/')
+training_files_directory=os.listdir(f'/cephfs/interpolation/{pipeline_stage}/')
 training_files=[i for i in training_files_directory if not ('.crc' in i or 'SUCCESS' in i)]
 
 num_training_files=len(training_files)
