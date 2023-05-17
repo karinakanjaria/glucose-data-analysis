@@ -7,8 +7,12 @@ from pyspark.sql.types import *
 class TS_Features:
 
     entropy_schema = StructType([StructField('NumId', IntegerType(), True),
-                             StructField('Chunk', IntegerType(), True),
-                             StructField('Entropy', FloatType(), True)])
+                                 StructField('Chunk', IntegerType(), True),
+                                 StructField('Entropy', FloatType(), True)
+                                 StructField('Entropy', FloatType(), True),
+                                 StructField('PEntropy', FloatType(), True),
+                                 StructField('CPEntropy', FloatType(), True)
+                                ])
 
     @pandas_udf(entropy_schema, functionType=PandasUDFType.GROUPED_MAP)
     def entropy(self, df):
@@ -16,9 +20,10 @@ class TS_Features:
         chunk = df['Chunk'].iloc[0]
 
         entropy = eH.SampEn(df.Value.values, m=4)[0][-1]
+        pe, normpe, cpe = eH.PermEn(df.Value.values, m=4)[0][-1]
 
-        entropy_df = pd.DataFrame([[patientid] + [chunk] + [entropy]])
-        entropy_df.columns=['NumId', 'Chunk', 'Entropy']
+        entropy_df = pd.DataFrame([[patientid] + [chunk] + [entropy] + [pe] + [cpe]])
+        entropy_df.columns=['NumId', 'Chunk', 'Entropy', 'PEntropy', 'CPEntropy']
         return entropy_df
     
     
