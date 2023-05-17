@@ -3,7 +3,7 @@ from xgboost.spark import SparkXGBRegressor
 from pyspark.ml import Pipeline
 
 class Create_PySpark_XGBoost:
-    def xgboost_classifier(self, ml_df, stages, model_storage_location, random_seed):
+    def xgboost_regression(self, ml_df, stages, model_storage_location, random_seed):
         features_col="features"
         label_name="target"
         
