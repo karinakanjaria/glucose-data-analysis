@@ -44,11 +44,11 @@ for file in training_files:
                                                random_seed=random_seed, 
                                                past_model=xgboost_model)
             
-            if iteration%20 == 0 or iteration==total_file_iteration:
-                xgboost_model.write().overwrite().save(model_storage_location)
-                print('Saved Model')
-            else:
-                None
+            # if iteration%20 == 0 or iteration==total_file_iteration:
+            #     xgboost_model.write().overwrite().save(model_storage_location)
+            #     print('Saved Model')
+            # else:
+            #     None
         except:
             print(f'Failed {file}: {iteration}/{total_file_iteration}')
             blank_interoplation_list.append(f'{file}')
@@ -59,3 +59,5 @@ for file in training_files:
     iteration=iteration+1
     
 print(blank_interoplation_list)
+xgboost_model.write().overwrite().save(model_storage_location)
+print('Saved Model')
