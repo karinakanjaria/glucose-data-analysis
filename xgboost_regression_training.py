@@ -6,7 +6,6 @@ from Model_Creation.pyspark_xgboost import Create_PySpark_XGBoost
 
 import os
 
-
 reading_data=Reading_Data()
 feature_transformations=Feature_Transformations()
 create_pyspark_xgboost=Create_PySpark_XGBoost()
@@ -17,11 +16,9 @@ training_files=[i for i in training_files_directory if not ('.crc' in i or 'SUCC
 total_file_iteration=len(training_files)
 iteration=1
 
-# tester for now
-training_files=training_files[0:1]
+model_storage_location='/cephfs/Saved_Models/Summary_Stats_Model'
 
-# model_storage_location='/cephfs/Model_Summary_Stats'
-model_storage_location='Saved_Models/'
+blank_interoplation_list=[]
 
 for file in training_files:
     # Read in Summary Statistics
@@ -36,11 +33,29 @@ for file in training_files:
         xgboost_model=create_pyspark_xgboost\
         .initial_training_xgboost_regression(ml_df=summary_stats,
                                              stages=training_numerical_stages,
-                                             model_storage_location=model_storage_location,
                                              random_seed=random_seed)
+        
+    
     else:
-        None
-        
-        
-    print(f'Completed: {iteration}/{total_file_iteration}')
+        try:
+            xgboost_model=create_pyspark_xgboost\
+            .batch_training_xgboost_regression(ml_df=summary_stats, 
+                                               stages=training_numerical_stages, 
+                                               random_seed=random_seed, 
+                                               past_model=xgboost_model)
+            
+            if iteration%20 == 0 or iteration==total_file_iteration:
+                xgboost_model.write().overwrite().save(model_storage_location)
+                print('Saved Model')
+            else:
+                None
+        except:
+            print(f'Failed {file}: {iteration}/{total_file_iteration}')
+            blank_interoplation_list.append(f'{file}')
+            iteration=iteration+1
+            continue
+            
+    print(f'Completed {file}: {iteration}/{total_file_iteration}')
     iteration=iteration+1
+    
+print(blank_interoplation_list)

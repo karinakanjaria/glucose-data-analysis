@@ -3,50 +3,44 @@ from xgboost.spark import SparkXGBRegressor
 from pyspark.ml import Pipeline
 
 class Create_PySpark_XGBoost:
-    def initial_training_xgboost_regression(self, ml_df, stages, model_storage_location, random_seed):
-        features_col="features"
-        label_name="target"
-
+    def __init__(self):
+        self.features_col="features"
+        self.label_name="target"
+        
+    
+    def initial_training_xgboost_regression(self, ml_df, stages, random_seed):
         # xgb_regression=SparkXGBRegressor(features_col=features_col, 
         #                                   label_col=label_name,
         #                                   num_workers=4,
         #                                   random_state=random_seed,
         #                                   use_gpu=True)
         
-        xgb_regression=SparkXGBRegressor(features_col=features_col, 
-                                          label_col=label_name,
-                                          random_state=random_seed,
-                                          use_gpu=False)
+        initial_xgb_regression=SparkXGBRegressor(features_col=self.features_col, 
+                                                 label_col=self.label_name,
+                                                 random_state=random_seed,
+                                                 use_gpu=False)
 
-        
-        
-        stages.append(xgb_regression)
+        stages.append(initial_xgb_regression)
         pipeline=Pipeline(stages=stages)
         
         model=pipeline.fit(ml_df)
         
-        model.write().overwrite().save(model_storage_location)
+        # model.write().overwrite().save(model_storage_location)
         
         return model
     
     
-    def batch_training_xgboost_regression(self, ml_df, stages, model_storage_location, random_seed):
-        features_col="features"
-        label_name="target"
+    def batch_training_xgboost_regression(self, ml_df, stages, random_seed, past_model):
+        batch_xgb_regression=SparkXGBRegressor(features_col=self.features_col, 
+                                               label_col=self.label_name,
+                                               random_state=random_seed,
+                                               use_gpu=False,
+                                               xgb_model=past_model.stages[-1].get_booster())
 
-        xgb_classifier=SparkXGBRegressor(features_col=features_col, 
-                                          label_col=label_name,
-                                          num_workers=4,
-                                          random_state=random_seed,
-                                          use_gpu=True)
-
-        
-        
-        stages.append(xgb_classifier)
+        stages.append(batch_xgb_regression)
         pipeline=Pipeline(stages=stages)
+        new_model=pipeline.fit(ml_df)
+       
+        # new_model.write().overwrite().save(model_storage_location)
         
-        model=pipeline.fit(ml_df)
-        
-        model.write().overwrite().save(model_storage_location)
-        
-        return model
+        return new_model
