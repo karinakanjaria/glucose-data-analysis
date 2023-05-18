@@ -46,7 +46,7 @@ class Feature_Transformations:
 
         columns_scaler=ColumnScaler()
     
-        va2 = VectorAssembler(inputCols=featureArr, outputCol="features")
+        va2 = VectorAssembler(inputCols=featureArr, outputCol="features", handleInvalid='skip')
 
         stages=[columns_scaler]+[va2]
         
