@@ -3,6 +3,9 @@ import pandas as pd
 
 # PySpark Libraries
 import pyspark
+
+from pyspark import SparkConf, SparkContext
+
 from pyspark.sql import SparkSession, Window
 from pyspark.sql.functions import date_trunc, col, rank, when, monotonically_increasing_id
 import pathlib
@@ -39,7 +42,7 @@ class Reading_Data:
         return pyspark_glucose_data
 
 
-    def read_in_pyspark_data_for_summary_stats(self, data_location): 
+    def read_in_pyspark_data_for_summary_stats(self, data_location):        
         summary_stats_df = self.spark.read \
                                .format('parquet') \
                                .load(data_location)
