@@ -16,11 +16,17 @@ reading_data=Reading_Data()
 feature_transformations=Feature_Transformations()
 create_pyspark_xgboost=Create_PySpark_XGBoost()
 
-training_files_directory=os.listdir('/cephfs/summary_stats/train')
-training_files=[i for i in training_files_directory if not ('.crc' in i or 'SUCCESS' in i)]
+# training_files_directory=os.listdir('/cephfs/summary_stats/train')
+# training_files=[i for i in training_files_directory if not ('.crc' in i or 'SUCCESS' in i)]
+
+training_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/train'), x),os.listdir('/cephfs/summary_stats/train')))
+training_files=[i for i in training_files if not ('.crc' in i or 'SUCCESS' in i)]
+training_files.remove('/cephfs/summary_stats/train/summary_stats_parquet_145_26.parquet')
 
 total_file_iteration=len(training_files)
 iteration=1
+
+print(total_file_iteration)
 
 model_storage_location='/cephfs/Saved_Models/Summary_Stats_Model'
 
@@ -29,7 +35,7 @@ blank_interoplation_list=[]
 for file in training_files:
     # Read in Summary Statistics
     summary_stats=reading_data \
-        .read_in_pyspark_data_for_summary_stats(data_location=f'/cephfs/summary_stats/train/{file}')
+        .read_in_pyspark_data_for_summary_stats(data_location=f'{file}')
     
     # Numerical Transformation Stages
     training_numerical_stages=feature_transformations.numerical_scaling(df=summary_stats)
