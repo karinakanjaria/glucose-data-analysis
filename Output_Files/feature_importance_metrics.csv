@@ -1,0 +1,13 @@
+Feature,Accuracy Gain
+scaled_TotalOutOfRange,3421987.0
+scaled_StdSecDiff,276284.84375
+scaled_AvgFirstDiff,141676.734375
+scaled_Max,84129.8125
+scaled_Min,81583.6171875
+scaled_StdFirstDiff,79835.015625
+scaled_AvgSecDiff,74921.1328125
+scaled_CountAbove,60482.8359375
+scaled_Mean,48874.10546875
+scaled_Median,37536.5703125
+scaled_CountBelow,29552.580078125
+scaled_StdDev,25853.81640625

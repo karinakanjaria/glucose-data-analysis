@@ -19,177 +19,176 @@ from pyspark.ml.util import DefaultParamsReadable, DefaultParamsWritable
 from xgboost.spark import SparkXGBRegressor
 from pyspark.ml import Pipeline
 
+
+from Input_Variables.read_vars import evaluation_metrics_output_storage, \
+                                      feature_importance_storage_location, \
+                                      overall_feature_importance_plot_location
+
+
+from Model_Predictions.pyspark_model_preds import Model_Predictions
+from Model_Evaluation.pyspark_model_eval import Evaluate_Model
+from Feature_Importance.model_feature_importance import Feature_Importance
+from Model_Plots.xgboost_classification_plots import XGBoost_Classification_Plot
+
+model_predictions=Model_Predictions()
+evaluate_model=Evaluate_Model()
+feature_importance=Feature_Importance()
+xgboost_classification_plot=XGBoost_Classification_Plot()
+
 training_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/train'), x),os.listdir('/cephfs/summary_stats/train')))
 training_files=[i for i in training_files if not ('.crc' in i or 'SUCCESS' in i)]
+
+validation_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/val'), x),os.listdir('/cephfs/summary_stats/val')))
+validation_files=[i for i in validation_files if not ('.crc' in i or 'SUCCESS' in i)]
+
+test_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/test'), x),os.listdir('/cephfs/summary_stats/test')))
+test_files=[i for i in test_files if not ('.crc' in i or 'SUCCESS' in i)]
 
 
 
 class Reading_Data:
     def __init__(self):
         self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
-        # self.data_location='/cephfs/summary_stats/train'
-        # self.data_location='/cephfs/summary_stats/train/summary_stats_parquet_0_25.parquet'
-        
-       
-        # self.glucose_data_schema=StructType([StructField('NumId', IntegerType(), True), 
-        #                                      StructField('Chunk', IntegerType(), True), 
-        #                                      StructField('Mean', DoubleType(), True), 
-        #                                      StructField('StdDev', DoubleType(), True), 
-        #                                      StructField('Median', FloatType(), True), 
-        #                                      StructField('Min', FloatType(), True), 
-        #                                      StructField('Max', FloatType(), True), 
-        #                                      StructField('AvgFirstDiff', DoubleType(), True), 
-        #                                      StructField('AvgSecDiff', DoubleType(), True), 
-        #                                      StructField('StdFirstDiff', DoubleType(), True), 
-        #                                      StructField('StdSecDiff', DoubleType(), True), 
-        #                                      StructField('CountAbove', LongType(), True), 
-        #                                      StructField('CountBelow', LongType(), True), 
-        #                                      StructField('TotalOutOfRange', LongType(), True), 
-        #                                      StructField('target', LongType(), True)])
-        
-        
-
-    # def read_in_all_summary_stats(self):
-    #     summary_stats_df = self.spark.read \
-    #                            .schema(self.glucose_data_schema) \
-    #                            .format('parquet') \
-    #                            .load(self.data_location)
-        
-        # summary_stats_df = self.spark.read \
-        #                        .format('parquet') \
-        #                        .load(self.data_location)
-
-    # def read_in_all_summary_stats(self, data_location):        
-    #     summary_stats_df = self.spark.read \
-    #                            .format('parquet') \
-    #                            .load(data_location)
     
-    def read_in_all_summary_stats(self):        
+    def read_in_all_summary_stats(self, file_list):        
         summary_stats_df = self.spark.read \
-                               .parquet(*training_files)
+                               .parquet(*file_list)
 
 
 
         return summary_stats_df
 
 read_data=Reading_Data()
-summary_stats_df=read_data.read_in_all_summary_stats()
-print((summary_stats_df.count(), len(summary_stats_df.columns)))
+summary_stats_train=read_data.read_in_all_summary_stats(file_list=training_files)
+summary_stats_train.show(2)
+print((summary_stats_train.count(), len(summary_stats_train.columns)))
 
-from pyspark.sql.functions import countDistinct
-df2=summary_stats_df.select(countDistinct("NumId"))
-df2.show()
+summary_stats_val=read_data.read_in_all_summary_stats(file_list=validation_files)
+summary_stats_val.show(2)
+print((summary_stats_val.count(), len(summary_stats_val.columns)))
 
 
-# training_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/train'), x),os.listdir('/cephfs/summary_stats/train')))
-# training_files=[i for i in training_files if not ('.crc' in i or 'SUCCESS' in i)]
-# # # # training_files.remove('/cephfs/summary_stats/train/summary_stats_parquet_145_26.parquet')
-# number_of_files=len(training_files)
-# counter = 1
+# summary_stats_test=read_data.read_in_all_summary_stats(file_list=test_files)
+# summary_stats_test.show(2)
+# print((summary_stats_test.count(), len(summary_stats_test.columns)))
 
-# empty_list=[]
 
-# read_data=Reading_Data()
-# for file in training_files:
-#     print(f'Starting {counter}/{number_of_files} : {file}')
-#     summary_stats_df=read_data.read_in_all_summary_stats(data_location=file)
-#     summary_stats_df.show(1)
-#     counter=counter+1
-#     if summary_stats_df.rdd.isEmpty():
-#         empty_list.append(file)
-#         continue
-#     else:
-#         continue
-# print(empty_list)
+# from pyspark.sql.functions import countDistinct
+# df2=summary_stats_train.select(countDistinct("NumId"))
+# df2.show()
 
-# read_data=Reading_Data()
-# for file in training_files:
-#     print(f'Completed: {file}')
-#     summary_stats_df=read_data.read_in_all_summary_stats(data_location=file)
-#     summary_stats_df.show(1)
-    
+# df2=summary_stats_val.select(countDistinct("NumId"))
+# df2.show()
+
+# df2=summary_stats_test.select(countDistinct("NumId"))
+# df2.show()
+
 
     
+class ColumnScaler(Transformer, DefaultParamsReadable, DefaultParamsWritable):
+    def _transform(self, df):
+        double_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, DoubleType)]
+        float_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, FloatType)]
+        long_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, LongType)]
 
-    
-# class ColumnScaler(Transformer, DefaultParamsReadable, DefaultParamsWritable):
-#     def _transform(self, df):
-#         double_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, DoubleType)]
-#         float_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, FloatType)]
-#         long_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, LongType)]
-
-#         all_numerical=list(set(double_cols+float_cols+long_cols))
-#         all_numerical.remove('target')
+        all_numerical=list(set(double_cols+float_cols+long_cols))
+        all_numerical.remove('target')
         
-#         for num_column in all_numerical:
-#             input_col = f"{num_column}"
-#             output_col = f"scaled_{num_column}"
+        for num_column in all_numerical:
+            input_col = f"{num_column}"
+            output_col = f"scaled_{num_column}"
 
-#             w = Window.partitionBy('NumId')
+            w = Window.partitionBy('NumId')
 
-#             mu = mean(input_col).over(w)
-#             sigma = stddev(input_col).over(w)
+            mu = mean(input_col).over(w)
+            sigma = stddev(input_col).over(w)
 
-#             df=df.withColumn(output_col, (col(input_col) - mu)/(sigma))
+            df=df.withColumn(output_col, (col(input_col) - mu)/(sigma))
             
-#         return df
+        return df
 
 
-# class Feature_Transformations:    
-#     def numerical_scaling(self, df):
+class Feature_Transformations:    
+    def numerical_scaling(self, df):
 #         double_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, DoubleType)]
 #         float_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, FloatType)]
 #         long_cols=[f.name for f in df.schema.fields if isinstance(f.dataType, LongType)]
 
 #         all_numerical=list(set(double_cols+float_cols+long_cols))
 #         all_numerical.remove('target')
+        all_numerical=['Mean', 'StdDev', 'Median', 'Min', 'Max', 'AvgFirstDiff', 'AvgSecDiff', 'StdFirstDiff', 'StdSecDiff', 'CountAbove', 'CountBelow', 'TotalOutOfRange']
 
-#         featureArr = [('scaled_' + f) for f in all_numerical]
+        featureArr = [('scaled_' + f) for f in all_numerical]
 
-#         columns_scaler=ColumnScaler()
+        columns_scaler=ColumnScaler()
     
-#         va2 = VectorAssembler(inputCols=featureArr, outputCol="features", handleInvalid='skip')
+        va2 = VectorAssembler(inputCols=featureArr, outputCol="features", handleInvalid='skip')
 
-#         stages=[columns_scaler]+[va2]
+        stages=[columns_scaler]+[va2]
         
-#         return stages
+        return stages
     
-# feature_transformations=Feature_Transformations()
-# pipeline_transformation_stages=feature_transformations.numerical_scaling(df=summary_stats_df)
+feature_transformations=Feature_Transformations()
+pipeline_transformation_stages=feature_transformations.numerical_scaling(df=summary_stats_train)
 
 
 
 
 
-# class Create_PySpark_XGBoost:
-#     def __init__(self):
-#         self.features_col="features"
-#         self.label_name="target"
+class Create_PySpark_XGBoost:
+    def __init__(self):
+        self.features_col="features"
+        self.label_name="target"
         
     
-#     def initial_training_xgboost_regression(self, ml_df, stages, random_seed):
-#         # xgb_regression=SparkXGBRegressor(features_col=features_col, 
-#         #                                   label_col=label_name,
-#         #                                   num_workers=4,
-#         #                                   random_state=random_seed,
-#         #                                   use_gpu=True)
+    def initial_training_xgboost_regression(self, ml_df, stages, random_seed):
+        # xgb_regression=SparkXGBRegressor(features_col=features_col, 
+        #                                   label_col=label_name,
+        #                                   num_workers=4,
+        #                                   random_state=random_seed,
+        #                                   use_gpu=True)
         
-#         initial_xgb_regression=SparkXGBRegressor(features_col=self.features_col, 
-#                                                  label_col=self.label_name,
-#                                                  random_state=random_seed,
-#                                                  use_gpu=False)
+        initial_xgb_regression=SparkXGBRegressor(features_col=self.features_col, 
+                                                 label_col=self.label_name,
+                                                 random_state=random_seed,
+                                                 use_gpu=False)
 
-#         stages.append(initial_xgb_regression)
-#         pipeline=Pipeline(stages=stages)
+        stages.append(initial_xgb_regression)
+        pipeline=Pipeline(stages=stages)
         
-#         model=pipeline.fit(ml_df)
+        model=pipeline.fit(ml_df)
         
-#         return model
+        return model
     
-# create_pyspark_xgboost=Create_PySpark_XGBoost()
-# xgboost_regression_model=create_pyspark_xgboost.initial_training_xgboost_regression(ml_df=summary_stats_df, 
-#                                                                                     stages=pipeline_transformation_stages, 
-#                                                                                     random_seed=123)
+create_pyspark_xgboost=Create_PySpark_XGBoost()
+xgboost_regression_model=create_pyspark_xgboost.initial_training_xgboost_regression(ml_df=summary_stats_train, 
+                                                                                    stages=pipeline_transformation_stages, 
+                                                                                    random_seed=123)
 
-# model_storage_location='/cephfs/Saved_Models/Summary_Stats_Model'
-# xgboost_regression_model.write().overwrite().save(model_storage_location)
+model_storage_location='/cephfs/Saved_Models/Summary_Stats_Model'
+xgboost_regression_model.write().overwrite().save(model_storage_location)
+
+
+
+
+
+
+testing_predictions=model_predictions.create_predictions_with_model(test_df=summary_stats_val, 
+                                                                    model=xgboost_regression_model)
+testing_predictions.show(10)
+
+
+
+model_evaluation=evaluate_model.regression_evaluation(testing_predictions=testing_predictions, 
+                                                      eval_csv_location=evaluation_metrics_output_storage)
+model_evaluation.head()
+
+
+feature_importance_df=feature_importance \
+                            .feature_importance_accuracy_gain(xgboost_model=xgboost_regression_model, 
+                                                              feature_importance_storage_location=feature_importance_storage_location)
+feature_importance_df.head(10)
+
+
+overall_feature_plot=xgboost_classification_plot.feature_overall_importance_plot(feature_importance_df=feature_importance_df,
+                                                                                 overall_importance_plot_location=overall_feature_importance_plot_location)
