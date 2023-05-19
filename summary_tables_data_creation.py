@@ -1,3 +1,4 @@
+print("imports start")
 from Input_Variables.read_vars import train_data_storage, validation_data_storage, test_data_storage, \
                                       analysis_group, \
                                       daily_stats_features_lower, daily_stats_features_upper
@@ -8,6 +9,7 @@ from Feature_Generation.create_binary_labels import Create_Binary_Labels
 from Feature_Generation.summary_stats import Summary_Stats_Features
 from Feature_Generation.difference_features import Difference_Features
 import os
+print("imports done!")
 
 date_and_value_imputation=Date_And_Value_Imputation()
 create_binary_labels=Create_Binary_Labels()
