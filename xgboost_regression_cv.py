@@ -1,5 +1,7 @@
 ################################ Libraries ################################
+from Input_Variables.read_vars import model_storage_location
 from Read_In_Data.read_data import Reading_Data
+from pyspark.ml import Pipeline
 import os
 
 
@@ -16,3 +18,9 @@ read_data=Reading_Data()
 summary_stats_val=read_data.read_in_all_summary_stats(file_list=val_files)
 summary_stats_val.show(2)
 print((summary_stats_val.count(), len(summary_stats_val.columns)))
+
+
+################################ Read In Pipeline ################################
+pipelineModel=Pipeline.load(model_storage_location)
+og_xgboost_model=pipelineModel.getStages()[-1]
+
