@@ -41,12 +41,11 @@ class Reading_Data:
         # self.spark.stop()
         return pyspark_glucose_data
 
-
-    def read_in_pyspark_data_for_summary_stats(self, data_location):        
+    
+    def read_in_all_summary_stats(self, file_list):        
         summary_stats_df = self.spark.read \
-                               .format('parquet') \
-                               .load(data_location)
-        
+                               .parquet(*file_list)
+
         return summary_stats_df
     
     

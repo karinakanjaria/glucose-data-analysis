@@ -31,13 +31,9 @@ Feature_Importance:
     overall_feature_importance_plot_location: "/home/jovyan/glucose-data-analysis/Output_Files/overall_feature_imp.png"
 
 ML_Models:
-  model_storage_location: "/home/jovyan/glucose-data-analysis/Saved_Models"
+  model_storage_location: '/cephfs/Saved_Models/Summary_Stats_Model'
   random_seed: 12345
 
 
 Evaluation_Metrics:
     evaluation_metrics_output_storage: "/home/jovyan/glucose-data-analysis/Output_Files/evaluation_metrics.csv"
-
-Time_Series_Lagged_Features:
-  Time_Series_Lag_Values_Created: 6
-
