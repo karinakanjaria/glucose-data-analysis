@@ -6,7 +6,9 @@ from pyspark.ml.evaluation import RegressionEvaluator
 from pyspark.ml import Pipeline
 
 class Create_PySpark_XGBoost:        
-    def initial_training_xgboost_regression(self, ml_df, stages, random_seed, xgb_reg_model_storage_location):  
+    def initial_training_xgboost_regression(self, ml_df, stages, random_seed, xgb_reg_model_storage_location, k=3):
+        ml_df = ml_df.withColumn("foldCol", ml_df.NumId % k)
+        
         features_col="features"
         label_name="DiffPrevious"
         
@@ -19,8 +21,8 @@ class Create_PySpark_XGBoost:
         # .addGrid(xgb_regression.n_estimators,[10, 50, 100])\
         # .addGrid(xgb_regression.subsample,[0.6, 0.8, 1.0])\
         # .build()
-        paramGrid=ParamGridBuilder().addGrid(xgb_regression.max_depth,[6, 10])\
-        .addGrid(xgb_regression.n_estimators,[2, 3])\
+        paramGrid=ParamGridBuilder().addGrid(xgb_regression.max_depth,[5, 7])\
+        .addGrid(xgb_regression.n_estimators,[50, 100])\
         .build()
         
         
@@ -32,8 +34,8 @@ class Create_PySpark_XGBoost:
         crossval=CrossValidator(estimator=xgb_regression,
                                 estimatorParamMaps=paramGrid,
                                 evaluator=evaluator_rmse,
-                                numFolds=2,
-                                collectSubModels=True)
+                                foldCol='foldCol',
+                                collectSubModels=False)
         
         print('Cross Validation and Hyperparameter Tuning Occuring')
         stages.append(crossval)

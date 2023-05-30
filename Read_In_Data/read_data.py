@@ -18,7 +18,7 @@ class Reading_Data:
         self.project_data_schema = Project_Data_Schema()
 
         self.pyspark_data_schema = self.project_data_schema.data_schema_pyspark()
-        self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
+        self.spark = SparkSession.builder.appName("Glucose").config("spark.driver.memory", "4g").getOrCreate()
     
     
     def read_in_pyspark_data(self, data_location):

@@ -55,11 +55,13 @@ pipeline_transformation_stages=feature_transformations.numerical_scaling(df=df_t
 
 
 ################################ XGBoost Regression Model ################################
+k_folds=3
 xgboost_regression_model=create_pyspark_xgboost\
         .initial_training_xgboost_regression(ml_df=summary_stats_train,
                                              stages=pipeline_transformation_stages, 
                                              random_seed=random_seed,
-                                             xgb_reg_model_storage_location=xgb_reg_model_storage_location)
+                                             xgb_reg_model_storage_location=xgb_reg_model_storage_location,
+                                             k=k_folds)
 
 
 ################################ Testing Predictions ################################
