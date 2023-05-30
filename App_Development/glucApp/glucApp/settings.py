@@ -129,7 +129,12 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+STATIC_ROOT = "glucose_data"
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# all s3 bucket info is in the .s3cfg file at ~/.s3cfg
