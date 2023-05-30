@@ -1,5 +1,5 @@
 ################################ Libraries ################################
-from Input_Variables.read_vars import model_storage_location, random_seed, \
+from Input_Variables.read_vars import xgb_reg_model_storage_location, xgb_class_model_storage_location, random_seed, \
                                       evaluation_metrics_output_storage, \
                                       feature_importance_storage_location, \
                                       overall_feature_importance_plot_location
@@ -11,6 +11,7 @@ from Model_Evaluation.pyspark_model_eval import Evaluate_Model
 from Feature_Importance.model_feature_importance import Feature_Importance
 from Model_Plots.xgboost_classification_plots import XGBoost_Classification_Plot
 import os
+
 
 ################################ Read In Modules ################################
 reading_data=Reading_Data()
@@ -24,33 +25,41 @@ xgboost_classification_plot=XGBoost_Classification_Plot()
 
 ################################ Read In Data ################################
 # Training Summary Stats Data
-training_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/train'), x),os.listdir('/cephfs/summary_stats/train')))
+training_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/all_train'), x),os.listdir('/cephfs/summary_stats/all_train')))
 training_files=[i for i in training_files if not ('.crc' in i or 'SUCCESS' in i)]
 
+
+# Cross Validation Summary Stats Data
+val_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/all_val'), x),os.listdir('/cephfs/summary_stats/all_val')))
+val_files=[i for i in val_files if not ('.crc' in i or 'SUCCESS' in i)]
+
+
 # Testing Summary Stats Data
-test_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/test'), x),os.listdir('/cephfs/summary_stats/test')))
+test_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/all_test'), x),os.listdir('/cephfs/summary_stats/all_test')))
 test_files=[i for i in test_files if not ('.crc' in i or 'SUCCESS' in i)]
 
-read_data=Reading_Data()
-summary_stats_train=read_data.read_in_all_summary_stats(file_list=training_files)
-summary_stats_train.show(2)
-print((summary_stats_train.count(), len(summary_stats_train.columns)))
+# Calling DataFrames
+summary_stats_train=reading_data.read_in_all_summary_stats(file_list=training_files)
+summary_stats_val=reading_data.read_in_all_summary_stats(file_list=val_files)
+summary_stats_test=reading_data.read_in_all_summary_stats(file_list=test_files)
 
-summary_stats_test=read_data.read_in_all_summary_stats(file_list=test_files)
-summary_stats_test.show(2)
-print((summary_stats_test.count(), len(summary_stats_test.columns)))
+
+################################ Combine Train and Cross Validation ################################
+df_train_val_combined=summary_stats_train.union(summary_stats_val)
+df_train_val_combined.show(2)
+print((df_train_val_combined.count(), len(df_train_val_combined.columns)))
 
 
 ################################ Stages: Scaling Using Custom Transformer ################################
-pipeline_transformation_stages=feature_transformations.numerical_scaling(df=training_files)
+pipeline_transformation_stages=feature_transformations.numerical_scaling(df=df_train_val_combined)
 
 
 ################################ XGBoost Regression Model ################################
-create_pyspark_xgboost=Create_PySpark_XGBoost()
-xgboost_regression_model=create_pyspark_xgboost.initial_training_xgboost_regression(ml_df=summary_stats_train, 
-                                                                                    stages=pipeline_transformation_stages, 
-                                                                                    random_seed=random_seed,
-                                                                                    model_storage_location=model_storage_location)
+xgboost_regression_model=create_pyspark_xgboost\
+        .initial_training_xgboost_regression(ml_df=summary_stats_train,
+                                             stages=pipeline_transformation_stages, 
+                                             random_seed=random_seed,
+                                             xgb_reg_model_storage_location=xgb_reg_model_storage_location)
 
 
 ################################ Testing Predictions ################################

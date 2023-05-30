@@ -50,5 +50,7 @@ daily_stats_features_upper=input_vars['Daily_Stats_Features']['upper']
 
 
 ################################### ML Models ###################################
-model_storage_location=input_vars['ML_Models']['model_storage_location']
+xgb_reg_model_storage_location=input_vars['ML_Models']['xgb_reg_model_storage_location']
+xgb_class_model_storage_location=input_vars['ML_Models']['xgb_class_model_storage_location']
+
 random_seed=input_vars['ML_Models']['random_seed']

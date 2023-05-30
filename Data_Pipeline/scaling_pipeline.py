@@ -6,7 +6,8 @@ from pyspark.ml.feature import VectorAssembler
 
 class ColumnScaler(Transformer, DefaultParamsReadable, DefaultParamsWritable):
     def _transform(self, df):
-        all_numerical=['Mean', 'StdDev', 'Median', 'Min', 'Max', 'AvgFirstDiff', 'AvgSecDiff', 
+        all_numerical=['ShortTermVariance', 'LongTermVariance', 'VarianceRatio', 'SampleEntropy', 
+                       'PermutationEntropy', 'Mean', 'StdDev', 'Median', 'Min', 'Max', 'AvgFirstDiff', 'AvgSecDiff', 
                        'StdFirstDiff', 'StdSecDiff', 'CountAbove', 'CountBelow', 'TotalOutOfRange']
         
         for num_column in all_numerical:
@@ -21,12 +22,14 @@ class ColumnScaler(Transformer, DefaultParamsReadable, DefaultParamsWritable):
             df=df.withColumn(output_col, (col(input_col) - mu)/(sigma))
             
         return df
-
+    
 
 class Feature_Transformations:    
-    def numerical_scaling(self, df):
-        all_numerical=['Mean', 'StdDev', 'Median', 'Min', 'Max', 'AvgFirstDiff', 'AvgSecDiff', 
-                       'StdFirstDiff', 'StdSecDiff', 'CountAbove', 'CountBelow', 'TotalOutOfRange']
+    def numerical_scaling(self, df): 
+        all_numerical=['ShortTermVariance', 'LongTermVariance', 'VarianceRatio', 'SampleEntropy', 
+                       'PermutationEntropy', 'Mean', 'StdDev', 'Median', 'Min', 'Max', 'AvgFirstDiff', 
+                       'AvgSecDiff', 'StdFirstDiff', 'StdSecDiff', 'CountAbove', 'CountBelow', 'TotalOutOfRange']
+        
         
         featureArr = [('scaled_' + f) for f in all_numerical]
 

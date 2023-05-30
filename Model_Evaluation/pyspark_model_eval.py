@@ -15,7 +15,7 @@ class Evaluate_Model:
                      'var': None}
         
         for metric in evaluators:
-            eval_metric=RegressionEvaluator(labelCol="target", 
+            eval_metric=RegressionEvaluator(labelCol="DiffPrevious", 
                                             predictionCol="prediction", 
                                             metricName=metric)
             metric_value=eval_metric.evaluate(testing_predictions)

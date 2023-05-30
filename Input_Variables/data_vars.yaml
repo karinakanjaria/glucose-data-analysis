@@ -31,7 +31,8 @@ Feature_Importance:
     overall_feature_importance_plot_location: "/home/jovyan/glucose-data-analysis/Output_Files/overall_feature_imp.png"
 
 ML_Models:
-  model_storage_location: '/cephfs/Saved_Models/Summary_Stats_Model'
+  xgb_reg_model_storage_location: '/cephfs/Saved_Models/XGBoost_Regression_Model'
+  xgb_class_model_storage_location: '/cephfs/Saved_Models/XGBoost_Classification_Model'
   random_seed: 12345
 
 
