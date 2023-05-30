@@ -30,8 +30,12 @@ class Feature_Transformations:
                        'PermutationEntropy', 'Mean', 'StdDev', 'Median', 'Min', 'Max', 'AvgFirstDiff', 
                        'AvgSecDiff', 'StdFirstDiff', 'StdSecDiff', 'CountAbove', 'CountBelow', 'TotalOutOfRange']
         
+        all_categorical=['Sex_Female', 'Sex_Male', 'Treatment_yes_both', 'Treatment_yes_long_acting','Treatment_no',
+                         'Treatment_yes_fast_acting','AgeGroup_50','AgeGroup_60',
+                         'AgeGroup_70','AgeGroup_40','AgeGroup_30','AgeGroup_80','AgeGroup_90','AgeGroup_10']
         
-        featureArr = [('scaled_' + f) for f in all_numerical]
+        
+        featureArr = [('scaled_' + f) for f in all_numerical] + all_categorical
 
         columns_scaler=ColumnScaler()
     

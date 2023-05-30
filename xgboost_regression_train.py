@@ -25,17 +25,17 @@ xgboost_classification_plot=XGBoost_Classification_Plot()
 
 ################################ Read In Data ################################
 # Training Summary Stats Data
-training_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/all_train'), x),os.listdir('/cephfs/summary_stats/all_train')))
+training_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/all_train_bool'), x),os.listdir('/cephfs/summary_stats/all_train_bool')))
 training_files=[i for i in training_files if not ('.crc' in i or 'SUCCESS' in i)]
 
 
 # Cross Validation Summary Stats Data
-val_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/all_val'), x),os.listdir('/cephfs/summary_stats/all_val')))
+val_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/all_val_bool'), x),os.listdir('/cephfs/summary_stats/all_val_bool')))
 val_files=[i for i in val_files if not ('.crc' in i or 'SUCCESS' in i)]
 
 
 # Testing Summary Stats Data
-test_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/all_test'), x),os.listdir('/cephfs/summary_stats/all_test')))
+test_files=list(map(lambda x: os.path.join(os.path.abspath('/cephfs/summary_stats/all_test_bool'), x),os.listdir('/cephfs/summary_stats/all_test_bool')))
 test_files=[i for i in test_files if not ('.crc' in i or 'SUCCESS' in i)]
 
 # Calling DataFrames
