@@ -16,12 +16,80 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.core.files.storage import default_storage
+import boto3
+#from boto.s3.connection import S3Connection
+from glucApp import settings 
+import pandas as pd
+import pyarrow.parquet as pq
+import io
 
 class PatientForm(APIView):
     def __init__(self):
         self.filename = 'index.html'
 
     def get(self, request):
+
+        # conn = S3Connection(settings.AWS_ACCESS_KEY_ID,settings.AWS_SECRET_ACCESS_KEY)
+        # bucket = conn.get_bucket(settings.MEDIA_BUCKET)
+       
+        session = boto3.Session(aws_access_key_id = settings.ACCESS_ID,
+                         aws_secret_access_key = settings.SECRET_ACCESS_KEY)
+
+        s3 = session.resource('s3', endpoint_url = settings.ENDPOINT_URL)
+
+      
+
+        my_bucket = s3.Bucket(settings.STORAGE_BUCKET_NAME)
+
+        # buffer = io.BytesIO()
+        # data_here = s3.Object(settings.STORAGE_BUCKET_NAME, 'train_data/parquet_3.parquet')
+        # data_here.download_fileobj(buffer)
+        
+        # df = pd.read_parquet('s3://glucose/train_data/parquet_3.parquet')
+
+        # df = pq.ParquetDataset('s3://glucose/train_data/parquet_3.parquet', filesystem=session)\
+        #     .read_pandas().to_pandas()
+
+        # print(df.head(10))
+        
+
+        # for my_bucket_object in my_bucket.objects.all():
+        #     print('OH MY GOD IT DID IT')
+        #     print(my_bucket_object.key)
+          
+        # data_here = object
+        # for test in my_bucket.objects.filter(Prefix="train_data/parquet_3.parquet"):
+        #     print('maybe this is it???')
+        #     data_here = test.get()['Body'].read()
+        #     #data_here = test.get()['Body']
+        #     # with gzip.open(data_here, 'rt') as gf:
+        #     print('did it get here')
+        #     does_it_work = pd.read_parquet(data_here, encoding='utf-16')
+        #     print('did it work???')
+        #     print(does_it_work)
+
+        s3_client = boto3.client('s3', aws_access_key_id = settings.ACCESS_ID,
+                        aws_secret_access_key = settings.SECRET_ACCESS_KEY,
+                        endpoint_url = settings.ENDPOINT_URL)
+        
+        obj = s3_client.get_object(Bucket=settings.STORAGE_BUCKET_NAME,\
+                                    Key='train_data/parquet_3.parquet')
+        
+        test = pd.read_parquet(io.BytesIO(obj['Body'].read()))
+
+        print('maybe?')
+        print(test.head())        
+
+        print('look here for buckets')
+        response = s3.list_objects()
+        print(response)
+        print('end of buckets')
+
+        for bucket in s3.list_buckets()['Buckets']:
+            print('another one -DJ Karina')
+            print(bucket['Name'])
+
         return render(request,template_name=self.filename)
     
 class GetPatientInfo(APIView):
@@ -94,7 +162,7 @@ class PatientGlucose(APIView):
     
     def delete(self, request, pk):
         glucVals = self.get_gluc_from_pk(pk)
-        glucVals.delete()
+        #glucVals.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
