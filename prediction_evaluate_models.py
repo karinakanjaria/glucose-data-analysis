@@ -38,7 +38,7 @@ print((summary_stats_test.count(), len(summary_stats_test.columns)))
 
 
 ################################ Regression, Classification, Or Both ################################
-train_regression=True
+train_regression=False
 train_classification=True
 
 
@@ -50,7 +50,7 @@ if train_regression is True:
                                           'Factorization_Machines': factorization_machines_regression_model_storage}
 
     for regression_type in regression_models_pipeline_locations:
-        print(f'Completing {regression_type} Model Evaluations')
+        print(f'Regression: Completing {regression_type} Model Evaluations')
         model_predictions_and_evaluations.regression_create_evaluations(model_type=regression_type, 
                                                                         pipeline_location=regression_models_pipeline_locations[regression_type],
                                                                         test_data=summary_stats_test,
@@ -62,6 +62,15 @@ elif train_classification is True:
     classification_models_pipeline_locations={'XGBoost': xgboost_classification_model_storage_location, 
                                               'Logistic_Regression': logistic_regression_classification_model_storage_location,
                                               'Random_Forest': random_forest_classification_model_storage_location}
+    
+    for classification_type in classification_models_pipeline_locations:
+        print(f'Classification: Completing {classification_type} Model Evaluations')
+        
+        model_predictions_and_evaluations.classification_create_evaluations(model_type=classification_type, 
+                                                                            pipeline_location=classification_models_pipeline_locations[classification_type], 
+                                                                            test_data=summary_stats_test, 
+                                                                            classification_evaluation_metrics_output_storage=classification_evaluation_metrics_output_storage)
+
 
 else:
     print('Did Not Choose To Evaluate Either Regression or Classification Models.')
