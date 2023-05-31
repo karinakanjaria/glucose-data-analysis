@@ -3,10 +3,14 @@ from Input_Variables.read_vars import xgboost_regression_model_storage_location,
                                       linear_regression_model_storage_location, \
                                       random_forest_regression_model_storage_location, \
                                       factorization_machines_regression_model_storage, \
+                                      xgboost_classification_model_storage_location, \
+                                      logistic_regression_classification_model_storage_location, \
+                                      random_forest_classification_model_storage_location, \
                                       random_seed
 from Read_In_Data.read_data import Reading_Data
 from Data_Pipeline.scaling_pipeline import Feature_Transformations
 from Model_Creation.regression_models import Create_Regression_Models
+from Model_Creation.classification_models import Create_Classification_Models
 import os
 
 
@@ -14,6 +18,12 @@ import os
 reading_data=Reading_Data()
 feature_transformations=Feature_Transformations()
 create_regression_models=Create_Regression_Models()
+create_classification_models=Create_Classification_Models()
+
+
+################################ Regression, Classification, Or Both ################################
+train_regression=False
+train_classification=True
 
 
 ################################ Read In Data ################################
@@ -45,22 +55,30 @@ pipeline_transformation_stages=feature_transformations.numerical_scaling(df=df_t
 
 
 ################################ Regression Models ################################
-regression_models_storage_locations=[xgboost_regression_model_storage_location, 
-                                     linear_regression_model_storage_location,
-                                     random_forest_regression_model_storage_location,
-                                     factorization_machines_regression_model_storage]
-create_regression_models\
-        .regression_modeling(ml_df=df_train_val_combined,
-                             stages=pipeline_transformation_stages, 
-                             random_seed=random_seed,
-                             regression_models_storage_locations=regression_models_storage_locations,
-                             num_folds=3)
+if train_regression is True:
+    regression_models_storage_locations=[xgboost_regression_model_storage_location, 
+                                         linear_regression_model_storage_location,
+                                         random_forest_regression_model_storage_location,
+                                         factorization_machines_regression_model_storage]
+    create_regression_models\
+            .regression_modeling(ml_df=df_train_val_combined,
+                                 stages=pipeline_transformation_stages, 
+                                 random_seed=random_seed,
+                                 regression_models_storage_locations=regression_models_storage_locations,
+                                 num_folds=3)
 
 
-# ################################ Classification Models ################################
-# create_pyspark_xgboost\
-#         .regression_modeling(ml_df=summary_stats_train,
-#                                              stages=pipeline_transformation_stages, 
-#                                              random_seed=random_seed,
-#                                              xgb_reg_model_storage_location=xgb_reg_model_storage_location,
-#                                              k=k_folds)
+################################ Classification Models ################################
+elif train_classification is True:
+    classification_models_storage=[xgboost_classification_model_storage_location,
+                                   logistic_regression_classification_model_storage_location,
+                                   random_forest_classification_model_storage_location]
+    create_classification_models\
+            .classification_modeling(ml_df=df_train_val_combined,
+                                     stages=pipeline_transformation_stages, 
+                                     random_seed=random_seed,
+                                     classification_models_storage_locations=classification_models_storage,
+                                     num_folds=3)
+    
+else:
+    print('Did Not Choose To Model Either Regression or Classification Models.')

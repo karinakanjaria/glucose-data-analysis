@@ -57,6 +57,9 @@ random_forest_regression_model_storage_location=input_vars['ML_Models']['Regress
 factorization_machines_regression_model_storage=input_vars['ML_Models']['Regression']['factorization_machines_regression_model_storage']
 
 # Classification
-xgb_class_model_storage_location=input_vars['ML_Models']['Classification']['xgboost_classification_model_storage_location']
+xgboost_classification_model_storage_location=input_vars['ML_Models']['Classification']['xgboost_classification_model_storage_location']
+logistic_regression_classification_model_storage_location=input_vars['ML_Models']['Classification']['logistic_regression_classification_model_storage_location']
+random_forest_classification_model_storage_location=input_vars['ML_Models']['Classification']['random_forest_classification_model_storage_location']
 
+# Setting Seed
 random_seed=input_vars['ML_Models']['random_seed']

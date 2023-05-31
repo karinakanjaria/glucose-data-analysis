@@ -21,11 +21,14 @@ class Create_Regression_Models:
                                                     label_col=self.label_name,
                                                     random_state=random_seed,
                                                     use_gpu=True),
+                       
                        'Linear_Regression': LinearRegression(featuresCol=self.features_col, 
                                                              labelCol=self.label_name, 
                                                              standardization=False), 
+                       
                        'Random_Forest_Regression': RandomForestRegressor(featuresCol=self.features_col, 
-                                                                         labelCol=self.label_name), 
+                                                                         labelCol=self.label_name),
+                       
                        'Factorization_Machines_Regression': FMRegressor(featuresCol=self.features_col, 
                                                                         labelCol=self.label_name)}
         
