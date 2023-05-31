@@ -50,7 +50,13 @@ daily_stats_features_upper=input_vars['Daily_Stats_Features']['upper']
 
 
 ################################### ML Models ###################################
-xgb_reg_model_storage_location=input_vars['ML_Models']['xgb_reg_model_storage_location']
-xgb_class_model_storage_location=input_vars['ML_Models']['xgb_class_model_storage_location']
+# Regression
+xgboost_regression_model_storage_location=input_vars['ML_Models']['Regression']['xgboost_regression_model_storage_location']
+linear_regression_model_storage_location=input_vars['ML_Models']['Regression']['linear_regression_model_storage_location']
+random_forest_regression_model_storage_location=input_vars['ML_Models']['Regression']['random_forest_regression_model_storage_location']
+factorization_machines_regression_model_storage=input_vars['ML_Models']['Regression']['factorization_machines_regression_model_storage']
+
+# Classification
+xgb_class_model_storage_location=input_vars['ML_Models']['Classification']['xgboost_classification_model_storage_location']
 
 random_seed=input_vars['ML_Models']['random_seed']
