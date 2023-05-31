@@ -20,8 +20,8 @@ one_hot_encoding_data=input_vars['Data_Storage']['one_hot_encoding_location']
 
 
 ################################### Evaluation Metrics ###################################
-evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['evaluation_metrics_output_storage']
-
+regression_evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['regression_evaluation_metrics_output_storage']
+classification_evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['classification_evaluation_metrics_output_storage']
 
 
 ################################### Feature Importance ###################################

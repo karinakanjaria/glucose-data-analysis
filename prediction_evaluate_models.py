@@ -1,20 +1,24 @@
 ################################ Libraries ################################
-# from Input_Variables.read_vars import xgb_reg_model_storage_location, xgb_class_model_storage_location, random_seed, \
-#                                       evaluation_metrics_output_storage, \
-#                                       feature_importance_storage_location, \
-#                                       overall_feature_importance_plot_location
+from Input_Variables.read_vars import xgboost_regression_model_storage_location, \
+                                      linear_regression_model_storage_location, \
+                                      random_forest_regression_model_storage_location, \
+                                      factorization_machines_regression_model_storage, \
+                                      xgboost_classification_model_storage_location, \
+                                      logistic_regression_classification_model_storage_location, \
+                                      random_forest_classification_model_storage_location, \
+                                      regression_evaluation_metrics_output_storage, \
+                                      classification_evaluation_metrics_output_storage
 from Read_In_Data.read_data import Reading_Data
+from Model_Preds_Eval.pyspark_model_preds_and_eval import Model_Predictions_And_Evaluations
 
-from Model_Predictions.pyspark_model_preds import Model_Predictions
-from Model_Evaluation.pyspark_model_eval import Evaluate_Model
-from Feature_Importance.model_feature_importance import Feature_Importance
-from Model_Plots.xgboost_classification_plots import XGBoost_Classification_Plot
+# from Feature_Importance.model_feature_importance import Feature_Importance
+# from Model_Plots.xgboost_classification_plots import XGBoost_Classification_Plot
 import os
 
 
 ################################ Read In Modules ################################
 reading_data=Reading_Data()
-
+model_predictions_and_evaluations=Model_Predictions_And_Evaluations()
 # model_predictions=Model_Predictions()
 # evaluate_model=Evaluate_Model()
 # feature_importance=Feature_Importance()
@@ -33,16 +37,35 @@ summary_stats_test.show(2)
 print((summary_stats_test.count(), len(summary_stats_test.columns)))
 
 
-# ################################ Testing Predictions ################################
-# testing_predictions=model_predictions.create_predictions_with_model(test_df=summary_stats_test, 
-#                                                                     model=xgboost_regression_model)
-# testing_predictions.show(10)
+################################ Regression, Classification, Or Both ################################
+train_regression=True
+train_classification=True
 
 
-# ################################ Model Evaluation ################################
-# model_evaluation=evaluate_model.regression_evaluation(testing_predictions=testing_predictions, 
-#                                                       eval_csv_location=evaluation_metrics_output_storage)
-# model_evaluation.head()
+################################ Regression: Testing Predictions and Evaluations ################################
+if train_regression is True:
+    regression_models_pipeline_locations={'XGBoost': xgboost_regression_model_storage_location, 
+                                          'Linear_Regression': linear_regression_model_storage_location,
+                                          'Random_Forest': random_forest_regression_model_storage_location,
+                                          'Factorization_Machines': factorization_machines_regression_model_storage}
+
+    for regression_type in regression_models_pipeline_locations:
+        print(f'Completing {regression_type} Model Evaluations')
+        model_predictions_and_evaluations.regression_create_evaluations(model_type=regression_type, 
+                                                                        pipeline_location=regression_models_pipeline_locations[regression_type],
+                                                                        test_data=summary_stats_test,
+                                                                        regression_evaluation_metrics_output_storage=regression_evaluation_metrics_output_storage)
+
+        
+################################ Classification: Testing Predictions and Evaluations ################################
+elif train_classification is True:
+    classification_models_pipeline_locations={'XGBoost': xgboost_classification_model_storage_location, 
+                                              'Logistic_Regression': logistic_regression_classification_model_storage_location,
+                                              'Random_Forest': random_forest_classification_model_storage_location}
+
+else:
+    print('Did Not Choose To Evaluate Either Regression or Classification Models.')
+
 
 
 # ################################ Feature Importance ################################

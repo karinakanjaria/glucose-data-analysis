@@ -47,4 +47,5 @@ ML_Models:
 
 
 Evaluation_Metrics:
-    evaluation_metrics_output_storage: "/home/jovyan/glucose-data-analysis/Output_Files/evaluation_metrics.csv"
+    regression_evaluation_metrics_output_storage: "/home/jovyan/glucose-data-analysis/Output_Files/Regression/"
+    classification_evaluation_metrics_output_storage: "/home/jovyan/glucose-data-analysis/Output_Files/Classification/"
