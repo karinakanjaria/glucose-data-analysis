@@ -11,3 +11,7 @@
 #                         evaluator=evaluator_rmse,
 #                         foldCol='foldCol',
 #                         collectSubModels=False)
+
+
+# log the featurer importance graphs 
+# Change color axis  idmensions
