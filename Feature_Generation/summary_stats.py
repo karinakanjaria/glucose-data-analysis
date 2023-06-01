@@ -49,8 +49,9 @@ class Summary_Stats_Features:
         summary_df = summary_df.withColumn("NextDayValue", lag(summary_df.TotalOutOfRange, offset=chunk_lag).over(my_window))
         summary_df = summary_df.withColumn("DiffPrevious", summary_df.NextDayValue - summary_df.TotalOutOfRange)
         
-        summary_df = summary_df.withColumn('target', when(summary_df.DiffPrevious > 0, 1)
-                                 .when(summary_df.DiffPrevious < 0,-1)
+        buffer = 9  # 45 minutes / 5 minute intervals = 9
+        summary_df = summary_df.withColumn('target', when(summary_df.DiffPrevious > buffer, 1)
+                                 .when(summary_df.DiffPrevious < buffer, -1)
                                  .otherwise(0))
         
         summary_df = summary_df.drop('NextDayValue')
