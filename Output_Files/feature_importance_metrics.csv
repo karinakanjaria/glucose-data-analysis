@@ -1,0 +1,18 @@
+Feature,Accuracy Gain
+scaled_TotalOutOfRange,6770424.5
+scaled_VarianceRatio,605883.1875
+scaled_StdSecDiff,287797.71875
+scaled_AvgFirstDiff,269887.625
+scaled_PermutationEntropy,174256.5625
+scaled_Max,169790.015625
+scaled_AvgSecDiff,159950.8125
+scaled_Min,151417.84375
+scaled_ShortTermVariance,149123.390625
+scaled_CountAbove,134934.015625
+scaled_LongTermVariance,92233.6640625
+scaled_Median,92150.28125
+scaled_StdFirstDiff,84045.2890625
+scaled_SampleEntropy,79773.765625
+scaled_Mean,72733.28125
+scaled_CountBelow,58872.15234375
+scaled_StdDev,45839.4609375

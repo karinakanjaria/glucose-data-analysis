@@ -3,6 +3,9 @@ import pandas as pd
 
 # PySpark Libraries
 import pyspark
+
+from pyspark import SparkConf, SparkContext
+
 from pyspark.sql import SparkSession, Window
 from pyspark.sql.functions import date_trunc, col, rank, when, monotonically_increasing_id
 import pathlib
@@ -15,7 +18,7 @@ class Reading_Data:
         self.project_data_schema = Project_Data_Schema()
 
         self.pyspark_data_schema = self.project_data_schema.data_schema_pyspark()
-        self.spark = SparkSession.builder.appName("Glucose").getOrCreate()
+        self.spark = SparkSession.builder.appName("Glucose").config("spark.driver.memory", "4g").getOrCreate()
     
     
     def read_in_pyspark_data(self, data_location):
@@ -38,12 +41,11 @@ class Reading_Data:
         # self.spark.stop()
         return pyspark_glucose_data
 
-
-    def read_in_pyspark_data_for_summary_stats(self, data_location): 
+    
+    def read_in_all_summary_stats(self, file_list):        
         summary_stats_df = self.spark.read \
-                               .format('parquet') \
-                               .load(data_location)
-        
+                               .parquet(*file_list)
+
         return summary_stats_df
     
     

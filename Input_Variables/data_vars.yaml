@@ -31,13 +31,21 @@ Feature_Importance:
     overall_feature_importance_plot_location: "/home/jovyan/glucose-data-analysis/Output_Files/overall_feature_imp.png"
 
 ML_Models:
-  model_storage_location: "/home/jovyan/glucose-data-analysis/Saved_Models"
   random_seed: 12345
+
+  Regression:
+    xgboost_regression_model_storage_location: '/cephfs/Saved_Models/No_Hyperparameter_Tuning/Regression/XGBoost'
+    linear_regression_model_storage_location: '/cephfs/Saved_Models/No_Hyperparameter_Tuning/Regression/Linear_Regression'
+    random_forest_regression_model_storage_location: '/cephfs/Saved_Models/No_Hyperparameter_Tuning/Regression/Random_Forest_Regression'
+    factorization_machines_regression_model_storage: '/cephfs/Saved_Models/No_Hyperparameter_Tuning/Regression/Factorization_Machines_Regression'
+    
+
+  Classification:
+    xgboost_classification_model_storage_location: '/cephfs/Saved_Models/No_Hyperparameter_Tuning/Classification/XGBoost'
+    logistic_regression_classification_model_storage_location: '/cephfs/Saved_Models/No_Hyperparameter_Tuning/Classification/Logistic_Regression'
+    random_forest_classification_model_storage_location: '/cephfs/Saved_Models/No_Hyperparameter_Tuning/Classification/Random_Forest'
 
 
 Evaluation_Metrics:
-    evaluation_metrics_output_storage: "/home/jovyan/glucose-data-analysis/Output_Files/evaluation_metrics.csv"
-
-Time_Series_Lagged_Features:
-  Time_Series_Lag_Values_Created: 6
-
+    regression_evaluation_metrics_output_storage: "/home/jovyan/glucose-data-analysis/Output_Files/Regression/"
+    classification_evaluation_metrics_output_storage: "/home/jovyan/glucose-data-analysis/Output_Files/Classification/"

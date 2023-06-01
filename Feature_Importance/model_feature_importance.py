@@ -2,7 +2,7 @@ import pandas as pd
 
 class Feature_Importance:
     def feature_importance_accuracy_gain(self, xgboost_model, feature_importance_storage_location):
-        feature_importance_dict=xgboost_model.stages[-1].get_booster().get_score(importance_type="gain")
+        feature_importance_dict=xgboost_model.stages[-1].bestModel.get_booster().get_score(importance_type="gain")
         feature_names=xgboost_model.stages[-2].extractParamMap()[list(xgboost_model.stages[-2].\
                                                                       extractParamMap().keys())[-1]]
         feature_importance_dict=dict(zip(feature_names, list(feature_importance_dict.values())))
