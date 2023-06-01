@@ -6,11 +6,13 @@ from Input_Variables.read_vars import xgboost_regression_model_storage_location,
                                       xgboost_classification_model_storage_location, \
                                       logistic_regression_classification_model_storage_location, \
                                       random_forest_classification_model_storage_location, \
+                                      final_xgboost_classification_model_storage_location, \
                                       random_seed
 from Read_In_Data.read_data import Reading_Data
 from Data_Pipeline.scaling_pipeline import Feature_Transformations
 from Model_Creation.regression_models import Create_Regression_Models
 from Model_Creation.classification_models import Create_Classification_Models
+from Model_Creation.xgbclassifier_model import Create_XGBClassifier_Model
 import os
 
 
@@ -19,11 +21,11 @@ reading_data=Reading_Data()
 feature_transformations=Feature_Transformations()
 create_regression_models=Create_Regression_Models()
 create_classification_models=Create_Classification_Models()
-
+create_xgbclassifier_model=Create_XGBClassifier_Model()
 
 ################################ Regression, Classification, Or Both ################################
 train_regression=False
-train_classification=True
+train_classification=False
 
 
 ################################ Read In Data ################################
@@ -79,6 +81,17 @@ elif train_classification is True:
                                      random_seed=random_seed,
                                      classification_models_storage_locations=classification_models_storage,
                                      num_folds=3)
-    
+
+
+################################ XGB Classifier Model ################################
 else:
-    print('Did Not Choose To Model Either Regression or Classification Models.')
+    xgbclassifier_model_storage=final_xgboost_classification_model_storage_location
+    create_xgbclassifier_model\
+            .xgbclassifier_modeling(ml_df=df_train_val_combined,
+                                    stages=pipeline_transformation_stages, 
+                                    random_seed=random_seed,
+                                    xgbclassifier_model_storage_location=xgbclassifier_model_storage,
+                                    num_folds=3)
+    
+# else:
+#     print('Did Not Choose To Model Either Regression or Classification Models.')

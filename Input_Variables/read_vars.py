@@ -61,5 +61,8 @@ xgboost_classification_model_storage_location=input_vars['ML_Models']['Classific
 logistic_regression_classification_model_storage_location=input_vars['ML_Models']['Classification']['logistic_regression_classification_model_storage_location']
 random_forest_classification_model_storage_location=input_vars['ML_Models']['Classification']['random_forest_classification_model_storage_location']
 
+# final XGBoost Classification
+final_xgboost_classification_model_storage_location=input_vars['ML_Models']['Final_Classification']['final_xgboost_classification_model_storage_location']
+
 # Setting Seed
 random_seed=input_vars['ML_Models']['random_seed']
