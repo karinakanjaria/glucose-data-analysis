@@ -42,7 +42,15 @@ class Create_Classification_Models:
         evaluator_logloss=MulticlassClassificationEvaluator(metricName='logLoss',
                                                             labelCol=self.label_name,
                                                             predictionCol=self.prediction_column_name)
-        paramGrid=ParamGridBuilder().build()
+        # might not work because of the ['XGBoost'] part
+        paramGrid=ParamGridBuilder().addGrid(model_mapping['XGBoost'].max_depth,[4,5, 6 ,7,8,10]) \
+                                    .addGrid(model_mapping['XGBoost'].n_estimators,[50, 100 ,200]) \
+                                    .addGrid(model_mapping['XGBoost'].reg_alpha,[0, 0.01,0.1,1,10]) \
+                                    .addGrid(model_mapping['XGBoost'].reg_lambda,[0,.3,.7, 1]) \
+                                    .build()
+                                    # .addGrid(model_mapping['XGBoost'].booster,["gbtree","dart"])\ 
+                                    # .addGrid(model_mapping['XGBoost'].eta,[1, 0.3 ,0.1,0.001])\ 
+                                    # .addGrid(model_mapping['XGBoost'].tree_method,["auto","approx"]) \
         
         for model_type in model_types:
             if location_counter > 0:
