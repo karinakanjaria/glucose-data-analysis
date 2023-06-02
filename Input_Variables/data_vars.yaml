@@ -41,7 +41,7 @@ ML_Models:
     
 
   Classification:
-    xgboost_classification_model_storage_location: '/cephfs/Saved_Models/Hyperparameter_Tuning/XGBClassification'
+    xgboost_classification_model_storage_location: '/cephfs/Saved_Models/Hyperparameter_Tuning/XGBClassification1'
     logistic_regression_classification_model_storage_location: '/cephfs/Saved_Models/No_Hyperparameter_Tuning/Classification/Logistic_Regression'
     random_forest_classification_model_storage_location: '/cephfs/Saved_Models/No_Hyperparameter_Tuning/Classification/Random_Forest'
     
