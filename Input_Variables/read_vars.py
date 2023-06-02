@@ -20,8 +20,8 @@ one_hot_encoding_data=input_vars['Data_Storage']['one_hot_encoding_location']
 
 
 ################################### Evaluation Metrics ###################################
-evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['evaluation_metrics_output_storage']
-
+regression_evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['regression_evaluation_metrics_output_storage']
+classification_evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['classification_evaluation_metrics_output_storage']
 
 
 ################################### Feature Importance ###################################
@@ -50,7 +50,19 @@ daily_stats_features_upper=input_vars['Daily_Stats_Features']['upper']
 
 
 ################################### ML Models ###################################
-xgb_reg_model_storage_location=input_vars['ML_Models']['xgb_reg_model_storage_location']
-xgb_class_model_storage_location=input_vars['ML_Models']['xgb_class_model_storage_location']
+# Regression
+xgboost_regression_model_storage_location=input_vars['ML_Models']['Regression']['xgboost_regression_model_storage_location']
+linear_regression_model_storage_location=input_vars['ML_Models']['Regression']['linear_regression_model_storage_location']
+random_forest_regression_model_storage_location=input_vars['ML_Models']['Regression']['random_forest_regression_model_storage_location']
+factorization_machines_regression_model_storage=input_vars['ML_Models']['Regression']['factorization_machines_regression_model_storage']
 
+# Classification
+xgboost_classification_model_storage_location=input_vars['ML_Models']['Classification']['xgboost_classification_model_storage_location']
+logistic_regression_classification_model_storage_location=input_vars['ML_Models']['Classification']['logistic_regression_classification_model_storage_location']
+random_forest_classification_model_storage_location=input_vars['ML_Models']['Classification']['random_forest_classification_model_storage_location']
+
+# final XGBoost Classification
+final_xgboost_classification_model_storage_location=input_vars['ML_Models']['Final_Classification']['final_xgboost_classification_model_storage_location']
+
+# Setting Seed
 random_seed=input_vars['ML_Models']['random_seed']

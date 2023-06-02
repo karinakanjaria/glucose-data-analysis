@@ -8,26 +8,24 @@ class TS_Features:
 
     entropy_schema = StructType([StructField('NumId', IntegerType(), True),
                                  StructField('Chunk', IntegerType(), True),
-                                 StructField('Entropy', FloatType(), True),
-                                 StructField('Entropy2', FloatType(), True),
-                                 StructField('Entropy3', FloatType(), True),
-                                 StructField('Entropy4', FloatType(), True)
+                                 StructField('SampleEntropy', FloatType(), True),
+                                 StructField('PermutationEntropy', FloatType(), True),
                                 ])
 
     @pandas_udf(entropy_schema, functionType=PandasUDFType.GROUPED_MAP)
     def entropy(self, df):
         patientid = df['NumId'].iloc[0]
         chunk = df['Chunk'].iloc[0]
-
-        entropy = eH.SampEn(df.Value.values, m=4)[0][-1]
         
+        glucoses = df.Value.values
         try:
-            e2, e3, e4 = eH.PermEn(df.Value.values, m=4)[0][-1]
+            sample_entropy = eH.SampEn(glucoses, m=4)[0][-1]
+            permutation_entropy = eH.PermEn(glucoses, m=4)[1][-1]
         except:
-            e2, e3, e4 = None, None, None
-
-        entropy_df = pd.DataFrame([[patientid] + [chunk] + [entropy] + [e2] + [e3] + [e4]])
-        entropy_df.columns=['NumId', 'Chunk', 'Entropy', 'Entropy2', 'Entropy3', 'Entropy4']
+            sample_entropy, permutation_entropy = None, None
+            
+        entropy_df = pd.DataFrame([[patientid] + [chunk] + [sample_entropy] + [permutation_entropy]])
+        entropy_df.columns=['NumId', 'Chunk', 'SampleEntropy', 'PermutationEntropy']
         return entropy_df
     
     
@@ -51,8 +49,11 @@ class TS_Features:
 
         # measures the length of the poincare cloud
         long_term_variation = np.sqrt(np.absolute((2 * st_dev_values ** 2) - (0.5 * st_dev_differentials ** 2)))
-
-        ratio = short_term_variation / long_term_variation
+        
+        if (long_term_variation != 0):
+            ratio = short_term_variation / long_term_variation
+        else:
+            ratio = 0
         
         poincare_df = pd.DataFrame([[patientid] + [chunk] + [short_term_variation] + [long_term_variation] + [ratio]])
         poincare_df.columns=['NumId', 'Chunk', 'ShortTermVariance', 'LongTermVariance', 'VarianceRatio']
@@ -66,7 +67,7 @@ class TS_Features:
                               StructField('SleepSDRatio', FloatType(), True)])
     
     @pandas_udf(sleep_schema, functionType=PandasUDFType.GROUPED_MAP)
-    def sleep_entropy(self, df):
+    def sleep_poincare(self, df):
         patientid = df['NumId'].iloc[0]
         date = df['Date'].iloc[0]
 
@@ -82,24 +83,24 @@ class TS_Features:
 
         # measures the length of the poincare cloud
         long_term_variation = np.sqrt(np.absolute((2 * st_dev_values ** 2) - (0.5 * st_dev_differentials ** 2)))
-
-        ratio = short_term_variation / long_term_variation
+        
+        if (long_term_variation != 0):
+            ratio = short_term_variation / long_term_variation
+        else:
+            ratio = 0
         
         sleep_df = pd.DataFrame([[patientid] + [date] + [short_term_variation] + [long_term_variation] + [ratio]])
         sleep_df.columns=['NumId', 'Date', 'SleepSDShort', 'SleepSDLong', 'SleepSDRatio']
         return sleep_df
     
     
-    def process_for_sleep_entropy(self, df):
+    def process_for_sleep_poincare(self, df):
         df = df.withColumn('Date', to_date(col('GlucoseDisplayTime')))
         df = df.withColumn('Month', month(df.Date))
         df = df.withColumn('Time', date_format('GlucoseDisplayTime', 'HH:mm:ss'))
         
         sleep_df = df.groupby(['NumId', 'Month']).apply(self.sleep)
         return sleep_df
-    
-    
-#     def sleep_features(self, df):
         
     
     

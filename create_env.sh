@@ -3,7 +3,7 @@
 echo "Installing Virtual Environment"
 pip install virtualenv
 
-echo "Creating `glucose_venv` Virtual Environment"
+echo "Creating glucose_venv Virtual Environment"
 virtualenv glucose_venv
 
 echo "Activating Virtual Environment"

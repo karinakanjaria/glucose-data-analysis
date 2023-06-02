@@ -164,3 +164,4 @@ djangorestframework==3.14.0
 django-filter==23.2
 django-storages==1.13.2
 boto3==1.26.141
+shap==0.41.0
