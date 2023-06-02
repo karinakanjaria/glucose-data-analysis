@@ -71,7 +71,7 @@ if train_regression is True:
 
 
 ################################ Classification Models ################################
-elif train_classification is True:
+if train_classification is True:
     classification_models_storage=[xgboost_classification_model_storage_location,
                                    logistic_regression_classification_model_storage_location,
                                    random_forest_classification_model_storage_location]
@@ -95,3 +95,21 @@ else:
     
 # else:
 #     print('Did Not Choose To Model Either Regression or Classification Models.')
+
+
+"""################################ Model Evaluation ################################"""
+# model_evaluation=evaluate_model.regression_evaluation(testing_predictions=testing_predictions, 
+#                                                       eval_csv_location=evaluation_metrics_output_storage)
+# model_evaluation.head()
+
+
+# ################################ Feature Importance ################################
+# feature_importance_df=feature_importance \
+#                             .feature_importance_accuracy_gain(xgboost_model=xgboost_regression_model, 
+#                                                               feature_importance_storage_location=feature_importance_storage_location)
+# feature_importance_df.head(10)
+
+
+# ################################ Feature Importance Plot ################################
+# overall_feature_plot=xgboost_classification_plot.feature_overall_importance_plot(feature_importance_df=feature_importance_df,
+#                                                                                  overall_importance_plot_location=overall_feature_importance_plot_location)

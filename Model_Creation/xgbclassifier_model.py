@@ -27,13 +27,13 @@ class Create_XGBClassifier_Model:
         evaluator_logloss=MulticlassClassificationEvaluator(metricName='logLoss',
                                                             labelCol=self.label_name,
                                                             predictionCol=self.prediction_column_name)
-        paramGrid=ParamGridBuilder().addGrid(xgb_classification.max_depth,[4,5, 6 ,7,8,10]) \
-                                    .addGrid(xgb_classification.n_estimators,[50, 100 ,200]) \
-                                    .addGrid(xgb_classification.reg_alpha,[0, 0.01,0.1,1,10]) \
-                                    .addGrid(xgb_classification.reg_lambda,[0,.3,.7, 1]) \
+        paramGrid=ParamGridBuilder().addGrid(xgb_classification.max_depth,[7]) \
+                                    .addGrid(xgb_classification.n_estimators,[200,250]) \
+                                    .addGrid(xgb_classification.eta,[0.4, 0.3 ,0.2]) \
+                                    .addGrid(xgb_classification.reg_alpha,[12,15,]) \
+                                    .addGrid(xgb_classification.reg_lambda,[0.2,0.3,0.4]) \
                                     .build()
                                     # .addGrid(xgb_classification.booster,["gbtree","dart"])\ 
-                                    # .addGrid(xgb_classification.eta,[1, 0.3 ,0.1,0.001])\ 
                                     # .addGrid(xgb_classification.tree_method,["auto","approx"]) \
         
         # if location_counter > 0:
