@@ -13,6 +13,8 @@ from pyspark.sql.window import Window
 
 class Summary_Stats_Features:
     def create_chunk_col(self, df, chunk_val):
+        # create a chunk column that is the index/chunk_val 
+        # changing it to int rounds down. this creates groups of chunk_val length
         window = Window.partitionBy(df['NumId']).orderBy(df['GlucoseDisplayTime'])
         df = df.select('*', rank().over(window).alias('index'))
         df = df.withColumn("Chunk", (df.index/chunk_val).cast(IntegerType()))
@@ -27,6 +29,7 @@ class Summary_Stats_Features:
 
         group_cols = ["NumId", "Chunk"]
 
+        # create agg summary stats
         summary_df = df.groupby(group_cols)\
             .agg(avg("Value").alias("Mean"),\
                  stddev("Value").alias("StdDev"),\
@@ -46,6 +49,8 @@ class Summary_Stats_Features:
         
         summary_df = summary_df.withColumn("NextDayValue", lag(summary_df.TotalOutOfRange, offset=chunk_lag).over(my_window))
         summary_df = summary_df.withColumn("DiffPrevious", summary_df.NextDayValue - summary_df.TotalOutOfRange)
+        
+        # to give patients leeway, if they are within a 45min window, set it to 0
         
         buffer = 9  # 45 minutes / 5 minute intervals = 9
         summary_df = summary_df.withColumn('target', when(summary_df.DiffPrevious > buffer, 1)
