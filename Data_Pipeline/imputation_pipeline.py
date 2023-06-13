@@ -23,47 +23,59 @@ class Date_And_Value_Imputation:
                                                      StructField('Value', FloatType(),True)])
 
     def read_interpolation(self, data_location):
-
+        #read in data
         pyspark_glucose_data = self.spark.read \
                                .format('parquet') \
                                .load(data_location)
-
+        
+        # reorder
         pyspark_glucose_data=pyspark_glucose_data.orderBy("NumId",
                                                           "GlucoseDisplayTime",
                                                           ascending=True)
+        # drop the unnecessary cols
         pyspark_glucose_data=pyspark_glucose_data.drop('__index_level_0__')
 
         return pyspark_glucose_data
 
     def interpolation_creation(self, data_set_name):
+        # create data path folder
         data_location = "/cephfs/train_test_val/" + str(data_set_name)
 
+        #get all paths in folder
         allPaths = [str(x) for x in list(pathlib.Path(data_location).glob('*.parquet')) if 'part-00' in str(x)]
 
         path_counter = 0
         
+        # go through each path and interpolate
         for path in allPaths:
+            # get data
             gluc = pd.read_parquet(path, columns=['NumId','GlucoseDisplayTime', 'Value', 'GlucoseDisplayDate'])
+            # round glucoseDisplayTime to minute
             gluc['GlucoseDisplayTime'] = gluc['GlucoseDisplayTime'].dt.floor('Min')
             gluc = gluc.sort_values(by=['NumId', 'GlucoseDisplayTime'])
 
+            # get min and max time values to only interpolate between the extremes
             min_max = gluc.groupby('NumId').agg({'GlucoseDisplayTime' : ['min','max']})
 
+            # defaults
             merge_df = pd.DataFrame(columns=['GlucoseDisplayTime', 'NumId'])
             starttime = time.time()
             last_idx = len(min_max)-1
 
             index_counter = 0
+            
+            # iterate through each numid with their min_maxes
             for idx, row in min_max.iterrows():
+                
                 #grab all potential dates in range
-
                 min_val = row['GlucoseDisplayTime']['min']
                 max_val = row['GlucoseDisplayTime']['max']
 
                 date_df = pd.DataFrame(pd.date_range(min_val, max_val, freq='5min'),\
                                    columns=['GlucoseDisplayTime'])  
 
-                # merge dates with big pypsark df
+                # get rows with NumId and merge in with new date_df
+                # if value is na, then its the new date that needs to be interpolated
                 id_df = gluc[gluc['NumId'] == idx]
 
                 mean = id_df.Value.mean()
@@ -75,6 +87,8 @@ class Date_And_Value_Imputation:
                 merged = id_df.join(date_df, how='outer',\
                                 on='GlucoseDisplayTime', sort=True)
 
+                # if value is na, fill IsFilledIn with 1, value = mean
+                # set glucoseDisplayDate for all filled in columns
                 merged['IsFilledIn'] = 0
                 merged.loc[merged.Value.isna(), 'IsFilledIn'] = 1        
                 merged.loc[merged.Value.isna(), 'Value'] = mean
@@ -86,28 +100,27 @@ class Date_And_Value_Imputation:
 
                 merged = merged.drop(columns=['index'])
 
+                # create new column that is offset time by 1
                 merged['TimeLag'] = np.concatenate((merged['GlucoseDisplayTime'].iloc[0],\
                                                 np.array(merged['GlucoseDisplayTime'].iloc[:-1].values)), axis=None)\
                                 .astype('datetime64[ns]')
-
+                
+                # get difference between current time and time before
                 merged['Diff'] = (merged['TimeLag'] - merged['GlucoseDisplayTime']).dt.seconds
 
                 len_merged = len(merged)
 
                 # get all index of rows with diff less than 5 mins, add 1 to remove next row, 
                 # dont include last row to delete
+                # remove all odd/offset time values
                 indexes_to_remove = [x for x in merged[merged['Diff'] < 300].index + 1 if x < len_merged & x != 0]
 
                 if len(indexes_to_remove) > 0:
                     merged = merged.drop(indexes_to_remove)
 
-                # its ready freddy for some interpoletty
-                # merged DF is the dataframe ready to go into interpolation function
-
-                # fill with mean
-
                 merged = merged.drop(columns=['TimeLag', 'Diff'])
 
+                # merge 25 numIds together, then once 25, save to parquet
                 if ((index_counter % 25 != 0) and index_counter != last_idx) or (index_counter == 0):
                     merge_df = pd.concat([merge_df, merged])
                 elif (index_counter % 25 == 0) or (index_counter == last_idx):

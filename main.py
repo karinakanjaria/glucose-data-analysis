@@ -85,6 +85,8 @@ pyspark_df=reading_data.read_in_pyspark()
 
 
 from pyspark.sql.functions import date_trunc, col
+
+# 
 pyspark_df=pyspark_df.withColumn("GlucoseDisplayTime", date_trunc("minute", col("GlucoseDisplayTime")))
 
 
