@@ -3,3 +3,5 @@ data/*
 */__pycache__
 temptemp/*
 Data_Generation/temp_data/*
+glucApp/app_venv/*
+glucApp/cephfsModel

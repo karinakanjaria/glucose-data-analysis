@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-#vs%k88@&0g6q1xjz$1^ys3mo2e9j8$8lek*#pgol%_9@x$3dl"
+SECRET_KEY = ""
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -129,18 +129,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+# STATIC_URL = "/static/"
 STATIC_URL = "static/"
-
+STATIC_ROOT_IMG = 'glucApi/static'
 STATIC_ROOT = "glucose_data"
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
+# STATICFILES_DIRS = ['/static/']
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-ACCESS_ID = 'YKPCACNSM0KBF5TQDKNE'
-SECRET_ACCESS_KEY = 'uo1V4RWHMBGYGO0CVJi2n0irDNQ2CdVC7vCMPl0u'
+ACCESS_ID = ''
+SECRET_ACCESS_KEY = ''
 STORAGE_BUCKET_NAME = 'glucose'
 ENDPOINT_URL = "https://s3-west.nrp-nautilus.io"
 # all s3 bucket info is in the .s3cfg file at ~/.s3cfg
