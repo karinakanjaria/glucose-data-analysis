@@ -1,7 +1,9 @@
 data/*
 *.ipynb_checkpoints
 */__pycache__
+__pycache__
 temptemp/*
 Data_Generation/temp_data/*
 glucApp/app_venv/*
 glucApp/cephfsModel
+App_Development/*
