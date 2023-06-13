@@ -10,6 +10,7 @@ from Input_Variables.read_vars import train_data_storage, validation_data_storag
                                       overall_feature_importance_plot_location
 
 from Data_Schema.schema import Pandas_UDF_Data_Schema
+from Data_Generation.save_train_test_val import Create_Parquet_Files
 from Read_In_Data.read_data import Reading_Data
 from Data_Pipeline.imputation_pipeline import Date_And_Value_Imputation
 
@@ -43,6 +44,9 @@ reading_data=Reading_Data()
 
 # Create Binary y Variables
 create_binary_labels=Create_Binary_Labels()
+
+# Create and clean parquet files from CSVs
+create_parquet_files = Create_Parquet_Files()
 
 # Imputation
 date_and_value_imputation=Date_And_Value_Imputation()
@@ -81,6 +85,18 @@ model_predictions=Model_Predictions()
 feature_importance=Feature_Importance()
 
 ####### PySpark
+
+create_parquet_files.train_val_test_step1(csv_files_location="/cephfs/data",
+                                          checkpoint_location="/cephfs/train_test_val/_checkpoint.parquet")
+create_parquet_files.train_val_test_step2(checkpoint_location="/cephfs/train_test_val/_checkpoint.parquet",
+                                          cohort_location="/cephfs/data/cohort.csv")
+create_parquet_files.train_val_test_step3(checkpoint_location="/cephfs/train_test_val/_checkpoint.parquet",
+                                         train_location="/cephfs/train_test_val/train_set/",
+                                         val_location="/cephfs/train_test_val/val_set/",
+                                         test_location="/cephfs/train_test_val/test_set/")
+create_parquet_files.train_val_test_step4(train_location="/cephfs/train_test_val/train_set/")
+
+
 pyspark_df=reading_data.read_in_pyspark()
 
 
