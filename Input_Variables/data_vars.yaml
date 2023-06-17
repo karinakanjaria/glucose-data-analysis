@@ -9,6 +9,8 @@ Data_Storage:
   
   one_hot_encoding_location: "/cephfs/data/cohort_encoded.parquet"
 
+Create_Data: False
+
 Analysis:
   Analysis_Group: 'PatientId'
 
@@ -31,6 +33,12 @@ Feature_Importance:
     overall_feature_importance_plot_location: "/home/jovyan/glucose-data-analysis/Output_Files/overall_feature_imp.png"
 
 ML_Models:
+  model_creation: 
+    create_model: False
+    train_regression: False
+    train_classification: False
+    train_only_xgboost: False
+
   random_seed: 42
 
   Regression:
@@ -48,6 +56,10 @@ ML_Models:
     
   Final_Classification:
     final_xgboost_classification_model_storage_location: '/cephfs/Saved_Models/Hyperparameter_Tuning/XGBClassification1'
+
+
+Load_ML_Model:
+    final_model_load_location: '/cephfs/Saved_Models/Hyperparameter_Tuning/XGBClassification7'
 
 
 Evaluation_Metrics:

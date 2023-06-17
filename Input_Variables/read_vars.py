@@ -18,6 +18,8 @@ inter_val_location=input_vars['Data_Storage']['inter_val_location']
 
 one_hot_encoding_data=input_vars['Data_Storage']['one_hot_encoding_location']
 
+################################### Data Creation ###################################
+create_data_bool=input_vars['Create_Data']
 
 ################################### Evaluation Metrics ###################################
 regression_evaluation_metrics_output_storage=input_vars['Evaluation_Metrics']['regression_evaluation_metrics_output_storage']
@@ -66,3 +68,19 @@ final_xgboost_classification_model_storage_location=input_vars['ML_Models']['Fin
 
 # Setting Seed
 random_seed=input_vars['ML_Models']['random_seed']
+
+# Create Model
+create_model_bool=input_vars['ML_Models']['model_creation']['create_model']
+
+# Do You want to create the regression model
+create_regression_bool=input_vars['ML_Models']['model_creation']['train_regression']
+
+# Do You want to create the classification model
+create_classification_bool=input_vars['ML_Models']['model_creation']['train_classification']
+
+# Do You want to create only the xgboost model
+create_xgboost_only_bool=input_vars['ML_Models']['model_creation']['train_only_xgboost']
+
+# final_model_load_location
+final_model_load_location=input_vars['Load_ML_Model']['final_model_load_location']
+
