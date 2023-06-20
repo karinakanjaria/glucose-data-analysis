@@ -1,68 +1,33 @@
 # glucose-data-analysis
-<p> <img src="Project_Logo/diabeatit-low-resolution-color-logo.png" width="400" height="300"/></p>
+<p> <img src="diabetitlogo.png" width="174" height="200"/></p>
 
-## By: Karina Kanjaria, Katie O'laughlin, Leslie Joe, Carlos Monsivaiss
-Continuous glucose data analysis for blood glucose levels and glycemic events
+# Long Term Horizon Predictions and Feature Explainability of Time Series Continuous Glucose Monitor Data
+## by Katie O'Laughlin†, Carlos Monsivais†, Leslie Joe†, Karina Kanjaria†, Jamie Burks, and Benjamin Smarr, PhD
+† These authors contributed equally to this work and share first authorship.
 
-### How to Run
-1. Run the create_env.sh file by using the foloowing command: ./create_env.sh
-2. If not intiialized, activate the environment by using the source glucose_venv/bin/activate
-3. Run either the main.ipynb or main.py file to get output
+<hr>
+<br>
 
-### Data Structure
-* Data_Pipeline
-    1. sklearn_pipeline.py:
 
-        Reads in raw data from either a PySpark Dataframe or Pandas Dataframe to run it through a sklearn pipeline where numerical 
-        features are standardized, imputations are made, and one-hot-encoding > is done on categorical features. Within the 
-        class called Sklearn_Pipeline there is a function for a Pyspark Dataframe called pyspark_sklearn_pipeline() and a function
-        for a Pandas Dataframe called pandas_transform_features()
+## About
 
-* Data_Schema
-    1. schema.py:
-    
-        Stores data schemas used for reading in data either as a PySpark Dataframe or a Pandas Dataframe(data type and datetime columns are taken care of).
-        Within this file the schemas to use for the output in PySpark when using Pandas User Defined Functions is used.
-        
-        1. Metadata - Patient information on Gender, DOB, Age, Diaebtes Type, and if they are receieving treatments
-            - file: cohort.csv
-            - columns: 'Unnamed', 'UserId', 'Gender', 'DOB', 'Age', 'DiabetesType', 'Treatment'
-                      
-       2. Glucose Data - Raw data of the glucose measurement at a specific time per patient  
-       
-           - file: glucose_record_{date}.csv
-           - columns: 'PostDate', 'IngestionDate', 'PostId', 'PostTime', 'PatientId', 'Stream', 'SequenceNumber', 'TransmitterNumber', 'ReceiverNumber', 'RecordedSystemTime', 'RecordedDisplayTime', 'RecordedDisplayTimeRaw', 'TransmitterId', 'TransmitterTime', 'GlucoseSystemTime', 'GlucoseDisplayTime', 'GlucoseDisplayTimeRaw', 'Value', 'Status', 'TrendArrow', 'TrendRate', 'IsBackFilled', 'InternalStatus', 'SessionStartTime'
-                      
-       3. Glucose Data Dictionary - List of possible values per column of Glucose Data
-           
-           - file: glucose.json
-           - columns: 'PostDate', 'IngestionDate', 'PostId', 'PostTime', 'PatientId', 'Stream', 'SequenceNumber', 'TransmitterNumber', 'ReceiverNumber', 'RecordedSystemTime',  'RecordedDisplayTime', 'RecordedDisplayTimeRaw', 'TransmitterId', 'TransmitterTime', 'GlucoseSystemTime', 'GlucoseDisplayTime', 'GlucoseDisplayTimeRaw', 'Value', 'Status', 'TrendArrow', 'TrendRate', 'IsBackFilled', 'InternalStatus', 'SessionStartTime'
-            
-        4. Glucose Data Column Definitions - Description of each column in raw Glucose Dataset 
-        
-            - file: glucose_records.json
-            - columns: key, title, description
+Over 11% of the US population has been diagnosed with diabetes, with millions experiencing a myriad of other health complications as a result. Luckily, diabetes can be treated and managed with the proper knowledge and tools. Through the use of data science and machine learning techniques, the DiabeatIt project seeks to help diabetes patients by analyzing what elements of their daily habits and characteristics contribute to hyper- and hypoglycemic events. Statistical and structural features are computed using 800 million time-series glucose measurements provided by Dexcom, and applied to several machine learning models in order to understand links between glycemic events and biological rhythms. Ultimately, an XGBoost decision tree classification model is implemented for feature explainability. This model achieved an accuracy of 61.2% with hyperparameter tuning. With such a model and its accompanying front-end application, patients and healthcare professionals are able to see which features most impacted the model’s predictions. This grants users the abilities to assess, understand, and potentially take actionable steps to improve their health.
 
-* EDA
-    1. Glucose.ipynb, KarinaEDA.ipynb, LeslieEDA.ipynb:
+(This is a completed Capstone project from the University of California, San Diego's M.A.S. Data Sciencea and Engineering program, 2023.)
 
-        EDA notebooks.
+<br>
+<hr>
+<br>
 
-* preprocessing
-    1. wrappers.py:
+## How to Run
 
-        Initial data wrappers.
+Please note this repository was built to pull from an existing databank of Dexcom's licenced data. If you do not have the same permissions, this code will not run.
 
-* Project_Logo
-    1. diabeatit-low-resolution-color-logo.png:
+1. Run the *create_env.sh* file by using the following command in teminal: `./create_env.sh`
+2. Use one of the two *main* files:
+    * Activate the environment by using the command `source glucose_venv/bin/activate` and then run *main.py* by using the command `python main.py`
+    * Open *main.ipynb* and select the *glucose_venv* kernel to run each cell
 
-        Logo for our group DiabeatIt!
-
-* Read_In_Data
-    1. read_data.py:
-        Reads in data in both the Pyhton and PySpark format byusing schema types from Data_Schema folder.
-
-* Time_Series_Features
-    1. time_series_feature_creation.py:
-        These are the wrapper functions that are used for feature engineering which include Multifractal Data Analysis, Poincare Analysis, Functional Principal Component Analysis, and Entropy Analysis
-
+<br>
+<hr>
+<br>
