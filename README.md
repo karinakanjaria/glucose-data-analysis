@@ -19,6 +19,17 @@ Over 11% of the US population has been diagnosed with diabetes, with millions ex
 <hr>
 <br>
 
+## Resources Needed
+
+The glucose data analyzed is a big data problem meaning a large amount of resources are needed, the resources that were used to run th project were as follows:
+1. RAM - (150 GB to 250 GB)
+2. CPU - (3 to 5)
+3. GPU - (2 to 4)
+
+<br>
+<hr>
+<br>
+
 ## How to Run
 
 Please note this repository was built to pull from an existing databank of Dexcom's licenced data. If you do not have the same permissions, this code will not run.
