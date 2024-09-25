@@ -13,7 +13,7 @@
 
 Over 11% of the US population has been diagnosed with diabetes, with millions experiencing a myriad of other health complications as a result. Luckily, diabetes can be treated and managed with the proper knowledge and tools. Through the use of data science and machine learning techniques, the DiabeatIt project seeks to help diabetes patients by analyzing what elements of their daily habits and characteristics contribute to hyper- and hypoglycemic events. Statistical and structural features are computed using 800 million time-series glucose measurements provided by Dexcom, and applied to several machine learning models in order to understand links between glycemic events and biological rhythms. Ultimately, an XGBoost decision tree classification model is implemented for feature explainability. This model achieved an accuracy of 61.2% with hyperparameter tuning. With such a model and its accompanying front-end application, patients and healthcare professionals are able to see which features most impacted the model’s predictions. This grants users the abilities to assess, understand, and potentially take actionable steps to improve their health.
 
-(This is a completed Capstone project from the University of California, San Diego's M.A.S. Data Sciencea and Engineering program, 2023.)
+(This is a completed Capstone project from the University of California, San Diego's M.A.S. Data Science and Engineering program, 2023.)
 
 <br>
 <hr>
@@ -21,7 +21,7 @@ Over 11% of the US population has been diagnosed with diabetes, with millions ex
 
 ## Resources Needed
 
-The glucose data analyzed is a big data problem meaning a large amount of resources are needed, the resources that were used to run th project were as follows:
+The glucose data analyzed is a big data problem meaning a large amount of resources are needed, the resources that were used to run the project were as follows:
 1. RAM - (150 GB to 250 GB)
 2. CPU - (3 to 5)
 3. GPU - (2 to 4)
